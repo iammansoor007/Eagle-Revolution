@@ -13,27 +13,35 @@
     /* Background - Clean White */
     --background: 0 0% 100%;
     /* Foreground - Navy Blue for ALL text */
-    --foreground: 217 33% 17%;  /* #1A2A4A Navy Blue */
+    --foreground: 217 33% 17%;
+    /* #1A2A4A Navy Blue */
 
     /* Card - White background with Navy text */
     --card: 0 0% 100%;
-    --card-foreground: 217 33% 17%;  /* Navy Blue */
+    --card-foreground: 217 33% 17%;
+    /* Navy Blue */
 
     /* Popover */
     --popover: 0 0% 100%;
-    --popover-foreground: 217 33% 17%;  /* Navy Blue */
+    --popover-foreground: 217 33% 17%;
+    /* Navy Blue */
 
     /* Primary - American Red (ACCENT color only) */
-    --primary: 0 91% 56%;  /* #E32B2B American Red */
-    --primary-foreground: 0 0% 100%;  /* White text on red */
+    --primary: 0 91% 56%;
+    /* #E32B2B American Red */
+    --primary-foreground: 0 0% 100%;
+    /* White text on red */
 
     /* Secondary - Navy Blue for dark sections */
-    --secondary: 217 33% 17%;  /* #1A2A4A Navy Blue */
-    --secondary-foreground: 0 0% 100%;  /* White text on navy */
+    --secondary: 217 33% 17%;
+    /* #1A2A4A Navy Blue */
+    --secondary-foreground: 0 0% 100%;
+    /* White text on navy */
 
     /* Muted - Light gray background */
     --muted: 210 20% 96%;
-    --muted-foreground: 215 16% 47%;  /* Medium gray */
+    --muted-foreground: 215 16% 47%;
+    /* Medium gray */
 
     /* Accent - Red for highlights */
     --accent: 0 91% 56%;
@@ -46,7 +54,8 @@
     /* Borders */
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 0 91% 56%;  /* Red ring focus */
+    --ring: 0 91% 56%;
+    /* Red ring focus */
 
     --radius: 0.5rem;
 
@@ -110,7 +119,12 @@
   }
 
   /* ALL headings default to NAVY BLUE */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply text-foreground;
     font-family: var(--font-heading);
     letter-spacing: -0.03em;
@@ -126,7 +140,7 @@
   a {
     @apply text-foreground transition-colors duration-300;
   }
-  
+
   a:hover {
     @apply text-primary;
   }
@@ -209,7 +223,7 @@
   .hover-lift {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
-  
+
   .hover-lift:hover {
     transform: translateY(-4px);
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
@@ -219,15 +233,15 @@
   .text-navy {
     color: #1A2A4A;
   }
-  
+
   .text-american-red {
     color: #E32B2B;
   }
-  
+
   .bg-navy {
     background-color: #1A2A4A;
   }
-  
+
   .bg-american-red {
     background-color: #E32B2B;
   }
