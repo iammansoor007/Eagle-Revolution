@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Icon } from "../config/icons";
 import { useContent } from "../hooks/useContent";
+import bgfair from "../assets/bgfair.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,7 +13,7 @@ const Hero = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  const { badge, headlines, description, buttons, stats, promoBadge, images } = hero;
+  const { badge, headlines, description, buttons, stats, images } = hero;
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -42,7 +43,7 @@ const Hero = () => {
           }}
         >
           <img
-            src={images?.background || "/src/assets/bgfair.jpg"}
+            src={bgfair}
             alt=""
             className="w-full h-full object-cover scale-105"
             style={{ transform: "none" }}
@@ -115,22 +116,7 @@ const Hero = () => {
                 {description}
               </motion.p>
 
-              {promoBadge && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.8 }}
-                  className="mb-8 flex justify-center lg:justify-start"
-                >
-                  <div className="inline-flex items-center gap-3 bg-primary/20 backdrop-blur-sm border border-primary/40 rounded-full px-5 py-2">
-                    <Icon name="Star" className="text-primary text-sm" />
-                    <span className="text-white text-sm font-medium">{promoBadge.text}</span>
-                    <a href="#contact" className="text-primary text-sm font-bold hover:underline">
-                      {promoBadge.cta} →
-                    </a>
-                  </div>
-                </motion.div>
-              )}
+
 
               <motion.div
                 className="mb-10 w-full"
