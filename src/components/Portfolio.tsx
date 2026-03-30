@@ -23,7 +23,7 @@ import portfolio10 from "@/assets/eagle10.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export const imageMap: Record<string, string> = {
+const imageMap: Record<string, string> = {
   home1: portfolio1,
   home2: portfolio2,
   home3: portfolio3,
@@ -89,7 +89,7 @@ const MarqueeItem = ({ project }: { project: any }) => {
           }}
         />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-secondary via-secondary/15 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 
         <motion.div
           className="absolute inset-0 bg-primary/20 mix-blend-overlay"
@@ -116,10 +116,10 @@ const MarqueeItem = ({ project }: { project: any }) => {
           </svg>
         )}
 
-        <div className="absolute inset-0 p-3 sm:p-4 flex flex-col justify-end">
-          <span className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-md px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border border-white/30 w-fit mb-1 sm:mb-2">
-            <span className={`w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full bg-gradient-to-r ${project.accent}`} />
-            <span className="text-[8px] sm:text-[10px] font-semibold tracking-wider text-black">
+        <div className="absolute inset-0 p-3 sm:p-4 flex flex-col justify-end z-10">
+          <span className="inline-flex items-center gap-2 bg-black/70 backdrop-blur-md px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border border-white/30 w-fit mb-1 sm:mb-2">
+            <span className={`w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full bg-gradient-to-r ${project.accent || "from-primary to-primary/80"}`} />
+            <span className="text-[8px] sm:text-[10px] font-semibold tracking-wider text-white">
               {project.category}
             </span>
           </span>
@@ -128,9 +128,11 @@ const MarqueeItem = ({ project }: { project: any }) => {
             {project.title}
           </h3>
 
-          <div className="flex items-center gap-1.5 sm:gap-2 text-white/70 text-[10px] sm:text-xs mb-0.5 sm:mb-1">
-            <span className="truncate max-w-[80px] sm:max-w-none">{project.location}</span>
-            <span className="w-0.5 sm:w-1 h-0.5 sm:h-1 rounded-full bg-white/30" />
+          <div className="flex items-center gap-1.5 sm:gap-2 text-white/80 text-[10px] sm:text-xs mb-0.5 sm:mb-1">
+            <span className="truncate max-w-[80px] sm:max-w-none">
+              {project.location}
+            </span>
+            <span className="w-0.5 sm:w-1 h-0.5 sm:h-1 rounded-full bg-white/50" />
             <span>{project.year}</span>
           </div>
 
@@ -143,24 +145,38 @@ const MarqueeItem = ({ project }: { project: any }) => {
                 transition={{ duration: 0.3, ease: "easeInOut" }}
                 className="overflow-hidden"
               >
-                <p className="text-white/80 text-[8px] sm:text-[10px] leading-relaxed mb-1 sm:mb-2 line-clamp-2">
+                <p className="text-white/90 text-[8px] sm:text-[10px] leading-relaxed mb-1 sm:mb-2 line-clamp-2">
                   {project.desc}
                 </p>
                 <div className="flex items-center justify-between">
                   <div className="hidden xs:block">
-                    <span className="text-white/40 text-[6px] sm:text-[8px] uppercase">Architect</span>
-                    <p className="text-white text-[8px] sm:text-[10px] font-light truncate max-w-[80px] sm:max-w-none">
-                      {project.architect}
+                    <span className="text-white/50 text-[6px] sm:text-[8px] uppercase">
+                      Architect
+                    </span>
+                    <p className="text-white/90 text-[8px] sm:text-[10px] font-light truncate max-w-[80px] sm:max-w-none">
+                      {project.architect || "Eagle Revolution"}
                     </p>
                   </div>
                   <motion.button
-                    className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-primary/30 backdrop-blur-sm rounded-lg text-white text-[8px] sm:text-[10px] font-medium flex items-center gap-0.5 sm:gap-1 hover:bg-primary/50 transition-colors border border-primary/30"
+                    className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-primary/40 backdrop-blur-sm rounded-lg text-white text-[8px] sm:text-[10px] font-medium flex items-center gap-0.5 sm:gap-1 hover:bg-primary/60 transition-colors border border-white/30"
                     whileHover={{ x: 3 }}
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
                   >
                     View
-                    <svg className="w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg
+                      className="w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path
+                        d="M5 12h14M12 5l7 7-7 7"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                   </motion.button>
                 </div>
@@ -169,7 +185,7 @@ const MarqueeItem = ({ project }: { project: any }) => {
           </AnimatePresence>
         </div>
 
-        <div className="absolute top-2 sm:top-3 left-2 sm:left-3 text-white/20 text-2xl sm:text-3xl font-black">
+        <div className="absolute top-2 sm:top-3 left-2 sm:left-3 text-white/30 text-2xl sm:text-3xl font-black">
           {project.number}
         </div>
       </div>
@@ -272,7 +288,13 @@ const InfiniteMarquee = ({
   );
 };
 
-const PremiumLightbox = ({ image, onClose }: { image: any; onClose: () => void }) => {
+const PremiumLightbox = ({
+  image,
+  onClose,
+}: {
+  image: any;
+  onClose: () => void;
+}) => {
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -286,14 +308,14 @@ const PremiumLightbox = ({ image, onClose }: { image: any; onClose: () => void }
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="fixed inset-0 z-[100] bg-secondary/98 backdrop-blur-xl flex items-center justify-center cursor-pointer p-3 sm:p-4 md:p-6"
+      className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center cursor-pointer p-3 sm:p-4 md:p-6"
       onClick={onClose}
     >
       <motion.button
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
-        className="absolute top-3 sm:top-4 md:top-6 right-3 sm:right-4 md:right-6 z-50 bg-gradient-to-r from-primary to-primary/80 backdrop-blur-md border border-primary/30 rounded-full px-3 sm:px-4 md:px-5 py-1 sm:py-1.5 md:py-2 text-primary-foreground text-[10px] sm:text-xs font-medium hover:from-primary/90 hover:to-primary/70 transition-all"
+        className="absolute top-3 sm:top-4 md:top-6 right-3 sm:right-4 md:right-6 z-50 bg-gradient-to-r from-primary to-primary/80 backdrop-blur-md border border-primary/30 rounded-full px-3 sm:px-4 md:px-5 py-1 sm:py-1.5 md:py-2 text-white text-[10px] sm:text-xs font-medium hover:from-primary/90 hover:to-primary/70 transition-all"
         onClick={onClose}
       >
         Close
@@ -372,12 +394,14 @@ const Portfolio = () => {
             </span>
             <div className="w-8 sm:w-10 md:w-12 h-0.5 bg-gradient-to-l from-primary to-primary/60" />
           </div>
-          <h2
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground leading-[1.1] tracking-tight px-2"
-            dangerouslySetInnerHTML={{ __html: section.headline }}
-          />
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground leading-[1.1] tracking-tight px-2">
+            {typeof section.headline === 'string'
+              ? section.headline.replace(/<[^>]*>/g, '')
+              : section.headline}
+          </h2>
         </motion.div>
 
+        {/* MARQUEE SECTION - RESTORED */}
         <div className="space-y-1 sm:space-y-2 md:space-y-0">
           <InfiniteMarquee projects={row1} direction="left" speed={45} />
           <InfiniteMarquee projects={row2} direction="right" speed={40} />
@@ -392,7 +416,7 @@ const Portfolio = () => {
         >
           <button
             onClick={() => setLightbox(portfolio1)}
-            className="px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground text-xs sm:text-sm font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-1 sm:gap-2 hover:scale-105 hover:from-primary/90 hover:to-primary/70"
+            className="px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 bg-gradient-to-r from-primary to-primary/80 text-white text-xs sm:text-sm font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-1 sm:gap-2 hover:scale-105 hover:from-primary/90 hover:to-primary/70"
           >
             {button.text}
             <svg
@@ -404,14 +428,20 @@ const Portfolio = () => {
               stroke="currentColor"
               strokeWidth="2"
             >
-              <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+              <path
+                d="M5 12h14M12 5l7 7-7 7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </button>
         </motion.div>
       </div>
 
       <AnimatePresence>
-        {lightbox && <PremiumLightbox image={lightbox} onClose={() => setLightbox(null)} />}
+        {lightbox && (
+          <PremiumLightbox image={lightbox} onClose={() => setLightbox(null)} />
+        )}
       </AnimatePresence>
 
       <div className="absolute bottom-0 left-0 w-full overflow-hidden pointer-events-none">
@@ -425,10 +455,28 @@ const Portfolio = () => {
             d="M0,32L60,37.3C120,43,240,53,360,53.3C480,53,600,43,720,37.3C840,32,960,32,1080,37.3C1200,43,1320,53,1380,58.7L1440,64L1440,80L1380,80C1320,80,1200,80,1080,80C960,80,840,80,720,80C600,80,480,80,360,80C240,80,120,80,60,80L0,80Z"
           />
           <defs>
-            <linearGradient id="portfolioWave" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.03" />
-              <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="0.05" />
-              <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.03" />
+            <linearGradient
+              id="portfolioWave"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="0%"
+            >
+              <stop
+                offset="0%"
+                stopColor="hsl(var(--primary))"
+                stopOpacity="0.03"
+              />
+              <stop
+                offset="50%"
+                stopColor="hsl(var(--primary))"
+                stopOpacity="0.05"
+              />
+              <stop
+                offset="100%"
+                stopColor="hsl(var(--primary))"
+                stopOpacity="0.03"
+              />
             </linearGradient>
           </defs>
         </svg>

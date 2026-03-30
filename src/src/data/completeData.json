@@ -154,10 +154,6 @@
     ],
     "images": {
       "background": "/src/assets/bgfair.jpg"
-    },
-    "promoBadge": {
-      "text": "15% OFF for new customers!",
-      "cta": "Book Now"
     }
   },
   "about": {

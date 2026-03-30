@@ -13,6 +13,57 @@ import { useContent } from "../hooks/useContent";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Custom icons for WhyChooseUs section since they're not in lucide-react
+const CustomIcons = {
+    Veteran: () => (
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 17l10 5 10-5M2 12l10 5 10-5" />
+        </svg>
+    ),
+    Experience: () => (
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7v5l3 3" strokeLinecap="round" />
+        </svg>
+    ),
+    Warranty: () => (
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M12 2L15 9H22L17 14L19 21L12 17L5 21L7 14L2 9H9L12 2Z" />
+        </svg>
+    ),
+    Financing: () => (
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M8 12h8M12 8v8" />
+        </svg>
+    ),
+    Certified: () => (
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M12 2L3 7v7c0 5.5 9 8 9 8s9-2.5 9-8V7l-9-5z" />
+            <path d="M8 12l3 3 5-5" strokeLinecap="round" />
+        </svg>
+    ),
+    Community: () => (
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+    ),
+};
+
+// Helper function to get the correct icon
+const getFeatureIcon = (iconName: string) => {
+    // Try custom icons first
+    if (CustomIcons[iconName as keyof typeof CustomIcons]) {
+        return CustomIcons[iconName as keyof typeof CustomIcons];
+    }
+    // Fallback to lucide icons
+    return () => <Icon name={iconName} className="w-10 h-10" />;
+};
+
 const CinematicBackground = () => {
     return (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -112,6 +163,9 @@ const FeatureCard = ({ feature, index }: { feature: any; index: number }) => {
         x.set(0);
         y.set(0);
     };
+
+    // Get the correct icon component
+    const FeatureIcon = getFeatureIcon(feature.icon);
 
     return (
         <motion.article
@@ -254,7 +308,7 @@ const FeatureCard = ({ feature, index }: { feature: any; index: number }) => {
                                     transition={{ duration: 0.3 }}
                                     className="text-primary"
                                 >
-                                    <Icon name={feature.icon} className="w-10 h-10" />
+                                    <FeatureIcon />
                                 </motion.div>
                             </div>
                         </div>
@@ -342,15 +396,18 @@ const FeatureCard = ({ feature, index }: { feature: any; index: number }) => {
     );
 };
 
-const StatCounter = ({ value, label, suffix = "", delay = 0 }: { value: string; label: string; suffix?: string; delay?: number }) => {
+const StatCounter = ({ value, label, suffix = "", delay = 0 }: { value: string | number; label: string; suffix?: string; delay?: number }) => {
     const ref = useRef(null);
     const [displayValue, setDisplayValue] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
     const inView = useInView(ref, { once: true, margin: "-50px" });
-    const numericValue = parseInt(value);
+
+    // Handle both string and number values
+    const numericValue = typeof value === 'number' ? value : parseInt(String(value), 10);
+    const isValidNumber = !isNaN(numericValue) && isFinite(numericValue);
 
     useEffect(() => {
-        if (!inView) return;
+        if (!inView || !isValidNumber) return;
 
         let startTime: number;
         const duration = 2000;
@@ -368,7 +425,37 @@ const StatCounter = ({ value, label, suffix = "", delay = 0 }: { value: string; 
         };
 
         requestAnimationFrame(animate);
-    }, [inView, numericValue]);
+    }, [inView, numericValue, isValidNumber]);
+
+    // If not a valid number, just display the value as is
+    if (!isValidNumber) {
+        return (
+            <motion.div
+                ref={ref}
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay }}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                className="text-center group cursor-pointer"
+            >
+                <div className="relative inline-block">
+                    <motion.div
+                        className="text-4xl md:text-5xl font-black text-primary relative z-10"
+                        animate={{
+                            scale: isHovered ? 1.1 : 1,
+                            y: isHovered ? -2 : 0
+                        }}
+                    >
+                        <span>{String(value)}</span>{suffix}
+                    </motion.div>
+                </div>
+                <div className="text-xs font-semibold tracking-wider text-muted-foreground mt-2 uppercase">
+                    {label}
+                </div>
+            </motion.div>
+        );
+    }
 
     return (
         <motion.div
@@ -414,7 +501,6 @@ const StatCounter = ({ value, label, suffix = "", delay = 0 }: { value: string; 
 };
 
 const AwardCTABanner = () => {
-    const [isHovered, setIsHovered] = useState(false);
     const { cta } = useContent().whyChooseUs;
 
     return (
@@ -522,7 +608,7 @@ const WhyChooseUs = () => {
     const sectionRef = useRef(null);
     const [isClient, setIsClient] = useState(false);
 
-    const { section, features, stats, cta } = whyChooseUs;
+    const { section, features, stats } = whyChooseUs;
 
     useEffect(() => {
         setIsClient(true);
