@@ -9,43 +9,10 @@ import {
 } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Icon } from "../config/icons";
+import { useContent } from "../hooks/useContent";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const Images = {
-  Hero: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-  Detail: "https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2069&q=80",
-  Pattern: "https://images.unsplash.com/photo-1502691876148-a84978e59af8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-};
-
-const Icons = {
-  ArrowRight: () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  ),
-  Check: () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  ),
-  Calendar: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M8 2v4M16 2v4M3 10h18" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Sparkle: () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="currentColor" />
-    </svg>
-  ),
-  Flag: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M4 2v20M4 2L20 8L4 14" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  )
-};
 
 const ParallaxLayer = ({ children, speed = 0.2, className = "" }: { children: React.ReactNode; speed?: number; className?: string }) => {
   const ref = useRef(null);
@@ -201,7 +168,7 @@ const CTASection = () => {
       <ParallaxLayer speed={0.1} className="z-0">
         <div className="absolute top-0 right-0 w-2/5 h-full">
           <img
-            src={Images.Hero}
+            src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
             alt="Modern architecture"
             className="w-full h-full object-cover opacity-5"
           />
@@ -212,7 +179,7 @@ const CTASection = () => {
       <ParallaxLayer speed={0.15} className="z-0">
         <div className="absolute bottom-0 left-0 w-1/3 h-1/2">
           <img
-            src={Images.Detail}
+            src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2069&q=80"
             alt="Architectural detail"
             className="w-full h-full object-cover opacity-5"
           />
@@ -260,7 +227,7 @@ const CTASection = () => {
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
                 <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full border border-primary/20">
-                  <Icons.Flag />
+                  <Icon name="Flag" className="w-4 h-4 text-primary" />
                   <span className="text-xs font-medium tracking-wider text-primary">
                     Eagle Revolution • Veteran Owned
                   </span>
@@ -286,7 +253,7 @@ const CTASection = () => {
                   ].map((feature, i) => (
                     <div key={i} className="flex items-center gap-2">
                       <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Icons.Check />
+                        <Icon name="Check" className="w-3 h-3 text-primary" />
                       </div>
                       <span className="text-sm text-muted-foreground">{feature}</span>
                     </div>
@@ -303,7 +270,7 @@ const CTASection = () => {
                 >
                   <span className="relative z-10 flex items-center justify-center gap-3">
                     Get Free Estimate
-                    <Icons.ArrowRight />
+                    <Icon name="ArrowRight" className="w-4 h-4" />
                   </span>
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary"
@@ -321,7 +288,7 @@ const CTASection = () => {
                 >
                   <span className="relative z-10 flex items-center justify-center gap-3">
                     View Gallery
-                    <Icons.ArrowRight />
+                    <Icon name="ArrowRight" className="w-4 h-4" />
                   </span>
                 </motion.a>
 
@@ -350,19 +317,19 @@ const CTASection = () => {
             {
               title: "Free Consultation",
               desc: "In-depth discussion of your vision with our expert team",
-              icon: "🇺🇸",
+              icon: "Flag",
               delay: 0.3
             },
             {
               title: "Premium Materials",
               desc: "IKO, CertainTeed, ProVia, TimberTech certified installer",
-              icon: "🏆",
+              icon: "Award",
               delay: 0.35
             },
             {
               title: "Lifetime Support",
               desc: "Dedicated customer service for the life of your project",
-              icon: "🦅",
+              icon: "Shield",
               delay: 0.4
             }
           ].map((item, i) => (
@@ -374,7 +341,9 @@ const CTASection = () => {
               transition={{ duration: 0.6, delay: item.delay }}
             >
               <GlassCard className="p-8 text-center hover:bg-card transition-all duration-500">
-                <div className="text-3xl text-primary mb-4">{item.icon}</div>
+                <div className="text-3xl text-primary mb-4">
+                  <Icon name={item.icon} className="w-10 h-10 mx-auto" />
+                </div>
                 <h4 className="text-lg font-medium text-foreground mb-3">{item.title}</h4>
                 <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
                 <div className="mt-6">

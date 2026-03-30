@@ -9,24 +9,9 @@ import {
 } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Icon } from "../config/icons";
+import { useContent } from "../hooks/useContent";
 import serviceDetail from "@/assets/fairservice.png";
-import {
-  Wrench,
-  Home,
-  Building2,
-  Sun,
-  CloudRain,
-  Shield,
-  TreePine,
-  Droplets,
-  Hammer,
-  Square,
-  Award,
-  ArrowRight,
-  Layout,
-  Building
-} from "lucide-react";
-import completeData from "../src/data/completeData.json";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -63,24 +48,8 @@ const Counter = ({ value, suffix = "" }: { value: number; suffix: string }) => {
   return <span ref={ref} className="tabular-nums">{display}{suffix}</span>;
 };
 
-const iconMap = {
-  Wrench: Wrench,
-  Home: Home,
-  Building2: Building2,
-  Sun: Sun,
-  CloudRain: CloudRain,
-  Shield: Shield,
-  TreePine: TreePine,
-  Droplets: Droplets,
-  Hammer: Hammer,
-  Square: Square,
-  Layout: Layout,
-  Building: Building
-};
-
 const CompactServiceCard = ({ service }: { service: any }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const ServiceIcon = iconMap[service.icon as keyof typeof iconMap] || Wrench;
 
   return (
     <motion.div
@@ -107,7 +76,7 @@ const CompactServiceCard = ({ service }: { service: any }) => {
 
       <div className="relative z-10 flex items-start gap-4">
         <div className="relative">
-          <ServiceIcon className="w-8 h-8 text-primary" />
+          <Icon name={service.icon} className="w-8 h-8 text-primary" />
           {isHovered && (
             <motion.div
               initial={{ scale: 0 }}
@@ -128,14 +97,9 @@ const CompactServiceCard = ({ service }: { service: any }) => {
             className="flex items-center gap-2 mt-3"
             animate={isHovered ? { x: 5 } : { x: 0 }}
           >
-            <span className="text-xs font-semibold tracking-wider uppercase text-primary">
-              Learn more
-            </span>
-            <motion.span
-              animate={isHovered ? { x: 3 } : { x: 0 }}
-              className="text-primary"
-            >
-              <ArrowRight className="w-4 h-4" />
+            <span className="text-xs font-semibold tracking-wider uppercase text-primary">Learn more</span>
+            <motion.span animate={isHovered ? { x: 3 } : { x: 0 }} className="text-primary">
+              <Icon name="ArrowRight" className="w-4 h-4" />
             </motion.span>
           </motion.div>
         </div>
@@ -147,7 +111,6 @@ const CompactServiceCard = ({ service }: { service: any }) => {
 const ServiceCard = ({ service, index }: { service: any; index: number }) => {
   const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef(null);
-  const ServiceIcon = iconMap[service.icon as keyof typeof iconMap] || Wrench;
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -248,7 +211,7 @@ const ServiceCard = ({ service, index }: { service: any; index: number }) => {
       <div className="relative h-full p-8 flex flex-col z-10">
         <div className="flex items-start justify-between mb-5">
           <div className="relative">
-            <ServiceIcon className="w-8 h-8 text-primary relative z-10" />
+            <Icon name={service.icon} className="w-8 h-8 text-primary relative z-10" />
             <motion.div
               className="absolute -inset-2 bg-primary/10 rounded-full"
               initial={{ scale: 0 }}
@@ -298,14 +261,9 @@ const ServiceCard = ({ service, index }: { service: any; index: number }) => {
           className="flex items-center justify-between mt-4 pt-3 border-t border-border"
           animate={isHovered ? { y: 0 } : { y: 5 }}
         >
-          <span className="text-xs font-semibold tracking-wider uppercase text-primary">
-            Explore service
-          </span>
-          <motion.div
-            className="flex items-center gap-1"
-            animate={isHovered ? { x: 5 } : { x: 0 }}
-          >
-            <ArrowRight className={`w-4 h-4 transition-colors ${isHovered ? 'text-primary' : 'text-muted-foreground'}`} />
+          <span className="text-xs font-semibold tracking-wider uppercase text-primary">Explore service</span>
+          <motion.div className="flex items-center gap-1" animate={isHovered ? { x: 5 } : { x: 0 }}>
+            <Icon name="ArrowRight" className={`w-4 h-4 transition-colors ${isHovered ? 'text-primary' : 'text-muted-foreground'}`} />
           </motion.div>
         </motion.div>
       </div>
@@ -318,6 +276,7 @@ const ServiceCard = ({ service, index }: { service: any; index: number }) => {
 };
 
 const Services = () => {
+  const { services: servicesData } = useContent();
   const sectionRef = useRef(null);
   const [isClient, setIsClient] = useState(false);
 
@@ -341,7 +300,7 @@ const Services = () => {
   const imageScale = useTransform(smoothProgress, [0, 0.1], [1.15, 1]);
   const overlayOpacity = useTransform(smoothProgress, [0, 0.08], [0.5, 0.1]);
 
-  const { badge, headline, description, stats, services, cta } = completeData.services;
+  const { badge, headline, description, stats, services, cta } = servicesData;
   const featuredService = services[0];
 
   useEffect(() => {
@@ -372,9 +331,7 @@ const Services = () => {
     return () => ctx.revert();
   }, [isClient]);
 
-  if (!isClient) {
-    return null;
-  }
+  if (!isClient) return null;
 
   return (
     <section
@@ -398,19 +355,21 @@ const Services = () => {
               className="flex flex-col h-full"
             >
               <div className="inline-flex items-center gap-2 bg-primary/5 px-4 py-2 rounded-full border border-primary/10 mb-6 w-fit">
-                <Award className="w-4 w-4 text-primary" />
+                <Icon name="Award" className="w-4 w-4 text-primary" />
                 <span className="text-primary uppercase tracking-wider text-xs font-semibold">
                   {badge}
                 </span>
               </div>
 
-              <div className="overflow-hidden mb-4">
-                <h2 className="split-text text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight">
-                  {headline.prefix}<br />
+              <div className="overflow-hidden mb-6">
+                <h2 className="split-text text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground leading-[1.1] tracking-tight">
+                  {headline.prefix}
+                  <br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/80">
                     {headline.highlight}
                   </span>
-                  <span className="block text-foreground text-4xl md:text-5xl mt-2">{headline.suffix}</span>
+                  <br />
+                  <span className="text-foreground">{headline.suffix}</span>
                 </h2>
               </div>
 
@@ -504,7 +463,7 @@ const Services = () => {
             href={cta.buttonLink}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
-            className="inline-block px-8 py-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+            className="inline-block px-8 py-4 bg-primary text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:text-white"
           >
             {cta.buttonText}
           </motion.a>

@@ -9,89 +9,10 @@ import {
 } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import completeData from "../src/data/completeData.json";
+import { Icon } from "../config/icons";
+import { useContent } from "../hooks/useContent";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const Images = {
-  Form: "https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2069&q=80",
-  Pattern: "https://images.unsplash.com/photo-1502691876148-a84978e59af8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-  Abstract: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-};
-
-const Icons = {
-  User: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Mail: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M22 7l-10 7L2 7" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Phone: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Building: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <rect x="4" y="2" width="16" height="20" rx="2" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M8 6h8M8 10h8M8 14h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  ),
-  Calendar: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M8 2v4M16 2v4M3 10h18" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  ArrowRight: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  ),
-  Check: () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
-      <path d="M20 6L9 17L4 12" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  ),
-  Sparkle: () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="currentColor" />
-    </svg>
-  ),
-  Send: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  ),
-  Identity: () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M5 20v-2a7 7 0 0 1 14 0v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  ),
-  Specification: () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M8 8h8M8 12h8M8 16h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  ),
-  Transmission: () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M22 2L15 9M22 2l-7 14-4-4-4 4-4-4L2 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  ),
-  Flag: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M4 2v20M4 2L20 8L4 14" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  )
-};
 
 const LiquidParallax = ({ children, speed = 0.1, className = "" }: { children: React.ReactNode; speed?: number; className?: string }) => {
   const ref = useRef(null);
@@ -114,7 +35,7 @@ const LiquidParallax = ({ children, speed = 0.1, className = "" }: { children: R
   );
 };
 
-const HolographicInput = ({ icon: Icon, label, type = "text", options = [], ...props }: { icon: any; label: string; type?: string; options?: any[];[key: string]: any }) => {
+const HolographicInput = ({ icon: IconName, label, type = "text", options = [], ...props }: { icon: string; label: string; type?: string; options?: any[];[key: string]: any }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [hasValue, setHasValue] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -151,7 +72,7 @@ const HolographicInput = ({ icon: Icon, label, type = "text", options = [], ...p
           absolute left-4 transition-all duration-500
           ${isFocused ? 'text-primary scale-110' : hasValue ? 'text-primary' : 'text-muted-foreground group-hover:text-muted-foreground/80'}
         `}>
-          <Icon />
+          <Icon name={IconName} className="w-5 h-5" />
         </div>
 
         {type === "select" ? (
@@ -201,7 +122,7 @@ const HolographicInput = ({ icon: Icon, label, type = "text", options = [], ...p
   );
 };
 
-const QuantumTextarea = ({ icon: Icon, label, ...props }: { icon: any; label: string;[key: string]: any }) => {
+const QuantumTextarea = ({ icon: IconName, label, ...props }: { icon: string; label: string;[key: string]: any }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [hasValue, setHasValue] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -237,7 +158,7 @@ const QuantumTextarea = ({ icon: Icon, label, ...props }: { icon: any; label: st
           absolute left-4 top-4 transition-all duration-500
           ${isFocused ? 'text-primary scale-110' : hasValue ? 'text-primary' : 'text-muted-foreground'}
         `}>
-          <Icon />
+          <Icon name={IconName} className="w-5 h-5" />
         </div>
 
         <textarea
@@ -324,7 +245,7 @@ const CrystalServiceCard = ({ title, desc, icon, isSelected, onClick }: { title:
           className="absolute top-3 right-3 sm:top-4 sm:right-4"
         >
           <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-r from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/30">
-            <Icons.Check />
+            <Icon name="Check" className="w-3 h-3 text-white" />
           </div>
         </motion.div>
       )}
@@ -341,9 +262,9 @@ const CrystalServiceCard = ({ title, desc, icon, isSelected, onClick }: { title:
 
 const StageIndicator = ({ currentStep }: { currentStep: number }) => {
   const stages = [
-    { number: 1, name: "Identity", icon: Icons.Identity, desc: "Your details" },
-    { number: 2, name: "Specification", icon: Icons.Specification, desc: "Project scope" },
-    { number: 3, name: "Transmission", icon: Icons.Transmission, desc: "Final review" },
+    { number: 1, name: "Identity", icon: "User", desc: "Your details" },
+    { number: 2, name: "Specification", icon: "FileText", desc: "Project scope" },
+    { number: 3, name: "Transmission", icon: "Send", desc: "Final review" },
   ];
 
   return (
@@ -383,11 +304,11 @@ const StageIndicator = ({ currentStep }: { currentStep: number }) => {
                   animate={{ scale: 1 }}
                   transition={{ type: "spring" }}
                 >
-                  <Icons.Check />
+                  <Icon name="Check" className="w-5 h-5 text-white" />
                 </motion.div>
               ) : (
                 <div className={`${currentStep >= stage.number ? 'text-primary-foreground' : 'text-muted-foreground'}`}>
-                  <stage.icon />
+                  <Icon name={stage.icon} className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
               )}
             </motion.div>
@@ -411,7 +332,7 @@ const StageIndicator = ({ currentStep }: { currentStep: number }) => {
 };
 
 const SuccessModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
-  const { success } = completeData.quote;
+  const { success } = useContent().quote;
 
   useEffect(() => {
     if (isOpen) {
@@ -471,7 +392,7 @@ const SuccessModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                   animate={{ pathLength: 1 }}
                   transition={{ duration: 0.6, delay: 0.4 }}
                 >
-                  <Icons.Check />
+                  <Icon name="Check" className="w-8 h-8 text-white" />
                 </motion.div>
               </motion.div>
 
@@ -520,6 +441,7 @@ const SuccessModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
 };
 
 const GetQuote = () => {
+  const { quote } = useContent();
   const sectionRef = useRef(null);
   const [isClient, setIsClient] = useState(false);
   const [formStep, setFormStep] = useState(1);
@@ -536,7 +458,7 @@ const GetQuote = () => {
     message: ''
   });
 
-  const { section, services, projectTypes, timelines, email, success } = completeData.quote;
+  const { section, services, projectTypes, timelines, email, success } = quote;
 
   const toggleService = (serviceId: number) => {
     setSelectedServices(prev =>
@@ -705,7 +627,7 @@ ${formData.message}
       <LiquidParallax speed={0.05} className="z-0">
         <div className="absolute top-20 right-0 w-2/5 h-3/5">
           <img
-            src={Images.Form}
+            src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2069&q=80"
             alt=""
             className="w-full h-full object-cover opacity-[0.03]"
           />
@@ -715,7 +637,7 @@ ${formData.message}
       <LiquidParallax speed={0.08} className="z-0">
         <div className="absolute bottom-0 left-0 w-1/3 h-1/2">
           <img
-            src={Images.Abstract}
+            src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
             alt=""
             className="w-full h-full object-cover opacity-[0.03]"
           />
@@ -755,7 +677,8 @@ ${formData.message}
             <div className="w-8 sm:w-12 h-[2px] bg-gradient-to-r from-primary via-primary to-transparent" />
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-foreground mb-4 sm:mb-6 leading-tight"
+          <h2
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-foreground mb-4 sm:mb-6 leading-tight"
             dangerouslySetInnerHTML={{ __html: section.headline }}
           />
 
@@ -811,7 +734,7 @@ ${formData.message}
                     >
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                         <HolographicInput
-                          icon={Icons.User}
+                          icon="User"
                           label="Full name"
                           name="name"
                           value={formData.name}
@@ -819,7 +742,7 @@ ${formData.message}
                           required
                         />
                         <HolographicInput
-                          icon={Icons.Mail}
+                          icon="Mail"
                           type="email"
                           label="Email address"
                           name="email"
@@ -831,7 +754,7 @@ ${formData.message}
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                         <HolographicInput
-                          icon={Icons.Phone}
+                          icon="Phone"
                           type="tel"
                           label="Phone number"
                           name="phone"
@@ -839,7 +762,7 @@ ${formData.message}
                           onChange={handleInputChange}
                         />
                         <HolographicInput
-                          icon={Icons.Building}
+                          icon="Building2"
                           label="Company / Organization"
                           name="company"
                           value={formData.company}
@@ -878,7 +801,7 @@ ${formData.message}
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                         <HolographicInput
-                          icon={Icons.Building}
+                          icon="Building2"
                           type="select"
                           label="Project classification"
                           name="projectType"
@@ -887,7 +810,7 @@ ${formData.message}
                           onChange={handleInputChange}
                         />
                         <HolographicInput
-                          icon={Icons.Calendar}
+                          icon="Calendar"
                           type="select"
                           label="Timeline horizon"
                           name="timeline"
@@ -909,7 +832,7 @@ ${formData.message}
                       className="space-y-6 sm:space-y-8"
                     >
                       <QuantumTextarea
-                        icon={Icons.Mail}
+                        icon="Mail"
                         label="Describe your project vision, requirements, and challenges"
                         name="message"
                         value={formData.message}
@@ -925,7 +848,7 @@ ${formData.message}
                       >
                         <div className="relative z-10">
                           <h4 className="text-[10px] sm:text-xs font-mono tracking-[0.2em] uppercase text-primary mb-3 sm:mb-4 flex items-center gap-2">
-                            <Icons.Sparkle />
+                            <Icon name="Sparkles" className="w-4 h-4" />
                             TRANSMISSION SUMMARY
                           </h4>
                           <div className="grid grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
@@ -988,7 +911,7 @@ ${formData.message}
                     >
                       <span className="relative z-10 flex items-center gap-1 sm:gap-2">
                         Continue
-                        <Icons.ArrowRight />
+                        <Icon name="ArrowRight" className="w-4 h-4" />
                       </span>
                       <motion.div
                         className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary"
@@ -1019,7 +942,7 @@ ${formData.message}
                           <>
                             <span className="hidden xs:inline">Get Free Quote</span>
                             <span className="xs:hidden">Send</span>
-                            <Icons.Send />
+                            <Icon name="Send" className="w-4 h-4" />
                           </>
                         )}
                       </span>
@@ -1087,4 +1010,4 @@ ${formData.message}
   );
 };
 
-export default GetQuote;
+export default GetQuote;  

@@ -5,57 +5,14 @@ import {
   useTransform,
   useSpring,
   useInView,
-  AnimatePresence
 } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import brandonImg from "@/assets/fairowner.jpg";
-import completeData from "../src/data/completeData.json";
+import { Icon } from "../config/icons";
+import { useContent } from "../hooks/useContent";
+import brandonImg from "@/assets/eagleowner.jpeg";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const Images = {
-  Pattern: "https://images.unsplash.com/photo-1502691876148-a84978e59af8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-  Studio: "https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2069&q=80",
-};
-
-const Icons = {
-  Linkedin: () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <path d="M4 8h4v12H4V8z" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="6" cy="4" r="2" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M10 8h4v2c.6-.8 1.5-2 3-2 2.5 0 4 1.5 4 4v8h-4v-6c0-1.5-.5-2-2-2s-2 .5-2 2v6h-4V8z" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Mail: () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M22 7l-10 7L2 7" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Quote: () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M10 11H6V7h4v4z" stroke="currentColor" strokeWidth="1.2" />
-      <path d="M18 11h-4V7h4v4z" stroke="currentColor" strokeWidth="1.2" />
-    </svg>
-  ),
-  Sparkle: () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="currentColor" />
-    </svg>
-  ),
-  Award: () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M8 14l-2 6 6-2 6 2-2-6" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Flag: () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <path d="M4 2v20M4 2L20 8L4 14" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  )
-};
 
 const ParallaxLayer = ({ children, speed = 0.1, className = "" }: { children: React.ReactNode; speed?: number; className?: string }) => {
   const ref = useRef(null);
@@ -78,7 +35,7 @@ const CeoPortrait = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-50px" });
 
-  const { ceo: ceoData } = completeData.leadership;
+  const { ceo } = useContent().leadership;
 
   return (
     <motion.div
@@ -96,7 +53,7 @@ const CeoPortrait = () => {
         <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-gray-300/50">
           <img
             src={brandonImg}
-            alt={ceoData.alt}
+            alt={ceo.alt}
             className="w-full h-[500px] md:h-[600px] object-cover"
           />
 
@@ -132,8 +89,8 @@ const CeoPortrait = () => {
         >
           <div className="bg-card/95 backdrop-blur-sm px-5 py-2.5 rounded-full shadow-xl border border-border">
             <span className="flex items-center gap-2 text-xs font-bold text-primary">
-              <Icons.Flag />
-              {ceoData.badges.top}
+              <Icon name="Flag" className="w-4 h-4" />
+              {ceo.badges.top}
             </span>
           </div>
         </motion.div>
@@ -146,8 +103,8 @@ const CeoPortrait = () => {
         >
           <div className="bg-card/95 backdrop-blur-sm px-5 py-2.5 rounded-full shadow-xl border border-border">
             <span className="flex items-center gap-2 text-xs font-bold text-primary">
-              <Icons.Award />
-              {ceoData.badges.bottom}
+              <Icon name="Award" className="w-4 h-4" />
+              {ceo.badges.bottom}
             </span>
           </div>
         </motion.div>
@@ -157,10 +114,11 @@ const CeoPortrait = () => {
 };
 
 const Leadership = () => {
+  const { leadership } = useContent();
   const sectionRef = useRef(null);
   const [isClient, setIsClient] = useState(false);
 
-  const { section, ceo } = completeData.leadership;
+  const { section, ceo } = leadership;
 
   useEffect(() => {
     setIsClient(true);
@@ -215,7 +173,7 @@ const Leadership = () => {
       <ParallaxLayer speed={0.05} className="z-0">
         <div className="absolute bottom-0 right-0 w-1/3 h-1/2">
           <img
-            src={Images.Pattern}
+            src="https://images.unsplash.com/photo-1502691876148-a84978e59af8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
             alt="Heritage pattern"
             className="w-full h-full object-cover opacity-[0.02]"
           />
@@ -225,7 +183,7 @@ const Leadership = () => {
       <ParallaxLayer speed={0.08} className="z-0">
         <div className="absolute top-20 left-0 w-1/4 h-1/3">
           <img
-            src={Images.Studio}
+            src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2069&q=80"
             alt="Studio"
             className="w-full h-full object-cover opacity-[0.02]"
           />
@@ -242,7 +200,8 @@ const Leadership = () => {
             <div className="w-8 h-[2px] bg-gradient-to-r from-primary to-primary/30" />
           </div>
 
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-foreground mb-6 leading-tight"
+          <h2
+            className="text-4xl md:text-5xl lg:text-6xl font-light text-foreground mb-6 leading-tight"
             dangerouslySetInnerHTML={{ __html: section.headline }}
           />
 
@@ -267,7 +226,7 @@ const Leadership = () => {
 
               <div className="mt-6 relative">
                 <div className="absolute -left-4 top-0 text-primary/20">
-                  <Icons.Quote />
+                  <Icon name="Quote" className="w-8 h-8" />
                 </div>
                 {ceo.quotes.map((quote: string, idx: number) => (
                   <p key={idx} className="text-muted-foreground text-base md:text-lg leading-relaxed pl-6">
@@ -290,7 +249,7 @@ const Leadership = () => {
                   className="p-3 rounded-full bg-primary/5 text-primary hover:bg-primary/10 transition-colors"
                   aria-label="LinkedIn"
                 >
-                  <Icons.Linkedin />
+                  <Icon name="Linkedin" className="w-5 h-5" />
                 </motion.a>
                 <motion.a
                   href={`mailto:${ceo.social.email}`}
@@ -299,7 +258,7 @@ const Leadership = () => {
                   className="p-3 rounded-full bg-primary/5 text-primary hover:bg-primary/10 transition-colors"
                   aria-label="Email"
                 >
-                  <Icons.Mail />
+                  <Icon name="Mail" className="w-5 h-5" />
                 </motion.a>
                 <span className="text-sm text-muted-foreground ml-2">{ceo.social.email}</span>
               </div>

@@ -6,26 +6,34 @@ import {
   useSpring,
   useTransform,
   useScroll,
-  useInView
 } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-import portfolio1 from "@/assets/portfolio-1.jpg";
-import portfolio2 from "@/assets/portfolio-2.jpg";
-import portfolio3 from "@/assets/portfolio-3.jpg";
-import portfolio4 from "@/assets/portfolio-4.jpg";
-import portfolio5 from "@/assets/portfolio-5.jpg";
-import completeData from "../src/data/completeData.json";
+import { useContent } from "../hooks/useContent";
+import portfolio1 from "@/assets/eagle1.jpg";
+import portfolio2 from "@/assets/eagle2.jpg";
+import portfolio3 from "@/assets/eagle3.jpg";
+import portfolio4 from "@/assets/eagle4.jpg";
+import portfolio5 from "@/assets/eagle5.jpg";
+import portfolio6 from "@/assets/eagle6.jpg";
+import portfolio7 from "@/assets/eagle7.jpg";
+import portfolio8 from "@/assets/eagle8.jpg";
+import portfolio9 from "@/assets/eagle9.jpg";
+import portfolio10 from "@/assets/eagle10.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const imageMap = {
-  portfolio1,
-  portfolio2,
-  portfolio3,
-  portfolio4,
-  portfolio5
+export const imageMap: Record<string, string> = {
+  home1: portfolio1,
+  home2: portfolio2,
+  home3: portfolio3,
+  home4: portfolio4,
+  home5: portfolio5,
+  home6: portfolio6,
+  home7: portfolio7,
+  home8: portfolio8,
+  home9: portfolio9,
+  home10: portfolio10,
 };
 
 const MarqueeItem = ({ project }: { project: any }) => {
@@ -76,12 +84,12 @@ const MarqueeItem = ({ project }: { project: any }) => {
           alt={project.title}
           className="absolute inset-0 w-full h-full object-cover"
           style={{
-            transform: isHovered ? 'scale(1.1)' : 'scale(1)',
-            transition: 'transform 0.6s cubic-bezier(0.215, 0.61, 0.355, 1)'
+            transform: isHovered ? "scale(1.1)" : "scale(1)",
+            transition: "transform 0.6s cubic-bezier(0.215, 0.61, 0.355, 1)",
           }}
         />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-secondary via-secondary/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-secondary via-secondary/15 to-transparent" />
 
         <motion.div
           className="absolute inset-0 bg-primary/20 mix-blend-overlay"
@@ -109,9 +117,9 @@ const MarqueeItem = ({ project }: { project: any }) => {
         )}
 
         <div className="absolute inset-0 p-3 sm:p-4 flex flex-col justify-end">
-          <span className="inline-flex items-center gap-2 bg-secondary/40 backdrop-blur-md px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border border-white/30 w-fit mb-1 sm:mb-2">
+          <span className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-md px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border border-white/30 w-fit mb-1 sm:mb-2">
             <span className={`w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full bg-gradient-to-r ${project.accent}`} />
-            <span className="text-[8px] sm:text-[10px] font-semibold tracking-wider text-white">
+            <span className="text-[8px] sm:text-[10px] font-semibold tracking-wider text-black">
               {project.category}
             </span>
           </span>
@@ -148,18 +156,10 @@ const MarqueeItem = ({ project }: { project: any }) => {
                   <motion.button
                     className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-primary/30 backdrop-blur-sm rounded-lg text-white text-[8px] sm:text-[10px] font-medium flex items-center gap-0.5 sm:gap-1 hover:bg-primary/50 transition-colors border border-primary/30"
                     whileHover={{ x: 3 }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
+                    onClick={(e) => e.stopPropagation()}
                   >
                     View
-                    <svg
-                      className="w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
+                    <svg className="w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </motion.button>
@@ -177,7 +177,15 @@ const MarqueeItem = ({ project }: { project: any }) => {
   );
 };
 
-const InfiniteMarquee = ({ projects, direction = "left", speed = 45 }: { projects: any[]; direction?: string; speed?: number }) => {
+const InfiniteMarquee = ({
+  projects,
+  direction = "left",
+  speed = 45,
+}: {
+  projects: any[];
+  direction?: string;
+  speed?: number;
+}) => {
   const [isHovered, setIsHovered] = useState(false);
   const marqueeRef = useRef(null);
   const animationRef = useRef<any>(null);
@@ -199,7 +207,7 @@ const InfiniteMarquee = ({ projects, direction = "left", speed = 45 }: { project
     }
 
     gsap.set(marquee, {
-      x: direction === "left" ? 0 : -totalWidth
+      x: direction === "left" ? 0 : -totalWidth,
     });
 
     animationRef.current = gsap.to(marquee, {
@@ -215,8 +223,8 @@ const InfiniteMarquee = ({ projects, direction = "left", speed = 45 }: { project
           } else {
             return value >= 0 ? `${value - totalWidth}px` : `${value}px`;
           }
-        }
-      }
+        },
+      },
     });
 
     return () => {
@@ -241,8 +249,8 @@ const InfiniteMarquee = ({ projects, direction = "left", speed = 45 }: { project
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="absolute left-0 top-0 bottom-0 w-16 xs:w-20 sm:w-24 md:w-32 lg:w-40 z-20 pointer-events-none bg-gradient-to-r from-background via-background/90 to-transparent" />
-      <div className="absolute right-0 top-0 bottom-0 w-16 xs:w-20 sm:w-24 md:w-32 lg:w-40 z-20 pointer-events-none bg-gradient-to-l from-background via-background/90 to-transparent" />
+      <div className="absolute left-0 top-0 bottom-0 w-16 xs:w-12 sm:w-16 md:w-24 lg:w-32 z-20 pointer-events-none bg-gradient-to-r from-background via-background/90 to-transparent" />
+      <div className="absolute right-0 top-0 bottom-0 w-16 xs:w-12 sm:w-16 md:w-24 lg:w-32 z-20 pointer-events-none bg-gradient-to-l from-background via-background/90 to-transparent" />
 
       <div className="absolute inset-x-0 top-0 h-6 sm:h-8 md:h-12 z-20 pointer-events-none bg-gradient-to-b from-background to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-6 sm:h-8 md:h-12 z-20 pointer-events-none bg-gradient-to-t from-background to-transparent" />
@@ -251,16 +259,13 @@ const InfiniteMarquee = ({ projects, direction = "left", speed = 45 }: { project
         ref={marqueeRef}
         className="flex gap-2 sm:gap-3 md:gap-4"
         style={{
-          willChange: 'transform',
-          display: 'flex',
-          flexWrap: 'nowrap',
+          willChange: "transform",
+          display: "flex",
+          flexWrap: "nowrap",
         }}
       >
         {infiniteProjects.map((project, index) => (
-          <MarqueeItem
-            key={`${project.number}-${index}`}
-            project={project}
-          />
+          <MarqueeItem key={`${project.number}-${index}`} project={project} />
         ))}
       </div>
     </div>
@@ -269,8 +274,10 @@ const InfiniteMarquee = ({ projects, direction = "left", speed = 45 }: { project
 
 const PremiumLightbox = ({ image, onClose }: { image: any; onClose: () => void }) => {
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = 'unset'; };
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "unset";
+    };
   }, []);
 
   return (
@@ -306,24 +313,25 @@ const PremiumLightbox = ({ image, onClose }: { image: any; onClose: () => void }
 };
 
 const Portfolio = () => {
+  const { portfolio: portfolioData } = useContent();
   const sectionRef = useRef(null);
   const [lightbox, setLightbox] = useState(null);
   const [isClient, setIsClient] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start end", "end start"]
+    offset: ["start end", "end start"],
   });
 
   const smoothProgress = useSpring(scrollYProgress, {
     stiffness: 60,
     damping: 25,
-    restDelta: 0.001
+    restDelta: 0.001,
   });
 
   const headerParallax = useTransform(smoothProgress, [0, 1], [0, -30]);
 
-  const { section, projects, button } = completeData.portfolio;
+  const { section, projects, button } = portfolioData;
 
   useEffect(() => {
     setIsClient(true);
@@ -356,10 +364,7 @@ const Portfolio = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 relative z-10">
-        <motion.div
-          style={{ y: headerParallax }}
-          className="text-center mb-8 sm:mb-12 md:mb-16"
-        >
+        <motion.div style={{ y: headerParallax }} className="text-center mb-8 sm:mb-12 md:mb-16">
           <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2 sm:mb-3 md:mb-4">
             <div className="w-8 sm:w-10 md:w-12 h-0.5 bg-gradient-to-r from-primary to-primary/60" />
             <span className="text-[10px] sm:text-xs font-medium tracking-[0.2em] sm:tracking-[0.25em] uppercase text-primary">
@@ -367,7 +372,8 @@ const Portfolio = () => {
             </span>
             <div className="w-8 sm:w-10 md:w-12 h-0.5 bg-gradient-to-l from-primary to-primary/60" />
           </div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground leading-[1.1] tracking-tight px-2"
+          <h2
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground leading-[1.1] tracking-tight px-2"
             dangerouslySetInnerHTML={{ __html: section.headline }}
           />
         </motion.div>
@@ -405,12 +411,7 @@ const Portfolio = () => {
       </div>
 
       <AnimatePresence>
-        {lightbox && (
-          <PremiumLightbox
-            image={lightbox}
-            onClose={() => setLightbox(null)}
-          />
-        )}
+        {lightbox && <PremiumLightbox image={lightbox} onClose={() => setLightbox(null)} />}
       </AnimatePresence>
 
       <div className="absolute bottom-0 left-0 w-full overflow-hidden pointer-events-none">

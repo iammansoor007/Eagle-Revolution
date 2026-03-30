@@ -8,70 +8,10 @@ import {
 } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import completeData from "../src/data/completeData.json";
+import { Icon } from "../config/icons";
+import { useContent } from "../hooks/useContent";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const Icons = {
-    WhyChoose: {
-        Veteran: () => (
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" strokeWidth="1.5" />
-                <path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" strokeWidth="1.5" />
-            </svg>
-        ),
-        Experience: () => (
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5" />
-                <path d="M12 7v5l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-        ),
-        Warranty: () => (
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2L15 9H22L17 14L19 21L12 17L5 21L7 14L2 9H9L12 2Z" stroke="currentColor" strokeWidth="1.5" />
-            </svg>
-        ),
-        Financing: () => (
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
-                <path d="M8 12h8M12 8v8" stroke="currentColor" strokeWidth="1.5" />
-            </svg>
-        ),
-        Certified: () => (
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2L3 7v7c0 5.5 9 8 9 8s9-2.5 9-8V7l-9-5z" stroke="currentColor" strokeWidth="1.5" />
-                <path d="M8 12l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-        ),
-        Community: () => (
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="1.5" />
-                <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="1.5" />
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" strokeWidth="1.5" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" strokeWidth="1.5" />
-            </svg>
-        ),
-        ArrowRight: () => (
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-        ),
-        Sparkle: () => (
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2L15 9H22L16 14L19 21L12 16.5L5 21L8 14L2 9H9L12 2Z" stroke="currentColor" strokeWidth="1.5" fill="currentColor" />
-            </svg>
-        )
-    }
-};
-
-const iconMap = {
-    Veteran: Icons.WhyChoose.Veteran,
-    Experience: Icons.WhyChoose.Experience,
-    Warranty: Icons.WhyChoose.Warranty,
-    Financing: Icons.WhyChoose.Financing,
-    Certified: Icons.WhyChoose.Certified,
-    Community: Icons.WhyChoose.Community
-};
 
 const CinematicBackground = () => {
     return (
@@ -108,9 +48,9 @@ const CinematicBackground = () => {
                 className="absolute inset-0 opacity-[0.02]"
                 style={{
                     backgroundImage: `
-                        linear-gradient(to right, hsl(var(--primary)) 1px, transparent 1px),
-                        linear-gradient(to bottom, hsl(var(--primary)) 1px, transparent 1px)
-                    `,
+            linear-gradient(to right, hsl(var(--primary)) 1px, transparent 1px),
+            linear-gradient(to bottom, hsl(var(--primary)) 1px, transparent 1px)
+          `,
                     backgroundSize: '60px 60px',
                 }}
             />
@@ -147,8 +87,6 @@ const FeatureCard = ({ feature, index }: { feature: any; index: number }) => {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const cardRef = useRef(null);
     const inView = useInView(cardRef, { once: true, margin: "-100px" });
-
-    const FeatureIcon = iconMap[feature.icon as keyof typeof iconMap] || Icons.WhyChoose.Veteran;
 
     const x = useMotionValue(0);
     const y = useMotionValue(0);
@@ -316,7 +254,7 @@ const FeatureCard = ({ feature, index }: { feature: any; index: number }) => {
                                     transition={{ duration: 0.3 }}
                                     className="text-primary"
                                 >
-                                    <FeatureIcon />
+                                    <Icon name={feature.icon} className="w-10 h-10" />
                                 </motion.div>
                             </div>
                         </div>
@@ -330,15 +268,15 @@ const FeatureCard = ({ feature, index }: { feature: any; index: number }) => {
                             }}
                             transition={{ duration: 0.5 }}
                         >
-                            <Icons.WhyChoose.Sparkle />
+                            <Icon name="Sparkles" className="w-4 h-4" />
                         </motion.div>
                     </div>
 
                     <div className="mb-4">
                         <h3 className={`
-                            text-xl md:text-2xl font-bold mb-3 transition-colors duration-300
-                            ${isHovered ? 'text-primary' : 'text-card-foreground'}
-                        `}>
+              text-xl md:text-2xl font-bold mb-3 transition-colors duration-300
+              ${isHovered ? 'text-primary' : 'text-card-foreground'}
+            `}>
                             {feature.title}
                         </h3>
 
@@ -384,7 +322,7 @@ const FeatureCard = ({ feature, index }: { feature: any; index: number }) => {
                                 animate={{ x: isHovered ? 3 : 0 }}
                                 transition={{ duration: 0.2 }}
                             >
-                                <Icons.WhyChoose.ArrowRight className={`w-3.5 h-3.5 ${isHovered ? 'text-primary-foreground' : 'text-primary'}`} />
+                                <Icon name="ArrowRight" className={`w-3.5 h-3.5 ${isHovered ? 'text-primary-foreground' : 'text-primary'}`} />
                             </motion.div>
                         </motion.div>
                     </motion.div>
@@ -477,7 +415,7 @@ const StatCounter = ({ value, label, suffix = "", delay = 0 }: { value: string; 
 
 const AwardCTABanner = () => {
     const [isHovered, setIsHovered] = useState(false);
-    const { cta } = completeData.whyChooseUs;
+    const { cta } = useContent().whyChooseUs;
 
     return (
         <motion.div
@@ -503,12 +441,12 @@ const AwardCTABanner = () => {
 
                 <motion.div
                     className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent"
-                    animate={{ x: ['-100%', '100%'] }}
+                    animate={{ x: ["-100%", "100%"] }}
                     transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                 />
                 <motion.div
                     className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent"
-                    animate={{ x: ['100%', '-100%'] }}
+                    animate={{ x: ["100%", "-100%"] }}
                     transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                 />
 
@@ -531,7 +469,8 @@ const AwardCTABanner = () => {
                             </span>
                         </motion.div>
 
-                        <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 leading-tight"
+                        <h3
+                            className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 leading-tight"
                             dangerouslySetInnerHTML={{ __html: cta.title }}
                         />
 
@@ -551,49 +490,25 @@ const AwardCTABanner = () => {
 
                     <div className="flex flex-col sm:flex-row gap-4">
                         {cta.buttons.map((button: any, idx: number) => (
-                            button.primary ? (
-                                <motion.a
-                                    key={idx}
-                                    href={button.href}
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.98 }}
-                                    onMouseEnter={() => setIsHovered(true)}
-                                    onMouseLeave={() => setIsHovered(false)}
-                                    className="group relative px-10 py-5 bg-primary text-primary-foreground text-sm font-bold tracking-[0.2em] uppercase overflow-hidden rounded-full"
-                                >
-                                    <span className="relative z-10 flex items-center gap-3">
-                                        {button.text}
-                                        <motion.div
-                                            animate={{ x: isHovered ? 5 : 0 }}
-                                        >
-                                            <Icons.WhyChoose.ArrowRight />
-                                        </motion.div>
-                                    </span>
-                                    <motion.div
-                                        className="absolute inset-0 bg-secondary"
-                                        initial={{ x: '-100%' }}
-                                        whileHover={{ x: 0 }}
-                                        transition={{ duration: 0.5 }}
-                                    />
-                                </motion.a>
-                            ) : (
-                                <motion.a
-                                    key={idx}
-                                    href={button.href}
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.98 }}
-                                    className="group relative px-10 py-5 bg-transparent text-foreground text-sm font-bold tracking-[0.2em] uppercase overflow-hidden rounded-full border border-border hover:border-primary transition-colors duration-500"
-                                >
-                                    <span className="relative z-10 flex items-center gap-3">
-                                        {button.text}
-                                        <motion.div
-                                            animate={{ x: isHovered ? 5 : 0 }}
-                                        >
-                                            <Icons.WhyChoose.ArrowRight className="text-primary" />
-                                        </motion.div>
-                                    </span>
-                                </motion.a>
-                            )
+                            <motion.a
+                                key={idx}
+                                href={button.href}
+                                whileHover={{ scale: 1.03 }}
+                                whileTap={{ scale: 0.98 }}
+                                className="relative px-8 py-4 bg-white text-primary border-2 border-primary font-bold rounded-full shadow-sm hover:bg-primary hover:text-white hover:shadow-md transition-all duration-300 overflow-hidden flex items-center justify-center gap-2"
+                            >
+                                <span className="relative z-10 flex items-center gap-2 text-sm md:text-base">
+                                    {button.text}
+                                    <motion.svg
+                                        className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </motion.svg>
+                                </span>
+                            </motion.a>
                         ))}
                     </div>
                 </div>
@@ -603,10 +518,11 @@ const AwardCTABanner = () => {
 };
 
 const WhyChooseUs = () => {
+    const { whyChooseUs } = useContent();
     const sectionRef = useRef(null);
     const [isClient, setIsClient] = useState(false);
 
-    const { section, features, stats, cta } = completeData.whyChooseUs;
+    const { section, features, stats, cta } = whyChooseUs;
 
     useEffect(() => {
         setIsClient(true);
@@ -662,7 +578,8 @@ const WhyChooseUs = () => {
                             <div className="w-16 h-[2px] bg-primary" />
                         </div>
 
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight"
+                        <h1
+                            className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight"
                             dangerouslySetInnerHTML={{ __html: section.headline }}
                         />
 
@@ -674,11 +591,7 @@ const WhyChooseUs = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
                     {features.map((feature: any, index: number) => (
-                        <FeatureCard
-                            key={feature.title}
-                            feature={feature}
-                            index={index}
-                        />
+                        <FeatureCard key={feature.title} feature={feature} index={index} />
                     ))}
                 </div>
 

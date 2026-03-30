@@ -126,44 +126,42 @@
         "text": "Book a FREE Quote Now",
         "href": "#contact",
         "primary": true,
-        "icon": "FiArrowRight"
+        "icon": "ArrowRight"
       },
       {
         "text": "View Our Work",
         "href": "#portfolio",
         "primary": false,
-        "icon": "FiArrowRight"
+        "icon": "ArrowRight"
       }
     ],
     "stats": [
       {
         "value": "25+",
         "label": "Years Experience",
-        "icon": "RiBuildingLine"
+        "icon": "Building2"
       },
       {
         "value": "Veteran",
         "label": "Owned",
-        "icon": "FiStar"
+        "icon": "Star"
       },
       {
         "value": "50-Year",
         "label": "Warranty",
-        "icon": "FiThumbsUp"
-      },
-      {
-        "value": "0%",
-        "label": "Financing",
-        "icon": "RiShieldCheckLine"
+        "icon": "ThumbsUp"
       }
     ],
+    "images": {
+      "background": "/src/assets/bgfair.jpg"
+    },
     "promoBadge": {
-      "text": "15% off your next project if you book your free quote by the end of the month!",
-      "cta": "Book a FREE Quote Now"
+      "text": "15% OFF for new customers!",
+      "cta": "Book Now"
     }
   },
   "about": {
-    "badge": "Since 2002",
+    "badge": "Over 50 years combined experience",
     "headline": {
       "prefix": "Soaring Beyond",
       "highlight": "Expectations",
@@ -196,12 +194,14 @@
       {
         "text": "GET FREE ESTIMATE",
         "href": "#contact",
-        "primary": true
+        "primary": true,
+        "icon": "ArrowRight"
       },
       {
         "text": "VIEW GALLERY",
         "href": "#portfolio",
-        "primary": false
+        "primary": false,
+        "icon": "ArrowRight"
       }
     ],
     "trustBadges": {
@@ -212,9 +212,7 @@
       "Extreme Ownership",
       "Integrity",
       "Humility",
-      "Customer First",
-      "Growth",
-      "Gratitude"
+      "Customer First"
     ]
   },
   "services": {
@@ -293,7 +291,7 @@
         "tag": "Siding",
         "features": [
           "Vinyl Siding",
-          "Soﬀit Installation",
+          "Soffit Installation",
           "Fascia Repair",
           "Gutter Systems"
         ]
@@ -370,56 +368,61 @@
         "number": "01",
         "title": "St. Charles Custom Deck",
         "category": "Deck Installation",
-        "image": "deck1",
+        "image": "home1",
         "location": "St. Charles, MO",
         "year": "2024",
         "accent": "from-primary to-primary/80",
         "scope": "Composite Decking",
-        "desc": "Beautiful TimberTech composite deck with custom pergola and built-in seating for outdoor entertaining."
+        "desc": "Beautiful TimberTech composite deck with custom pergola and built-in seating for outdoor entertaining.",
+        "architect": "Eagle Revolution"
       },
       {
         "number": "02",
         "title": "Window Replacement Project",
         "category": "Windows",
-        "image": "windows1",
+        "image": "home2",
         "location": "O'Fallon, MO",
         "year": "2024",
         "accent": "from-primary to-primary/70",
         "scope": "30+ Windows",
-        "desc": "Complete vinyl window replacement for energy efficiency and improved curb appeal."
+        "desc": "Complete vinyl window replacement for energy efficiency and improved curb appeal.",
+        "architect": "Eagle Revolution"
       },
       {
         "number": "03",
         "title": "Residential Roof Replacement",
         "category": "Roofing",
-        "image": "roof1",
+        "image": "home3",
         "location": "St. Louis, MO",
         "year": "2024",
         "accent": "from-primary/90 to-primary/60",
         "scope": "Full Replacement",
-        "desc": "Complete roof replacement using CertainTeed architectural shingles with 50-year warranty."
+        "desc": "Complete roof replacement using CertainTeed architectural shingles with 50-year warranty.",
+        "architect": "Eagle Revolution"
       },
       {
         "number": "04",
         "title": "Commercial TPO Roof",
         "category": "Commercial",
-        "image": "commercial1",
+        "image": "home4",
         "location": "St. Charles, MO",
         "year": "2023",
         "accent": "from-primary to-primary/80",
         "scope": "TPO Installation",
-        "desc": "Large-scale commercial TPO roofing system for enhanced energy efficiency and durability."
+        "desc": "Large-scale commercial TPO roofing system for enhanced energy efficiency and durability.",
+        "architect": "Eagle Revolution"
       },
       {
         "number": "05",
         "title": "Siding & Gutter Upgrade",
         "category": "Exterior",
-        "image": "siding1",
+        "image": "home5",
         "location": "St. Louis County, MO",
         "year": "2024",
         "accent": "from-primary/80 to-primary/60",
         "scope": "Full Exterior",
-        "desc": "Complete siding, soffit, fascia, and gutter replacement for improved protection and aesthetics."
+        "desc": "Complete siding, soffit, fascia, and gutter replacement for improved protection and aesthetics.",
+        "architect": "Eagle Revolution"
       }
     ],
     "button": {
@@ -432,7 +435,7 @@
       "badge": "Client Testimonials",
       "headline": "What Our Clients Say",
       "description": "Real stories from real clients about their experience with Eagle Revolution",
-      "featured": "⭐️⭐️⭐️⭐️⭐️ Rated on Google"
+      "featured": "Rated on Google"
     },
     "testimonials": [
       {
@@ -493,9 +496,9 @@
     ],
     "videos": [],
     "stats": {
-      "subscribers": null,
-      "views": null,
-      "totalVideos": null
+      "subscribers": "500+",
+      "views": "100K+",
+      "totalVideos": "50"
     }
   },
   "whyChooseUs": {
@@ -760,18 +763,12 @@
         ],
         "links": []
       }
-    ],
-    "knowledgeCard": {
-      "title": "Still have questions?",
-      "description": "Our team is ready to help with your specific project needs.",
-      "buttonText": "Contact Our Team",
-      "buttonLink": "/contact"
-    }
+    ]
   },
   "quote": {
     "section": {
       "badge": "GET PREAPPROVED IN SECONDS",
-      "headline": "Request Your <span class=\"font-black italic text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary to-primary/80\">Free Estimate</span>",
+      "headline": "Request Your <span class=\"font-black text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary to-primary/80\">Free Estimate</span>",
       "description": "Book your free consultation today and save 15% on your next project. Veteran-owned, quality guaranteed."
     },
     "services": [
@@ -988,7 +985,6 @@
         "href": "/reviews",
         "icon": "Star"
       },
-   
       {
         "label": "Warranty",
         "href": "/warranty",
@@ -1046,7 +1042,13 @@
         "SOARING BEYOND EXPECTATIONS",
         "50-YEAR TRANSFERABLE WARRANTIES",
         "FREE ESTIMATES"
-      ]
+      ],
+      "speed": 30,
+      "repeats": 8
+    },
+    "newsletter": {
+      "placeholder": "Enter your email",
+      "buttonText": "Subscribe"
     }
   },
   "hours": {
@@ -1057,5 +1059,95 @@
     "friday": "09:00 AM – 05:00 PM",
     "saturday": "Closed",
     "sunday": "Closed"
+  },
+  "images": {
+    "hero": "/src/assets/bgfair.jpg",
+    "about": "/src/assets/fairabout.png",
+    "services": "/src/assets/fairservice.png",
+    "ceo": "/src/assets/eagleowner.jpeg",
+    "portfolio": {
+      "home1": "/src/assets/eagle1.jpg",
+      "home2": "/src/assets/eagle2.jpg",
+      "home3": "/src/assets/eagle3.jpg",
+      "home4": "/src/assets/eagle4.jpg",
+      "home5": "/src/assets/eagle5.jpg",
+      "home6": "/src/assets/eagle6.jpg",
+      "home7": "/src/assets/eagle7.jpg",
+      "home8": "/src/assets/eagle8.jpg",
+      "home9": "/src/assets/eagle9.jpg",
+      "home10": "/src/assets/eagle10.jpg"
+    }
+  },
+  "loader": {
+    "company": {
+      "name": "Eagle Revolution",
+      "tagline": "Veteran Owned & Operated"
+    },
+    "phases": {
+      "simpleDark": 700,
+      "roofDraw": 800,
+      "logoText": 900,
+      "ready": 400
+    }
+  },
+  "quickQuote": {
+    "button": {
+      "text": "Get Free Quote"
+    },
+    "title": "Quick Quote",
+    "description": "Get your free estimate in minutes",
+    "steps": [
+      "Details",
+      "Project",
+      "Message"
+    ],
+    "projectTypes": [
+      {
+        "value": "roofing",
+        "label": "Residential Roofing"
+      },
+      {
+        "value": "windows",
+        "label": "Windows & Doors"
+      },
+      {
+        "value": "decks",
+        "label": "Custom Decks"
+      },
+      {
+        "value": "siding",
+        "label": "Siding & Gutters"
+      },
+      {
+        "value": "commercial",
+        "label": "Commercial Roofing"
+      },
+      {
+        "value": "emergency",
+        "label": "Emergency Service"
+      }
+    ],
+    "formLabels": {
+      "name": "Your Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "projectType": "Project Type",
+      "message": "Tell us about your project",
+      "submit": "Get Quote"
+    },
+    "badges": [
+      {
+        "text": "Free estimate",
+        "icon": "Check"
+      },
+      {
+        "text": "4-8h response",
+        "icon": "Clock"
+      },
+      {
+        "text": "Veteran owned",
+        "icon": "Flag"
+      }
+    ]
   }
 }

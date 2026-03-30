@@ -1,11 +1,8 @@
-import {
-    motion,
-    useInView,
-    useReducedMotion
-} from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef, useEffect, useState, useCallback, useMemo, memo } from "react";
+import { Icon } from "../config/icons";
+import { useContent } from "../hooks/useContent";
 import EagleAboutImg from "@/assets/fairabout.png";
-import completeData from "../src/data/completeData.json";
 
 const Counter = memo(({ value, suffix = "", duration = 1.8 }: { value: number; suffix?: string; duration?: number }) => {
     const ref = useRef(null);
@@ -54,7 +51,8 @@ const Counter = memo(({ value, suffix = "", duration = 1.8 }: { value: number; s
 
     return (
         <span ref={ref} className="tabular-nums">
-            {display.toLocaleString()}{suffix}
+            {display.toLocaleString()}
+            {suffix}
         </span>
     );
 });
@@ -67,44 +65,47 @@ const ParticlesBackground = memo(() => {
         await loadSlim(engine);
     }, []);
 
-    const options = useMemo(() => ({
-        fullScreen: { enable: false },
-        particles: {
-            number: {
-                value: 12,
-                density: { enable: true, area: 800 }
+    const options = useMemo(
+        () => ({
+            fullScreen: { enable: false },
+            particles: {
+                number: {
+                    value: 12,
+                    density: { enable: true, area: 800 },
+                },
+                color: { value: ["hsl(var(--primary))", "hsl(var(--primary)/80)"] },
+                shape: { type: "circle" },
+                opacity: {
+                    value: 0.15,
+                    random: true,
+                    animation: { enable: true, speed: 0.5, minimumValue: 0.05 },
+                },
+                size: {
+                    value: { min: 0.5, max: 2 },
+                    random: true,
+                    animation: { enable: true, speed: 2, minimumValue: 0.5 },
+                },
+                move: {
+                    enable: true,
+                    speed: 0.3,
+                    direction: "top" as const,
+                    random: true,
+                    straight: false,
+                    outModes: { default: "out" as const },
+                },
+                links: {
+                    enable: true,
+                    distance: 150,
+                    color: "hsl(var(--primary))",
+                    opacity: 0.1,
+                    width: 0.5,
+                },
             },
-            color: { value: ["hsl(var(--primary))", "hsl(var(--primary)/80)"] },
-            shape: { type: "circle" },
-            opacity: {
-                value: 0.15,
-                random: true,
-                animation: { enable: true, speed: 0.5, minimumValue: 0.05 }
-            },
-            size: {
-                value: { min: 0.5, max: 2 },
-                random: true,
-                animation: { enable: true, speed: 2, minimumValue: 0.5 }
-            },
-            move: {
-                enable: true,
-                speed: 0.3,
-                direction: "top" as const,
-                random: true,
-                straight: false,
-                outModes: { default: "out" as const }
-            },
-            links: {
-                enable: true,
-                distance: 150,
-                color: "hsl(var(--primary))",
-                opacity: 0.1,
-                width: 0.5
-            }
-        },
-        detectRetina: true,
-        fpsLimit: 30
-    }), []);
+            detectRetina: true,
+            fpsLimit: 30,
+        }),
+        []
+    );
 
     const [ParticlesComponent, setParticlesComponent] = useState<any>(null);
 
@@ -141,9 +142,7 @@ const StatCard = memo(({ value, suffix, label }: { value: number; suffix: string
                 </span>
                 <div className="absolute -bottom-2 left-0 w-12 h-0.5 bg-primary rounded-full" />
             </div>
-            <p className="text-xs md:text-sm font-semibold text-muted-foreground mt-3">
-                {label}
-            </p>
+            <p className="text-xs md:text-sm font-semibold text-muted-foreground mt-3">{label}</p>
         </motion.div>
     );
 });
@@ -151,30 +150,27 @@ const StatCard = memo(({ value, suffix, label }: { value: number; suffix: string
 StatCard.displayName = "StatCard";
 
 export default function AboutSection() {
+    const { about } = useContent();
     const sectionRef = useRef<HTMLElement>(null);
     const shouldReduceMotion = useReducedMotion();
 
-    const { badge, headline, description, image, stats, buttons, trustBadges, coreValues } = completeData.about;
+    const { badge, headline, description, image, stats, buttons, trustBadges, coreValues } = about;
 
-    const variants = useMemo(() => ({
-        hidden: { opacity: 0, y: 30 },
-        visible: (custom: number) => ({
-            opacity: 1,
-            y: 0,
-            transition: {
-                delay: custom * 0.15,
-                duration: 0.7,
-                ease: [0.25, 0.1, 0.25, 1]
-            }
-        })
-    }), []);
-
-    const trustBadgesArray = useMemo(() => [
-        { color: "from-primary to-primary/90", delay: 0.6, text: "Veteran Owned" },
-        { color: "from-primary/90 to-primary/80", delay: 0.7, text: "Licensed" },
-        { color: "from-primary/80 to-primary/70", delay: 0.8, text: "Insured" },
-        { color: "from-primary/70 to-primary/60", delay: 0.9, text: "50+ Yrs Exp" }
-    ], []);
+    const variants = useMemo(
+        () => ({
+            hidden: { opacity: 0, y: 30 },
+            visible: (custom: number) => ({
+                opacity: 1,
+                y: 0,
+                transition: {
+                    delay: custom * 0.15,
+                    duration: 0.7,
+                    ease: [0.25, 0.1, 0.25, 1],
+                },
+            }),
+        }),
+        []
+    );
 
     return (
         <section
@@ -207,8 +203,12 @@ export default function AboutSection() {
                 <ParticlesBackground />
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_hsl(var(--primary)/0.02)_0%,_transparent_50%)]" />
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_hsl(var(--primary)/0.02)_0%,_transparent_50%)]" />
-                <div className="absolute inset-0 opacity-[0.02]"
-                    style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' patternUnits='userSpaceOnUse' width='60' height='60'%3E%3Cpath d='M 60 0 L 0 0 0 60' fill='none' stroke='hsl(var(--primary))' stroke-width='0.5'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23grid)'/%3E%3C/svg%3E")` }} />
+                <div
+                    className="absolute inset-0 opacity-[0.02]"
+                    style={{
+                        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' patternUnits='userSpaceOnUse' width='60' height='60'%3E%3Cpath d='M 60 0 L 0 0 0 60' fill='none' stroke='hsl(var(--primary))' stroke-width='0.5'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23grid)'/%3E%3C/svg%3E")`,
+                    }}
+                />
             </div>
 
             {!shouldReduceMotion && (
@@ -217,12 +217,12 @@ export default function AboutSection() {
                         animate={{
                             x: [0, 40, 0],
                             y: [0, -40, 0],
-                            scale: [1, 1.2, 1]
+                            scale: [1, 1.2, 1],
                         }}
                         transition={{
                             duration: 20,
                             repeat: Infinity,
-                            ease: "linear"
+                            ease: "linear",
                         }}
                         className="absolute -top-40 -left-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl"
                     />
@@ -230,13 +230,13 @@ export default function AboutSection() {
                         animate={{
                             x: [0, -40, 0],
                             y: [0, 40, 0],
-                            scale: [1, 1.2, 1]
+                            scale: [1, 1.2, 1],
                         }}
                         transition={{
                             duration: 25,
                             repeat: Infinity,
                             ease: "linear",
-                            delay: 2
+                            delay: 2,
                         }}
                         className="absolute -bottom-40 -right-40 w-[30rem] h-[30rem] bg-primary/5 rounded-full blur-3xl"
                     />
@@ -291,41 +291,21 @@ export default function AboutSection() {
                         whileInView="visible"
                         viewport={{ once: true, margin: "-50px" }}
                         custom={1}
-                        className="space-y-8"
+                        className="space-y-4"
                     >
-                        <motion.div
-                            variants={variants}
-                            custom={2}
-                            className="inline-flex items-center gap-2 bg-primary/5 px-4 py-2 rounded-full border border-primary/10"
-                        >
+                        <motion.div variants={variants} custom={2} className="inline-flex items-center gap-2 bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
                             <span className="text-primary text-lg">⚡</span>
-                            <span className="text-primary uppercase tracking-[0.2em] text-xs sm:text-sm font-bold">
-                                {badge}
-                            </span>
+                            <span className="text-primary uppercase tracking-[0.2em] text-xs sm:text-sm font-bold">{badge}</span>
                         </motion.div>
 
                         <div className="space-y-4">
-                            <motion.h2
-                                variants={variants}
-                                custom={3}
-                                className="text-5xl sm:text-6xl md:text-6xl lg:text-7xl font-black leading-[1.1] tracking-tight"
-                            >
-                                <span className="block text-foreground">
-                                    {headline.prefix}
-                                </span>
-                                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/80">
-                                    {headline.highlight}
-                                </span>
-                                <span className="block text-foreground">
-                                    {headline.suffix}
-                                </span>
+                            <motion.h2 variants={variants} custom={3} className="text-5xl sm:text-6xl md:text-6xl lg:text-7xl font-black leading-[1.1] tracking-tight">
+                                <span className="block text-foreground">{headline.prefix}</span>
+                                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/80">{headline.highlight}</span>
+                                <span className="block text-foreground">{headline.suffix}</span>
                             </motion.h2>
 
-                            <motion.div
-                                variants={variants}
-                                custom={4}
-                                className="w-24 h-1.5 bg-gradient-to-r from-primary to-primary/60 rounded-full"
-                            />
+                            <motion.div variants={variants} custom={4} className="w-24 h-1.5 bg-gradient-to-r from-primary to-primary/60 rounded-full" />
                         </div>
 
                         <motion.p
@@ -336,129 +316,72 @@ export default function AboutSection() {
                         />
 
                         {coreValues && (
-                            <motion.div
-                                variants={variants}
-                                custom={5.5}
-                                className="flex flex-wrap gap-2 pt-2"
-                            >
+                            <motion.div variants={variants} custom={5.5} className="flex flex-wrap gap-2 pt-2">
                                 {coreValues.map((value: string) => (
-                                    <span key={value} className="px-3 py-1.5 bg-secondary/10 text-secondary text-xs font-medium rounded-full border border-secondary/20">
+                                    <span
+                                        key={value}
+                                        className="px-3 py-1.5 bg-secondary/10 text-secondary text-xs font-medium rounded-full border border-secondary/20"
+                                    >
                                         {value}
                                     </span>
                                 ))}
                             </motion.div>
                         )}
 
-                        <motion.div
-                            variants={variants}
-                            custom={6}
-                            className="flex flex-wrap items-center gap-4 pt-2"
-                        >
-                            {buttons.map((button: any, idx: number) => (
-                                button.primary ? (
-                                    <motion.a
-                                        key={idx}
-                                        href={button.href}
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.98 }}
-                                        className="group relative px-8 py-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 inline-block"
-                                    >
-                                        <span className="relative z-10 flex items-center gap-2">
-                                            {button.text}
-                                            <svg
-                                                className="w-5 h-5 group-hover:translate-x-1 transition-transform"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                                                />
-                                            </svg>
-                                        </span>
-                                    </motion.a>
-                                ) : (
-                                    <motion.a
-                                        key={idx}
-                                        href={button.href}
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.98 }}
-                                        className="group inline-block px-8 py-4 bg-card text-primary font-bold rounded-full border-2 border-primary/20 hover:border-primary shadow-lg hover:shadow-xl transition-all duration-300"
-                                    >
-                                        <span className="flex items-center gap-2">
-                                            {button.text}
-                                            <svg
-                                                className="w-5 h-5 group-hover:rotate-45 transition-transform"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M7 7l7-7M7 7l7 7M7 7h10"
-                                                />
-                                            </svg>
-                                        </span>
-                                    </motion.a>
-                                )
-                            ))}
+                        <motion.div variants={variants} custom={6} className="pt-2 w-full">
+                            <div className="flex flex-row flex-wrap sm:flex-nowrap items-center gap-3 sm:gap-4 w-full">
+                                {buttons.map((button: any, idx: number) =>
+                                    button.primary ? (
+                                        <motion.a
+                                            key={idx}
+                                            href={button.href}
+                                            whileHover={{ scale: 1.03, y: -2 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            className="group relative overflow-hidden flex-1 sm:flex-initial min-w-[150px] sm:min-w-[180px] px-5 sm:px-8 py-3.5 sm:py-4 rounded-2xl inline-flex items-center justify-center gap-2 bg-primary text-white border border-primary font-semibold sm:font-bold text-sm sm:text-base shadow-primary/90 transition-all duration-300 hover:bg-primary hover:border-primary hover:text-white hover:shadow-primary/50"
+                                        >
+                                            <span className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-r from-white/20 via-transparent to-white/10 transition-opacity duration-300" />
+                                            <span className="relative z-10 flex items-center gap-2">
+                                                {button.text}
+                                                <svg
+                                                    className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-300 group-hover:translate-x-1"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                                </svg>
+                                            </span>
+                                        </motion.a>
+                                    ) : (
+                                        <motion.a
+                                            key={idx}
+                                            href={button.href}
+                                            whileHover={{ scale: 1.03, y: -2 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            className="group relative overflow-hidden flex-1 sm:flex-initial min-w-[150px] sm:min-w-[180px] px-5 sm:px-8 py-3.5 sm:py-4 rounded-2xl inline-flex items-center justify-center gap-2 bg-white text-[#333333] border-2 border-primary font-semibold sm:font-bold text-sm sm:text-base shadow-[0_10px_25px_rgba(0,0,0,0.08)] transition-all duration-300 hover:bg-primary hover:text-white hover:border-primary hover:shadow-primary/50"
+                                        >
+                                            <span className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-r from-white/10 via-transparent to-white/5 transition-opacity duration-300" />
+                                            <span className="relative z-10 flex items-center gap-2">
+                                                {button.text}
+                                                <svg
+                                                    className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-300 group-hover:rotate-45"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7l7-7M7 7l7 7M7 7h10" />
+                                                </svg>
+                                            </span>
+                                        </motion.a>
+                                    )
+                                )}
+                            </div>
                         </motion.div>
 
-                        <motion.div
-                            variants={variants}
-                            custom={7}
-                            className="grid grid-cols-3 gap-4 pt-8"
-                        >
+                        <motion.div variants={variants} custom={7} className="grid grid-cols-3 gap-4 pt-8">
                             {stats.map((stat: any) => (
                                 <StatCard key={stat.label} {...stat} />
                             ))}
-                        </motion.div>
-
-                        <motion.div
-                            variants={variants}
-                            custom={8}
-                            className="flex items-center justify-between sm:justify-start sm:gap-8 pt-4"
-                        >
-                            <div className="flex items-center gap-3">
-                                <div className="flex -space-x-2">
-                                    {trustBadgesArray.map((badge, i) => (
-                                        <motion.div
-                                            key={i}
-                                            initial={{ scale: 0, x: -20 }}
-                                            animate={{ scale: 1, x: 0 }}
-                                            transition={{
-                                                delay: badge.delay,
-                                                type: "spring",
-                                                stiffness: 200,
-                                                damping: 15
-                                            }}
-                                            className={`w-8 h-8 rounded-full bg-gradient-to-br ${badge.color} border-2 border-card shadow-md flex items-center justify-center text-[8px] font-bold text-primary-foreground`}
-                                        >
-                                            {badge.text.charAt(0)}
-                                        </motion.div>
-                                    ))}
-                                </div>
-                                <div>
-                                    <p className="text-sm font-bold text-primary">{trustBadges.happyClients}+</p>
-                                    <p className="text-xs text-muted-foreground">Happy Clients</p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                                <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z" />
-                                    <path d="M10 4a1 1 0 011 1v4.586l2.707 2.707a1 1 0 01-1.414 1.414l-3-3A1 1 0 019 10V5a1 1 0 011-1z" />
-                                </svg>
-                                <div>
-                                    <p className="text-sm font-bold text-primary">{trustBadges.emergency}</p>
-                                    <p className="text-xs text-muted-foreground">Emergency</p>
-                                </div>
-                            </div>
                         </motion.div>
                     </motion.div>
                 </div>

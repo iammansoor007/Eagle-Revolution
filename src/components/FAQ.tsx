@@ -10,108 +10,10 @@ import {
 } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import completeData from "../src/data/completeData.json";
+import { Icon } from "../config/icons";
+import { useContent } from "../hooks/useContent";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const Icons = {
-  Plus: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  ),
-  Minus: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M5 12h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  ),
-  ChevronRight: () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  ),
-  Search: () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M21 21l-4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  ),
-  Document: () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M14 2v6h6" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Chat: () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Roof: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M3 10L12 3L21 10L18 13L12 8L6 13L3 10Z" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M6 13V19H18V13" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Shield: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M12 2L2 7v7c0 5.5 10 8 10 8s10-2.5 10-8V7l-10-5z" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Clock: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M12 7v5l3 3" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Storm: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M4 14.5C4 16.985 6.015 19 8.5 19h7c2.485 0 4.5-2.015 4.5-4.5S17.985 10 15.5 10H14" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M10 10L8 13H12L10 16" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M12 5L9 8H14L12 11" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  DocumentCheck: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M14 2v6h6" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M9 15l2 2 4-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  ),
-  Tools: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M14.7 6.3L19 2L22 5L17.7 9.3" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M9.3 17.7L5 22L2 19L6.3 14.7" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M16 8L8 16" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Home: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M3 10L12 3L21 10L18 13L12 8L6 13L3 10Z" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="8" y="13" width="8" height="8" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Layout: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M9 3v18" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  TreePine: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M12 2L4 10h3l-4 6h5l-3 6h14l-3-6h5l-4-6h3l-8-8z" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  )
-};
-
-const iconMap = {
-  Home: Icons.Home,
-  Tools: Icons.Tools,
-  Shield: Icons.Shield,
-  Storm: Icons.Storm,
-  Layout: Icons.Layout,
-  TreePine: Icons.TreePine
-};
 
 const SubtleBackground = () => (
   <div className="absolute inset-0 pointer-events-none">
@@ -190,13 +92,13 @@ const AccordionItem = ({ item, index, isOpen, onToggle }: { item: any; index: nu
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 15 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
+      viewport={{ once: true, margin: "-30px" }}
       transition={{
-        duration: 0.6,
-        delay: index * 0.1,
-        ease: [0.16, 1, 0.3, 1]
+        duration: 0.4,
+        delay: index * 0.05,
+        ease: [0.25, 0.1, 0.25, 1]
       }}
       className="relative group"
     >
@@ -212,7 +114,7 @@ const AccordionItem = ({ item, index, isOpen, onToggle }: { item: any; index: nu
             x: useTransform(springX, [0, 100], [-5, 5]),
             y: useTransform(springY, [0, 100], [-5, 5]),
           }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.2 }}
         />
         <defs>
           <radialGradient id="liquidGradient">
@@ -233,12 +135,12 @@ const AccordionItem = ({ item, index, isOpen, onToggle }: { item: any; index: nu
           scale: 1,
           opacity: 0.4
         }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.2 }}
       >
         <span className={`
           text-[90px] font-black leading-none tracking-tighter
           ${isOpen ? 'text-primary/15' : 'text-muted-foreground/20'}
-          transition-colors duration-500
+          transition-colors duration-300
         `}>
           {String(index + 1).padStart(2, '0')}
         </span>
@@ -251,7 +153,7 @@ const AccordionItem = ({ item, index, isOpen, onToggle }: { item: any; index: nu
         onMouseLeave={handleMouseLeave}
         className={`
           relative bg-card/90 backdrop-blur-sm rounded-2xl
-          border transition-all duration-500
+          border transition-all duration-300
           ${isOpen
             ? 'border-primary/30 shadow-2xl shadow-primary/15'
             : 'border-primary/10 hover:border-primary/20 shadow-lg shadow-primary/5'
@@ -276,7 +178,7 @@ const AccordionItem = ({ item, index, isOpen, onToggle }: { item: any; index: nu
               pathLength: 0,
               opacity: 0
             }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           />
           <defs>
             <linearGradient id="borderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -326,7 +228,7 @@ const AccordionItem = ({ item, index, isOpen, onToggle }: { item: any; index: nu
         >
           <div className="flex items-center justify-between gap-6">
             <h3 className={`
-              text-base md:text-lg lg:text-xl font-light transition-all duration-500
+              text-base md:text-lg lg:text-xl font-light transition-all duration-300
               ${isOpen
                 ? 'text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/80 font-medium'
                 : 'text-card-foreground group-hover:text-card-foreground/90'
@@ -348,11 +250,11 @@ const AccordionItem = ({ item, index, isOpen, onToggle }: { item: any; index: nu
                   backgroundColor: 'hsl(var(--background))',
                   borderColor: isHovered ? 'hsl(var(--primary))' : 'hsl(var(--border))',
                 }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                 className={`
                   w-10 h-10 md:w-12 md:h-12 rounded-full border-2
                   flex items-center justify-center
-                  transition-all duration-500
+                  transition-all duration-300
                   ${isOpen ? 'bg-primary border-primary' : 'bg-background'}
                 `}
               >
@@ -373,7 +275,7 @@ const AccordionItem = ({ item, index, isOpen, onToggle }: { item: any; index: nu
                     } : {
                       d: "M12 5v14M5 12h14"
                     }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.2 }}
                   />
                 </motion.svg>
               </motion.div>
@@ -403,7 +305,7 @@ const AccordionItem = ({ item, index, isOpen, onToggle }: { item: any; index: nu
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{
-                duration: 0.5,
+                duration: 0.3,
                 ease: [0.16, 1, 0.3, 1]
               }}
               className="overflow-hidden"
@@ -421,7 +323,7 @@ const AccordionItem = ({ item, index, isOpen, onToggle }: { item: any; index: nu
                           key={i}
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.2 + i * 0.1 }}
+                          transition={{ delay: 0.1 + i * 0.05 }}
                           className="flex items-center gap-2 text-xs"
                         >
                           <span className="w-1 h-1 bg-primary rounded-full" />
@@ -436,7 +338,7 @@ const AccordionItem = ({ item, index, isOpen, onToggle }: { item: any; index: nu
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 }}
+                      transition={{ delay: 0.15 }}
                       className="flex flex-wrap items-center gap-4 pt-4 border-t border-primary/10"
                     >
                       {item.links.map((link: any, i: number) => (
@@ -479,7 +381,7 @@ const AccordionItem = ({ item, index, isOpen, onToggle }: { item: any; index: nu
             height: 24,
             borderColor: 'hsl(var(--primary)/0.2)'
           }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.2 }}
         />
         <motion.div
           className="absolute bottom-5 right-5 w-6 h-6 border-b-2 border-r-2"
@@ -492,7 +394,7 @@ const AccordionItem = ({ item, index, isOpen, onToggle }: { item: any; index: nu
             height: 24,
             borderColor: 'hsl(var(--primary)/0.2)'
           }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.2 }}
         />
       </div>
     </motion.div>
@@ -503,17 +405,16 @@ const CategoryFilter = ({ categories, activeCategory, onCategoryChange }: { cate
   return (
     <div className="flex flex-wrap items-center gap-2 md:gap-3">
       {categories.map((category, index) => {
-        const CategoryIcon = category.icon ? iconMap[category.icon as keyof typeof iconMap] : null;
         return (
           <motion.button
             key={category.id}
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 5 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: index * 0.05 }}
+            transition={{ delay: index * 0.03, duration: 0.3 }}
             onClick={() => onCategoryChange(category.id)}
             className={`
-              relative px-4 py-2 md:px-5 md:py-2.5 rounded-full text-xs md:text-sm font-medium transition-all duration-300
+              relative px-4 py-2 md:px-5 md:py-2.5 rounded-full text-xs md:text-sm font-medium transition-all duration-200
               ${activeCategory === category.id
                 ? 'text-primary-foreground'
                 : 'text-muted-foreground hover:text-card-foreground bg-card/50 hover:bg-primary/5'
@@ -525,11 +426,11 @@ const CategoryFilter = ({ categories, activeCategory, onCategoryChange }: { cate
                 layoutId="activeCategory"
                 className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 rounded-full"
                 initial={false}
-                transition={{ type: "spring", stiffness: 400, damping: 35 }}
+                transition={{ type: "spring", stiffness: 500, damping: 40, duration: 0.2 }}
               />
             )}
             <span className="relative z-10 flex items-center gap-2">
-              {CategoryIcon && <CategoryIcon />}
+              {category.icon && <Icon name={category.icon} className="w-4 h-4" />}
               {category.label}
             </span>
           </motion.button>
@@ -545,23 +446,24 @@ const SearchBar = ({ onSearch }: { onSearch: (query: string) => void }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 5 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
+      transition={{ duration: 0.3 }}
       className={`
-        relative w-full max-w-md transition-all duration-300
+        relative w-full max-w-md transition-all duration-200
         ${isFocused ? 'scale-[1.02]' : 'scale-100'}
       `}
     >
       <div className={`
-        relative flex items-center bg-card rounded-full border transition-all duration-300
+        relative flex items-center bg-card rounded-full border transition-all duration-200
         ${isFocused
           ? 'border-primary shadow-lg shadow-primary/10'
           : 'border-border hover:border-border/80 shadow-md'
         }
       `}>
         <div className="absolute left-4 text-muted-foreground">
-          <Icons.Search />
+          <Icon name="Search" className="w-5 h-5" />
         </div>
 
         <input
@@ -589,135 +491,15 @@ const SearchBar = ({ onSearch }: { onSearch: (query: string) => void }) => {
   );
 };
 
-const KnowledgeCard = () => {
-  const [isHovered, setIsHovered] = useState(false);
-  const { knowledgeCard } = completeData.faq;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.8, delay: 0.4 }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="relative group"
-    >
-      <motion.div
-        animate={isHovered ? {
-          rotateX: 2,
-          rotateY: 2,
-          scale: 1.02,
-          boxShadow: "0 30px 60px -15px hsl(var(--primary)/0.3)"
-        } : {
-          rotateX: 0,
-          rotateY: 0,
-          scale: 1,
-          boxShadow: "0 20px 40px -15px hsl(var(--primary)/0.15)"
-        }}
-        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="relative bg-gradient-to-br from-primary to-primary/80 rounded-3xl p-8 md:p-10 overflow-hidden"
-        style={{ transformPerspective: 1000 }}
-      >
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff20_1px,transparent_1px),linear-gradient(to_bottom,#ffffff20_1px,transparent_1px)] bg-[size:24px_24px]" />
-        </div>
-
-        {isHovered && (
-          <>
-            {[...Array(6)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-1 h-1 bg-white/30 rounded-full"
-                initial={{ x: '50%', y: '50%', scale: 0 }}
-                animate={{
-                  x: [`50%`, `${20 + i * 12}%`],
-                  y: [`50%`, `${15 + i * 10}%`],
-                  scale: [0, 2.5, 0],
-                  opacity: [0, 0.5, 0]
-                }}
-                transition={{
-                  duration: 2.2,
-                  delay: i * 0.12,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              />
-            ))}
-          </>
-        )}
-
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-5">
-            <motion.div
-              animate={isHovered ? {
-                rotate: 360,
-                scale: 1.2,
-                backgroundColor: 'rgba(255,255,255,0.15)'
-              } : {
-                rotate: 0,
-                scale: 1,
-                backgroundColor: 'rgba(255,255,255,0.1)'
-              }}
-              transition={{ duration: 0.8 }}
-              className="w-16 h-16 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/20"
-            >
-              <Icons.Chat />
-            </motion.div>
-
-            <div>
-              <h4 className="text-xl md:text-2xl font-semibold text-white mb-2">
-                {knowledgeCard.title}
-              </h4>
-              <p className="text-white/80 text-base md:text-lg">
-                {knowledgeCard.description}
-              </p>
-            </div>
-          </div>
-
-          <motion.a
-            href={knowledgeCard.buttonLink}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="relative px-7 py-3.5 md:px-8 md:py-4 bg-white text-primary text-xs md:text-sm font-medium rounded-full shadow-2xl overflow-hidden group/btn whitespace-nowrap"
-          >
-            <span className="relative z-10 flex items-center gap-2">
-              {knowledgeCard.buttonText}
-              <motion.svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                animate={isHovered ? { x: 5 } : { x: 0 }}
-              >
-                <path d="M5 12h14M12 5l7 7-7 7" strokeWidth="2" strokeLinecap="round" />
-              </motion.svg>
-            </span>
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-red-50 to-white"
-              initial={{ x: '-100%' }}
-              whileHover={{ x: 0 }}
-              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            />
-          </motion.a>
-        </div>
-
-        <div className="absolute top-6 left-6 w-12 h-12 border-t-2 border-l-2 border-white/20" />
-        <div className="absolute bottom-6 right-6 w-12 h-12 border-b-2 border-r-2 border-white/20" />
-      </motion.div>
-    </motion.div>
-  );
-};
-
 const FAQ = () => {
+  const { faq } = useContent();
   const sectionRef = useRef(null);
   const [isClient, setIsClient] = useState(false);
   const [openItems, setOpenItems] = useState<number[]>([0]);
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const { section, categories, items, knowledgeCard } = completeData.faq;
+  const { section, categories, items } = faq;
 
   const filteredItems = items.filter((item: any) => {
     const matchesCategory = activeCategory === 'all' || item.category === activeCategory;
@@ -749,12 +531,12 @@ const FAQ = () => {
 
     const ctx = gsap.context(() => {
       gsap.fromTo('.faq-reveal',
-        { y: 30, opacity: 0 },
+        { y: 20, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.8,
-          stagger: 0.15,
+          duration: 0.5,
+          stagger: 0.1,
           ease: "power2.out",
           scrollTrigger: {
             trigger: sectionRef.current,
@@ -816,10 +598,11 @@ const FAQ = () => {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
               className="text-center py-16"
             >
               <div className="text-muted-foreground mb-3">
-                <Icons.Document />
+                <Icon name="FileText" className="w-12 h-12 mx-auto opacity-50" />
               </div>
               <p className="text-muted-foreground text-base">
                 No questions found matching your criteria.
@@ -836,8 +619,6 @@ const FAQ = () => {
             </motion.div>
           )}
         </div>
-
-        <KnowledgeCard />
       </div>
     </section>
   );

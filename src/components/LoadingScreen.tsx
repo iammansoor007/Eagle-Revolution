@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Icon } from "../config/icons";
+import { useContent } from "../hooks/useContent";
 
 const EASE = [0.65, 0, 0.35, 1] as const;
 
@@ -52,6 +54,9 @@ const RoofDraw = () => {
 };
 
 const LogoText = () => {
+  const { loader } = useContent();
+  const { company } = loader;
+
   return (
     <motion.div
       className="absolute inset-0 flex flex-col items-center justify-center bg-background"
@@ -62,15 +67,15 @@ const LogoText = () => {
     >
       <div className="text-center px-4">
         <div className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-[0.15em] text-foreground mb-4">
-          <span style={{ color: "hsl(var(--primary))" }}>Eagle</span>{" "}
-          <span style={{ color: "hsl(var(--primary))" }}>Revolution</span>
+          <span style={{ color: "hsl(var(--primary))" }}>{company?.name?.split(' ')[0] || "Eagle"}</span>{" "}
+          <span style={{ color: "hsl(var(--primary))" }}>{company?.name?.split(' ')[1] || "Revolution"}</span>
         </div>
 
         <div className="mx-auto w-16 h-0.5 bg-primary" />
 
         <div className="mt-6 text-[10px] md:text-xs tracking-[0.25em] text-muted-foreground uppercase flex items-center justify-center gap-2">
           <span>🇺🇸</span>
-          <span>Veteran Owned & Operated</span>
+          <span>{company?.tagline || "Veteran Owned & Operated"}</span>
           <span>🇺🇸</span>
         </div>
       </div>
@@ -100,13 +105,21 @@ interface LoaderProps {
 }
 
 const PremiumLoader = ({ onComplete }: LoaderProps) => {
+  const { loader } = useContent();
   const [phase, setPhase] = useState<1 | 2 | 3 | 4>(1);
 
+  const phases = loader?.phases || {
+    simpleDark: 700,
+    roofDraw: 800,
+    logoText: 900,
+    ready: 400
+  };
+
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase(2), 700);
-    const t2 = setTimeout(() => setPhase(3), 1500);
-    const t3 = setTimeout(() => setPhase(4), 2400);
-    const t4 = setTimeout(() => onComplete(), 2800);
+    const t1 = setTimeout(() => setPhase(2), phases.simpleDark);
+    const t2 = setTimeout(() => setPhase(3), phases.simpleDark + phases.roofDraw);
+    const t3 = setTimeout(() => setPhase(4), phases.simpleDark + phases.roofDraw + phases.logoText);
+    const t4 = setTimeout(() => onComplete(), phases.simpleDark + phases.roofDraw + phases.logoText + phases.ready);
 
     return () => {
       clearTimeout(t1);
@@ -114,7 +127,7 @@ const PremiumLoader = ({ onComplete }: LoaderProps) => {
       clearTimeout(t3);
       clearTimeout(t4);
     };
-  }, [onComplete]);
+  }, [onComplete, phases]);
 
   return (
     <motion.div

@@ -4,188 +4,14 @@ import {
   useScroll,
   useTransform,
   useSpring,
-  useInView,
   AnimatePresence
 } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import completeData from "../src/data/completeData.json";
+import { Icon } from "../config/icons";
+import { useContent } from "../hooks/useContent";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const Images = {
-  Hero: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-  Pattern: "https://images.unsplash.com/photo-1502691876148-a84978e59af8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-  Abstract: "https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2069&q=80",
-};
-
-const Icons = {
-  Linkedin: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M4 8h4v12H4V8z" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="6" cy="4" r="2" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M10 8h4v2c.6-.8 1.5-2 3-2 2.5 0 4 1.5 4 4v8h-4v-6c0-1.5-.5-2-2-2s-2 .5-2 2v6h-4V8z" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Twitter: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.8 9 5-.2-2.2.6-4.5 2.5-6 2.5-2 6-1.5 7.5 1 1.1-.2 2.2-.6 3-1 0 0-.5 1.7-2 3 1.1-.1 2-.5 3-1 0 0-.5 1.6-2 3z" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Instagram: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <rect x="2" y="2" width="20" height="20" rx="4" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="18" cy="6" r="1" fill="currentColor" />
-    </svg>
-  ),
-  Facebook: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Google: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12s4.48 10 10 10c2.4 0 4.6-.85 6.3-2.28l-2.5-2.5c-.97.58-2.1.9-3.3.9-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6h-3l4 4 4-4h-3z" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Mail: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M22 7l-10 7L2 7" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Phone: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Location: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="12" cy="9" r="2.5" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  ArrowRight: () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  ),
-  Sparkle: () => (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-      <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="currentColor" />
-    </svg>
-  ),
-  Infinity: () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M13.833 9.167C14.5 8.5 15.3 8 16.5 8C18.5 8 20 9.5 20 12C20 14.5 18.5 16 16.5 16C14.5 16 13 14.5 13 12C13 9.5 11.5 8 9.5 8C7.5 8 6 9.5 6 12C6 14.5 7.5 16 9.5 16C10.7 16 11.5 15.5 12.167 14.833" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  ),
-  Roofing: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M3 10L12 3L21 10L18 13L12 8L6 13L3 10Z" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M6 13V19H18V13" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Inspection: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M12 8v4l3 3" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Repair: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M16 4L20 8L12 16H8V12L16 4Z" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M4 20H20" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Replacement: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M20 12H4M12 4v16M4 8h16M4 16h16" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Residential: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M3 10L12 3L21 10L18 13L12 8L6 13L3 10Z" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M8 13V19H16V13" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Commercial: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <rect x="4" y="8" width="16" height="12" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M8 8V4H16V8" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Emergency: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M12 8v4M12 16h.01" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  ),
-  Maintenance: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M12 8v4l2 2" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Warranty: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M12 2L15 9H22L17 14L19 21L12 17L5 21L7 14L2 9H9L12 2Z" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Financing: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M8 12h8M12 8v8" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  CreditCard: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M2 10h20" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Image: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="8" cy="10" r="2" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M22 16l-4-4-5 5-3-3-6 6" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  FileText: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M14 2v6h6" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  ),
-  Star: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M12 2L15 9H22L16 14L19 21L12 16.5L5 21L8 14L2 9H9L12 2Z" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  )
-};
-
-const iconMap = {
-  Repair: Icons.Repair,
-  Replacement: Icons.Replacement,
-  Inspection: Icons.Inspection,
-  Maintenance: Icons.Maintenance,
-  Residential: Icons.Residential,
-  Commercial: Icons.Commercial,
-  Emergency: Icons.Emergency,
-  Roofing: Icons.Roofing,
-  Warranty: Icons.Warranty,
-  Financing: Icons.Financing,
-  CreditCard: Icons.CreditCard,
-  Image: Icons.Image,
-  FileText: Icons.FileText,
-  Star: Icons.Star,
-  Linkedin: Icons.Linkedin,
-  Twitter: Icons.Twitter,
-  Instagram: Icons.Instagram,
-  Facebook: Icons.Facebook,
-  Google: Icons.Google
-};
 
 const ParallaxLayer = ({ children, speed = 0.05, className = "" }: { children: React.ReactNode; speed?: number; className?: string }) => {
   const ref = useRef(null);
@@ -250,6 +76,7 @@ const QuantumParticles = () => {
 };
 
 const NewsletterForm = () => {
+  const { footer } = useContent();
   const [email, setEmail] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
@@ -275,7 +102,7 @@ const NewsletterForm = () => {
         `}>
           <input
             type="email"
-            placeholder="Enter your email"
+            placeholder={footer.newsletter?.placeholder || "Enter your email"}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             onFocus={() => setIsFocused(true)}
@@ -289,8 +116,8 @@ const NewsletterForm = () => {
             whileTap={{ scale: 0.95 }}
             className="absolute right-2 px-4 py-2 bg-primary text-primary-foreground text-xs font-medium rounded-full hover:bg-primary/90 transition-all duration-300 flex items-center gap-2"
           >
-            Subscribe
-            <Icons.ArrowRight />
+            {footer.newsletter?.buttonText || "Subscribe"}
+            <Icon name="ArrowRight" className="w-4 h-4" />
           </motion.button>
         </div>
       </form>
@@ -314,38 +141,37 @@ const NewsletterForm = () => {
 };
 
 const ServiceLinks = () => {
-  const { services } = completeData.footer;
+  const { footer } = useContent();
+  const { services } = footer;
 
   return (
     <div className="space-y-4">
       <h4 className="text-xs font-mono tracking-[0.2em] uppercase text-muted-foreground flex items-center gap-2">
-        <Icons.Sparkle />
+        <Icon name="Sparkles" className="w-4 h-4" />
         {services.title}
       </h4>
       <div className="grid grid-cols-1 gap-2">
-        {services.main.map((service: any) => {
-          const ServiceIcon = iconMap[service.icon as keyof typeof iconMap] || Icons.Roofing;
-          return (
-            <motion.a
-              key={service.label}
-              href={service.href}
-              whileHover={{ x: 5 }}
-              className="inline-flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-all duration-300 group py-1"
-            >
-              <span className="text-muted-foreground/60 group-hover:text-primary transition-colors">
-                <ServiceIcon />
-              </span>
-              <span>{service.label}</span>
-            </motion.a>
-          );
-        })}
+        {services.main.map((service: any) => (
+          <motion.a
+            key={service.label}
+            href={service.href}
+            whileHover={{ x: 5 }}
+            className="inline-flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-all duration-300 group py-1"
+          >
+            <span className="text-muted-foreground/60 group-hover:text-primary transition-colors">
+              <Icon name={service.icon} className="w-5 h-5" />
+            </span>
+            <span>{service.label}</span>
+          </motion.a>
+        ))}
       </div>
     </div>
   );
 };
 
 const MaterialsSection = () => {
-  const { services } = completeData.footer;
+  const { footer } = useContent();
+  const { services } = footer;
 
   return (
     <div className="space-y-3 mt-4">
@@ -370,42 +196,65 @@ const MaterialsSection = () => {
 };
 
 const ContactInfo = () => {
-  const { contact } = completeData.footer;
+  const { footer, hours } = useContent();
+  const { contact } = footer;
 
   return (
     <div className="space-y-6">
       <div className="space-y-4">
         <h4 className="text-xs font-mono tracking-[0.2em] uppercase text-muted-foreground flex items-center gap-2">
-          <Icons.Sparkle />
+          <Icon name="Sparkles" className="w-4 h-4" />
           {contact.title}
         </h4>
         <div className="space-y-4">
           <a href={`mailto:${contact.email}`} className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors group">
             <span className="text-muted-foreground/60 group-hover:text-primary">
-              <Icons.Mail />
+              <Icon name="Mail" className="w-5 h-5" />
             </span>
             {contact.email}
           </a>
           <a href={`tel:${contact.phone}`} className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors group">
             <span className="text-muted-foreground/60 group-hover:text-primary">
-              <Icons.Phone />
+              <Icon name="Phone" className="w-5 h-5" />
             </span>
             {contact.phone}
           </a>
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
             <span className="text-muted-foreground/60">
-              <Icons.Location />
+              <Icon name="MapPin" className="w-5 h-5" />
             </span>
             <span>{contact.address}</span>
           </div>
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
             <span className="text-muted-foreground/60">
-              <Icons.Infinity />
+              <Icon name="Infinity" className="w-5 h-5" />
             </span>
             <span>{contact.emergency}</span>
           </div>
         </div>
       </div>
+
+      {hours && (
+        <div className="space-y-3">
+          <h5 className="text-[10px] font-mono tracking-[0.2em] uppercase text-primary/60">
+            Office Hours
+          </h5>
+          <div className="space-y-1 text-xs text-muted-foreground">
+            <div className="flex justify-between">
+              <span>Monday - Friday:</span>
+              <span>{hours.monday}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Saturday:</span>
+              <span>{hours.saturday}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Sunday:</span>
+              <span>{hours.sunday}</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="space-y-3">
         <h5 className="text-[10px] font-mono tracking-[0.2em] uppercase text-primary/60">
@@ -420,93 +269,90 @@ const ContactInfo = () => {
 };
 
 const CertificationsGrid = () => {
-  const { certifications } = completeData.footer;
+  const { footer } = useContent();
+  const { certifications } = footer;
 
   return (
     <div className="grid grid-cols-2 gap-3 mt-4">
-      {certifications.map((cert: any, i: number) => {
-        const CertIcon = iconMap[cert.icon as keyof typeof iconMap] || Icons.Warranty;
-        return (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.05 }}
-            className="relative p-3 bg-muted backdrop-blur-sm rounded-lg border border-border hover:border-primary/30 transition-all duration-300 group"
-          >
-            <div className="flex items-center gap-2">
-              <span className="text-muted-foreground/60 group-hover:text-primary transition-colors">
-                <CertIcon />
-              </span>
-              <div>
-                <span className="text-xs font-mono text-primary/80">{cert.cert}</span>
-                <p className="text-[10px] text-muted-foreground">{cert.number}</p>
-              </div>
+      {certifications.map((cert: any, i: number) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: i * 0.05 }}
+          className="relative p-3 bg-muted backdrop-blur-sm rounded-lg border border-border hover:border-primary/30 transition-all duration-300 group"
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground/60 group-hover:text-primary transition-colors">
+              <Icon name={cert.icon} className="w-5 h-5" />
+            </span>
+            <div>
+              <span className="text-xs font-mono text-primary/80">{cert.cert}</span>
+              <p className="text-[10px] text-muted-foreground">{cert.number}</p>
             </div>
-          </motion.div>
-        );
-      })}
+          </div>
+        </motion.div>
+      ))}
     </div>
   );
 };
 
 const SocialLinks = () => {
-  const { social } = completeData.footer;
+  const { footer } = useContent();
+  const { social } = footer;
 
   return (
     <div className="flex items-center gap-3">
-      {social.map((socialItem: any) => {
-        const SocialIcon = iconMap[socialItem.icon as keyof typeof iconMap] || Icons.Linkedin;
-        return (
-          <motion.a
-            key={socialItem.platform}
-            href={socialItem.href}
-            whileHover={{ y: -3, scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="relative w-10 h-10 rounded-full bg-muted border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/5 hover:border-primary/20 transition-all duration-300 group"
-            aria-label={socialItem.platform}
-          >
-            <SocialIcon />
-            <motion.div
-              className="absolute inset-0 rounded-full bg-primary/20 blur-lg"
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileHover={{ opacity: 1, scale: 1.2 }}
-              transition={{ duration: 0.3 }}
-            />
-          </motion.a>
-        );
-      })}
+      {social.map((socialItem: any) => (
+        <motion.a
+          key={socialItem.platform}
+          href={socialItem.href}
+          whileHover={{ y: -3, scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          className="relative w-10 h-10 rounded-full bg-muted border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/5 hover:border-primary/20 transition-all duration-300 group"
+          aria-label={socialItem.platform}
+        >
+          <Icon name={socialItem.icon} className="w-5 h-5" />
+          <motion.div
+            className="absolute inset-0 rounded-full bg-primary/20 blur-lg"
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileHover={{ opacity: 1, scale: 1.2 }}
+            transition={{ duration: 0.3 }}
+          />
+        </motion.a>
+      ))}
     </div>
   );
 };
 
 const LegacyMarquee = () => {
-  const { marquee } = completeData.footer;
+  const { footer } = useContent();
+  const { marquee } = footer;
 
   return (
     <div className="relative overflow-hidden py-8 border-t border-border">
       <motion.div
         className="flex whitespace-nowrap"
         animate={{ x: [0, -1000] }}
-        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+        transition={{ duration: marquee.speed || 30, repeat: Infinity, ease: "linear" }}
       >
-        {[...Array(8)].map((_, i) => (
+        {[...Array(marquee.repeats || 8)].map((_, i) => (
           <div key={i} className="flex items-center gap-8 mx-8 group">
             <span className="text-xs font-mono text-primary/40 group-hover:text-primary transition-colors duration-300">
-              <Icons.Sparkle />
+              <Icon name="Sparkles" className="w-4 h-4" />
             </span>
             <span className="text-sm uppercase tracking-[0.3em] text-muted-foreground/40 group-hover:text-muted-foreground transition-colors duration-300">
               {marquee.texts[0]}
             </span>
             <span className="text-xs font-mono text-primary/40 group-hover:text-primary transition-colors duration-300">
-              <Icons.Sparkle />
+              <Icon name="Sparkles" className="w-4 h-4" />
             </span>
             <span className="text-sm uppercase tracking-[0.3em] text-muted-foreground/40 group-hover:text-muted-foreground transition-colors duration-300">
               {marquee.texts[1]}
             </span>
             <span className="text-xs font-mono text-primary/40 group-hover:text-primary transition-colors duration-300">
-              <Icons.Sparkle />
+              <Icon name="Sparkles" className="w-4 h-4" />
             </span>
             <span className="text-sm uppercase tracking-[0.3em] text-muted-foreground/40 group-hover:text-muted-foreground transition-colors duration-300">
               {marquee.texts[2]}
@@ -519,10 +365,11 @@ const LegacyMarquee = () => {
 };
 
 const Footer = () => {
+  const { footer } = useContent();
   const sectionRef = useRef(null);
   const [isClient, setIsClient] = useState(false);
 
-  const { company, quickLinks, bottom, hours } = completeData.footer;
+  const { company, quickLinks, bottom } = footer;
 
   useEffect(() => {
     setIsClient(true);
@@ -577,7 +424,7 @@ const Footer = () => {
       <ParallaxLayer speed={0.03} className="z-0">
         <div className="absolute top-40 right-0 w-2/5 h-2/5">
           <img
-            src={Images.Abstract}
+            src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2069&q=80"
             alt="Abstract architecture"
             className="w-full h-full object-cover opacity-[0.02]"
           />
@@ -587,7 +434,7 @@ const Footer = () => {
       <ParallaxLayer speed={0.05} className="z-0">
         <div className="absolute bottom-0 left-0 w-1/3 h-1/3">
           <img
-            src={Images.Pattern}
+            src="https://images.unsplash.com/photo-1502691876148-a84978e59af8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
             alt="Heritage pattern"
             className="w-full h-full object-cover opacity-[0.02]"
           />
@@ -630,14 +477,11 @@ const Footer = () => {
             </div>
 
             <div className="flex flex-wrap gap-3 pt-2">
-              {quickLinks.map((link: any) => {
-                const LinkIcon = iconMap[link.icon as keyof typeof iconMap] || Icons.Warranty;
-                return (
-                  <a key={link.label} href={link.href} className="text-[10px] text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
-                    <LinkIcon /> {link.label}
-                  </a>
-                );
-              })}
+              {quickLinks.map((link: any) => (
+                <a key={link.label} href={link.href} className="text-[10px] text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                  <Icon name={link.icon} className="w-3 h-3" /> {link.label}
+                </a>
+              ))}
             </div>
           </div>
 
@@ -649,32 +493,9 @@ const Footer = () => {
           <div className="lg:col-span-4">
             <ContactInfo />
 
-            {hours && (
-              <div className="mt-6 pt-4 border-t border-border">
-                <h4 className="text-xs font-mono tracking-[0.2em] uppercase text-muted-foreground flex items-center gap-2 mb-3">
-                  <Icons.Sparkle />
-                  Office Hours
-                </h4>
-                <div className="space-y-1 text-xs text-muted-foreground">
-                  <div className="flex justify-between">
-                    <span>Monday - Friday:</span>
-                    <span>{hours.monday}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Saturday:</span>
-                    <span>{hours.saturday}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Sunday:</span>
-                    <span>{hours.sunday}</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
             <div className="mt-6 pt-4 border-t border-border">
               <h4 className="text-xs font-mono tracking-[0.2em] uppercase text-muted-foreground flex items-center gap-2 mb-3">
-                <Icons.Sparkle />
+                <Icon name="Sparkles" className="w-4 h-4" />
                 Certifications & Accreditations
               </h4>
               <CertificationsGrid />

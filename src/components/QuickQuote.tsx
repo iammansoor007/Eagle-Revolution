@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, Sparkles, Mail, User, Phone, Home, MessageSquare, Zap, Award, ChevronRight, Flag } from 'lucide-react';
+import { Icon } from '../config/icons';
+import { useContent } from '../hooks/useContent';
 
 const QuickQuote = () => {
+    const { quickQuote } = useContent();
     const [isOpen, setIsOpen] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [formData, setFormData] = useState({
@@ -16,7 +18,7 @@ const QuickQuote = () => {
     const [isSuccess, setIsSuccess] = useState(false);
     const [step, setStep] = useState(1);
 
-    const projectTypes = [
+    const projectTypes = quickQuote.projectTypes || [
         { value: 'roofing', label: 'Residential Roofing' },
         { value: 'windows', label: 'Windows & Doors' },
         { value: 'decks', label: 'Custom Decks' },
@@ -239,7 +241,7 @@ ${formData.message}
                         }}
                         className="relative z-10"
                     >
-                        <Flag className="w-7 h-7 md:w-9 md:h-9 text-white" />
+                        <Icon name="Flag" className="w-7 h-7 md:w-9 md:h-9 text-white" />
                     </motion.div>
 
                     <motion.div
@@ -264,9 +266,9 @@ ${formData.message}
                                 className="absolute right-20 top-1/2 -translate-y-1/2 bg-gradient-to-r from-secondary to-secondary/80 text-white text-sm font-medium px-5 py-2.5 rounded-2xl whitespace-nowrap shadow-2xl border border-primary/30"
                             >
                                 <span className="flex items-center gap-2">
-                                    <Sparkles className="w-4 h-4 text-primary" />
-                                    Get Free Quote
-                                    <ChevronRight className="w-4 h-4 text-primary" />
+                                    <Icon name="Sparkles" className="w-4 h-4 text-primary" />
+                                    {quickQuote.button?.text || "Get Free Quote"}
+                                    <Icon name="ChevronRight" className="w-4 h-4 text-primary" />
                                 </span>
                                 <div className="absolute right-[-4px] top-1/2 -translate-y-1/2 w-3 h-3 bg-gradient-to-r from-secondary to-secondary/80 rotate-45 border-r border-t border-primary/30" />
                             </motion.div>
@@ -325,7 +327,7 @@ ${formData.message}
                                         onClick={() => setIsOpen(false)}
                                         className="absolute top-5 right-5 z-10 w-10 h-10 rounded-full bg-muted hover:bg-muted/80 flex items-center justify-center transition-colors border border-border"
                                     >
-                                        <X className="w-5 h-5 text-muted-foreground" />
+                                        <Icon name="X" className="w-5 h-5 text-muted-foreground" />
                                     </motion.button>
 
                                     <AnimatePresence>
@@ -403,13 +405,13 @@ ${formData.message}
                                         >
                                             <div className="flex items-center gap-3 mb-2">
                                                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                                                    <Award className="w-5 h-5 text-primary" />
+                                                    <Icon name="Award" className="w-5 h-5 text-primary" />
                                                 </div>
                                                 <div>
                                                     <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                                                        Quick Quote
+                                                        {quickQuote.title || "Quick Quote"}
                                                     </h2>
-                                                    <p className="text-sm text-muted-foreground">Get your free estimate in minutes</p>
+                                                    <p className="text-sm text-muted-foreground">{quickQuote.description || "Get your free estimate in minutes"}</p>
                                                 </div>
                                             </div>
                                         </motion.div>
@@ -451,7 +453,7 @@ ${formData.message}
                                                             {i}
                                                         </motion.div>
                                                         <span className="text-xs font-medium text-muted-foreground hidden md:block">
-                                                            {i === 1 ? 'Details' : i === 2 ? 'Project' : 'Message'}
+                                                            {quickQuote.steps?.[i - 1] || (i === 1 ? 'Details' : i === 2 ? 'Project' : 'Message')}
                                                         </span>
                                                     </motion.div>
                                                 ))}
@@ -480,8 +482,8 @@ ${formData.message}
                                                     >
                                                         <div>
                                                             <label className="block text-sm font-medium text-foreground mb-2">
-                                                                <User className="w-4 h-4 inline mr-2 text-primary" />
-                                                                Your Name
+                                                                <Icon name="User" className="w-4 h-4 inline mr-2 text-primary" />
+                                                                {quickQuote.formLabels?.name || "Your Name"}
                                                             </label>
                                                             <input
                                                                 type="text"
@@ -495,8 +497,8 @@ ${formData.message}
                                                         </div>
                                                         <div>
                                                             <label className="block text-sm font-medium text-foreground mb-2">
-                                                                <Mail className="w-4 h-4 inline mr-2 text-primary" />
-                                                                Email Address
+                                                                <Icon name="Mail" className="w-4 h-4 inline mr-2 text-primary" />
+                                                                {quickQuote.formLabels?.email || "Email Address"}
                                                             </label>
                                                             <input
                                                                 type="email"
@@ -522,8 +524,8 @@ ${formData.message}
                                                     >
                                                         <div>
                                                             <label className="block text-sm font-medium text-foreground mb-2">
-                                                                <Phone className="w-4 h-4 inline mr-2 text-primary" />
-                                                                Phone Number
+                                                                <Icon name="Phone" className="w-4 h-4 inline mr-2 text-primary" />
+                                                                {quickQuote.formLabels?.phone || "Phone Number"}
                                                             </label>
                                                             <input
                                                                 type="tel"
@@ -536,8 +538,8 @@ ${formData.message}
                                                         </div>
                                                         <div>
                                                             <label className="block text-sm font-medium text-foreground mb-2">
-                                                                <Home className="w-4 h-4 inline mr-2 text-primary" />
-                                                                Project Type
+                                                                <Icon name="Home" className="w-4 h-4 inline mr-2 text-primary" />
+                                                                {quickQuote.formLabels?.projectType || "Project Type"}
                                                             </label>
                                                             <select
                                                                 name="projectType"
@@ -567,8 +569,8 @@ ${formData.message}
                                                     >
                                                         <div>
                                                             <label className="block text-sm font-medium text-foreground mb-2">
-                                                                <MessageSquare className="w-4 h-4 inline mr-2 text-primary" />
-                                                                Tell us about your project
+                                                                <Icon name="MessageSquare" className="w-4 h-4 inline mr-2 text-primary" />
+                                                                {quickQuote.formLabels?.message || "Tell us about your project"}
                                                             </label>
                                                             <textarea
                                                                 name="message"
@@ -593,7 +595,7 @@ ${formData.message}
                                                         whileHover={{ x: -3 }}
                                                         whileTap={{ scale: 0.98 }}
                                                     >
-                                                        <ChevronRight className="w-4 h-4 rotate-180" />
+                                                        <Icon name="ChevronRight" className="w-4 h-4 rotate-180" />
                                                         Back
                                                     </motion.button>
                                                 )}
@@ -607,7 +609,7 @@ ${formData.message}
                                                         whileTap={{ scale: 0.98 }}
                                                     >
                                                         Continue
-                                                        <ChevronRight className="w-4 h-4" />
+                                                        <Icon name="ChevronRight" className="w-4 h-4" />
                                                     </motion.button>
                                                 ) : (
                                                     <motion.button
@@ -624,8 +626,8 @@ ${formData.message}
                                                             </>
                                                         ) : (
                                                             <>
-                                                                Get Quote
-                                                                <Send className="w-4 h-4" />
+                                                                {quickQuote.formLabels?.submit || "Get Quote"}
+                                                                <Icon name="Send" className="w-4 h-4" />
                                                             </>
                                                         )}
                                                     </motion.button>
@@ -638,20 +640,16 @@ ${formData.message}
                                                 transition={{ delay: 0.5 }}
                                                 className="flex items-center justify-center gap-4 pt-4 text-xs"
                                             >
-                                                <div className="flex items-center gap-2">
-                                                    <div className="w-1.5 h-1.5 bg-primary rounded-full" />
-                                                    <span className="text-muted-foreground">Free estimate</span>
-                                                </div>
-                                                <div className="w-px h-3 bg-border" />
-                                                <div className="flex items-center gap-2">
-                                                    <div className="w-1.5 h-1.5 bg-primary rounded-full" />
-                                                    <span className="text-muted-foreground">4-8h response</span>
-                                                </div>
-                                                <div className="w-px h-3 bg-border" />
-                                                <div className="flex items-center gap-2">
-                                                    <div className="w-1.5 h-1.5 bg-primary rounded-full" />
-                                                    <span className="text-muted-foreground">Veteran owned</span>
-                                                </div>
+                                                {(quickQuote.badges || [
+                                                    { text: "Free estimate", icon: "Check" },
+                                                    { text: "4-8h response", icon: "Clock" },
+                                                    { text: "Veteran owned", icon: "Flag" }
+                                                ]).map((badge: any, idx: number) => (
+                                                    <div key={idx} className="flex items-center gap-2">
+                                                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                                                        <span className="text-muted-foreground">{badge.text}</span>
+                                                    </div>
+                                                ))}
                                             </motion.div>
                                         </form>
                                     </div>

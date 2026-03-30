@@ -1,42 +1,26 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import heroBg from "@/assets/fairbg.png";
-import { FiArrowRight, FiChevronDown, FiStar, FiThumbsUp } from "react-icons/fi";
-import { RiBuildingLine, RiShieldCheckLine } from "react-icons/ri";
-import completeData from "../src/data/completeData.json";
+import { Icon } from "../config/icons";
+import { useContent } from "../hooks/useContent";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Hero = () => {
+  const { hero } = useContent();
   const sectionRef = useRef<HTMLElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  const { badge, headlines, description, buttons, stats, promoBadge } = completeData.hero;
+  const { badge, headlines, description, buttons, stats, promoBadge, images } = hero;
 
   useEffect(() => {
-    if (!sectionRef.current) return;
-    const img = sectionRef.current.querySelector(".hero-parallax-img");
-    if (img) {
-      gsap.to(img, {
-        y: 120,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1.5,
-        },
-      });
-    }
-
     const handleMouseMove = (e: MouseEvent) => {
       const { clientX, clientY } = e;
       const { innerWidth, innerHeight } = window;
       setMousePosition({
-        x: (clientX - innerWidth / 2) * 0.015,
-        y: (clientY - innerHeight / 2) * 0.015,
+        x: (clientX - innerWidth / 2) * 0.005,
+        y: (clientY - innerHeight / 2) * 0.005,
       });
     };
 
@@ -44,294 +28,169 @@ const Hero = () => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  const iconComponents = {
-    FiArrowRight: FiArrowRight,
-    RiBuildingLine: RiBuildingLine,
-    FiStar: FiStar,
-    FiThumbsUp: FiThumbsUp,
-    RiShieldCheckLine: RiShieldCheckLine
-  };
-
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen herooooo flex items-end overflow-hidden bg-gradient-to-br from-background via-background/95 to-background isolate md:items-center md:justify-center"
+      className="relative pt-12 min-h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 isolate"
     >
       <div className="absolute inset-0 -z-10">
-        <motion.img
-          src={heroBg}
-          alt=""
-          className="hero-parallax-img w-full h-[130%] object-cover absolute -top-[15%] will-change-transform"
+        <div
+          className="absolute inset-0 w-full h-full"
           style={{
-            x: mousePosition.x,
-            y: mousePosition.y - 20,
+            WebkitMaskImage: "linear-gradient(to bottom, black 60%, transparent 95%)",
+            maskImage: "linear-gradient(to bottom, black 60%, transparent 95%)",
           }}
-          transition={{ type: "spring", mass: 0.8, stiffness: 40, damping: 25 }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/90 to-transparent opacity-90" />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/40 via-transparent to-background/40" />
-        <div className="absolute inset-0 bg-gradient-to-br z-1 opacity-50 from-primary/75 via-primary/50 to-primary/5" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_rgba(255,255,255,0.12)_0%,_transparent_60%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(255,255,255,0.08)_0%,_transparent_60%)]" />
+        >
+          <img
+            src={images?.background || "/src/assets/bgfair.jpg"}
+            alt=""
+            className="w-full h-full object-cover scale-105"
+            style={{ transform: "none" }}
+          />
+        </div>
+
+        <div className="absolute inset-x-0 bottom-0 h-[40vh] bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-transparent to-slate-900/60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/20 via-transparent to-transparent" />
 
         <motion.div
-          className="absolute top-[20%] right-[15%] w-[40rem] h-[40rem] bg-foreground/5 rounded-full blur-3xl"
+          className="absolute top-[10%] right-[10%] w-[50rem] h-[50rem] bg-primary/10 rounded-full blur-[120px]"
           animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.1, 0.15, 0.1],
+            scale: [1, 1.1, 1],
+            opacity: [0.1, 0.2, 0.1],
           }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          style={{
-            x: mousePosition.x * 0.3,
-            y: mousePosition.y * 0.3,
-          }}
-        />
-        <motion.div
-          className="absolute bottom-[10%] left-[10%] w-[30rem] h-[30rem] bg-primary/10 rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.05, 0.1, 0.05],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          style={{
-            x: mousePosition.x * -0.2,
-            y: mousePosition.y * -0.2,
-          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          style={{ x: mousePosition.x * 0.8, y: mousePosition.y * 0.8 }}
         />
       </div>
 
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <pattern
-              id="modernGrid"
-              x="0"
-              y="0"
-              width="50"
-              height="50"
-              patternUnits="userSpaceOnUse"
-            >
-              <path
-                d="M 50 0 L 0 0 0 50"
-                fill="none"
-                stroke="rgba(255,255,255,0.15)"
-                strokeWidth="0.6"
-              />
+            <pattern id="grid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="1" />
             </pattern>
           </defs>
-          <rect width="100%" height="100%" fill="url(#modernGrid)" />
+          <rect width="100%" height="100%" fill="url(#grid)" />
         </svg>
       </div>
 
-      <div className="absolute inset-0 pointer-events-none">
-        <motion.div
-          className="absolute top-[20%] right-[12%] w-40 h-40 border border-foreground/10 rounded-full"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.8, delay: 0.8 }}
-          style={{
-            x: mousePosition.x * 0.4,
-            y: mousePosition.y * 0.4,
-          }}
-        />
-        <motion.div
-          className="absolute top-[12%] right-[5%] w-72 h-72 border border-foreground/5 rounded-full"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.8, delay: 1.0 }}
-          style={{
-            x: mousePosition.x * 0.25,
-            y: mousePosition.y * 0.25,
-          }}
-        />
-        <motion.div
-          className="absolute bottom-[25%] left-[8%] w-56 h-56 border border-foreground/5 rounded-full"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.8, delay: 1.2 }}
-          style={{
-            x: mousePosition.x * -0.3,
-            y: mousePosition.y * -0.3,
-          }}
-        />
-      </div>
-
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1.5 h-1.5 bg-foreground/20 rounded-full blur-[1px]"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [0, -40, 0],
-              opacity: [0.1, 0.4, 0.1],
-            }}
-            transition={{
-              duration: 5 + Math.random() * 3,
-              repeat: Infinity,
-              delay: Math.random() * 3,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </div>
-
-      <div className="section-padding w-full relative z-10 pb-20 md:pb-28">
-        <div className="max-w-7xl mx-auto lg:mx-0 lg:max-w-6xl">
-          <motion.div
-            className="flex items-center gap-2 mb-2 mt-8 md:-mt-4"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-          >
-            <div className="w-8 h-px bg-foreground/40 md:w-16" />
-            <span className="font-body text-foreground/80 text-xs md:text-sm uppercase tracking-[0.3em] font-light">
-              {badge}
-            </span>
-          </motion.div>
-
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-7xl font-bold text-foreground mb-2 leading-[1.1] tracking-tight">
-            {headlines.map((line, i) => (
-              <motion.span
-                key={i}
-                className="block overflow-hidden"
-                initial={{ opacity: 0, y: 80 }}
+      <div className="relative z-10 min-h-screen flex items-center py-28 sm:py-24">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start lg:items-center">
+            <div className="text-center lg:text-left">
+              <motion.div
+                className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5 mb-6 mx-auto lg:mx-0"
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.9,
-                  delay: 0.3 + 0.2 * i,
-                  ease: [0.215, 0.61, 0.355, 1],
-                }}
+                transition={{ duration: 0.5 }}
               >
-                {line}
-              </motion.span>
-            ))}
-          </h1>
+                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                <span className="text-white text-xs uppercase tracking-wider font-medium">{badge}</span>
+              </motion.div>
 
-          <motion.p
-            className="text-m sm:text-l md:text-xl text-foreground/80 max-w-2xl mb-6 leading-relaxed font-light"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.0 }}
-          >
-            {description}
-          </motion.p>
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-[1.2] tracking-tight">
+                {headlines.map((line: string, i: number) => (
+                  <motion.span
+                    key={i}
+                    className="block"
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.7,
+                      delay: 0.2 + 0.15 * i,
+                    }}
+                  >
+                    {line}
+                  </motion.span>
+                ))}
+              </h1>
 
-          {promoBadge && (
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 1.1 }}
-              className="mb-6"
-            >
-              <div className="inline-flex items-center gap-3 bg-primary/10 border border-primary/30 rounded-full px-5 py-2.5">
-                <span className="text-primary text-sm font-semibold">🇺🇸</span>
-                <span className="text-foreground text-sm font-medium">{promoBadge.text}</span>
-                <a href="#contact" className="text-primary text-sm font-bold hover:underline">
-                  {promoBadge.cta}
-                </a>
-              </div>
-            </motion.div>
-          )}
+              <motion.p
+                className="text-base sm:text-lg md:text-xl text-white/80 max-w-2xl mx-auto lg:mx-0 mb-8 leading-relaxed"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+              >
+                {description}
+              </motion.p>
 
-          <motion.div
-            className="flex flex-col sm:flex-row gap-5"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 1.2 }}
-          >
-            {buttons.map((button, idx) => {
-              const Icon = iconComponents[button.icon as keyof typeof iconComponents];
-              return button.primary ? (
-                <motion.a
-                  key={idx}
-                  href={button.href}
-                  className="group bg-primary text-primary-foreground px-8 py-4 font-medium text-lg inline-flex items-center justify-center gap-3 rounded-md hover:bg-primary/90 transition-all duration-300 shadow-xl hover:shadow-2xl"
-                  whileHover={{ scale: 1.03, x: 4 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  {button.text}
-                  {Icon && <Icon className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" />}
-                </motion.a>
-              ) : (
-                <motion.a
-                  key={idx}
-                  href={button.href}
-                  className="group backdrop-blur-sm bg-transparent border border-foreground/20 text-foreground px-8 py-4 font-medium text-lg inline-flex items-center justify-center gap-3 rounded-md hover:bg-foreground/10 hover:border-foreground/30 transition-all duration-300"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  {button.text}
-                  {Icon && <Icon className="w-5 h-5 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300" />}
-                </motion.a>
-              );
-            })}
-          </motion.div>
-
-          <motion.div
-            className="flex flex-wrap gap-10 md:gap-14 lg:gap-20 mt-8 md:mt-12 pt-6 border-t border-foreground/10"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 1.5 }}
-          >
-            {stats.map((stat, idx) => {
-              const StatIcon = iconComponents[stat.icon as keyof typeof iconComponents];
-              return (
+              {promoBadge && (
                 <motion.div
-                  key={stat.label}
-                  className="flex items-center gap-4"
-                  whileHover={{ y: -4 }}
-                  transition={{ duration: 0.2 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.8 }}
+                  className="mb-8 flex justify-center lg:justify-start"
                 >
-                  {StatIcon && <StatIcon className="w-7 h-7 md:w-8 md:h-8 text-foreground" />}
-                  <div>
-                    <span className="block font-heading text-foreground text-2xl md:text-3xl lg:text-3xl font-bold leading-tight">
-                      {stat.value}
-                    </span>
-                    <span className="font-body text-foreground/60 text-xs uppercase tracking-wider">
-                      {stat.label}
-                    </span>
+                  <div className="inline-flex items-center gap-3 bg-primary/20 backdrop-blur-sm border border-primary/40 rounded-full px-5 py-2">
+                    <Icon name="Star" className="text-primary text-sm" />
+                    <span className="text-white text-sm font-medium">{promoBadge.text}</span>
+                    <a href="#contact" className="text-primary text-sm font-bold hover:underline">
+                      {promoBadge.cta} →
+                    </a>
                   </div>
                 </motion.div>
-              );
-            })}
-          </motion.div>
+              )}
+
+              <motion.div
+                className="mb-10 w-full"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.9 }}
+              >
+                <div className="flex flex-row flex-wrap sm:flex-nowrap items-center justify-center lg:justify-start gap-3 sm:gap-4 w-full">
+                  {buttons.map((button: any, idx: number) => {
+                    return button.primary ? (
+                      <motion.a
+                        key={idx}
+                        href={button.href}
+                        className="group relative overflow-hidden min-w-[150px] sm:min-w-[170px] flex-1 sm:flex-initial px-5 sm:px-7 py-3.5 rounded-2xl inline-flex items-center justify-center gap-2 text-sm sm:text-base font-semibold tracking-wide bg-primary text-primary-foreground border border-primary/30 shadow-[0_10px_30px_rgba(0,0,0,0.15)] transition-all duration-300 hover:bg-white hover:text-primary hover:border-white/70 hover:shadow-[0_16px_40px_rgba(255,255,255,0.18)] active:scale-[0.98] backdrop-blur-xl"
+                        whileHover={{ scale: 1.03, y: -2 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <span className="relative z-10">{button.text}</span>
+                        {button.icon && <Icon name={button.icon} className="relative z-10 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />}
+                        <span className="absolute inset-0 bg-gradient-to-r from-white/20 via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      </motion.a>
+                    ) : (
+                      <motion.a
+                        key={idx}
+                        href={button.href}
+                        className="group relative overflow-hidden min-w-[150px] sm:min-w-[170px] flex-1 sm:flex-initial px-5 sm:px-7 py-3.5 rounded-2xl inline-flex items-center justify-center gap-2 text-sm sm:text-base font-semibold tracking-wide backdrop-blur-xl bg-white/10 text-white border border-white/20 shadow-[0_10px_30px_rgba(0,0,0,0.12)] transition-all duration-300 hover:bg-white hover:text-slate-900 hover:border-white hover:shadow-[0_16px_40px_rgba(255,255,255,0.16)] active:scale-[0.98]"
+                        whileHover={{ scale: 1.03, y: -2 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <span className="relative z-10">{button.text}</span>
+                        {button.icon && <Icon name={button.icon} className="relative z-10 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />}
+                        <span className="absolute inset-0 bg-gradient-to-r from-white/15 via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      </motion.a>
+                    );
+                  })}
+                </div>
+              </motion.div>
+
+              <motion.div
+                className="grid grid-cols-2 md:flex md:flex-wrap lg:justify-start gap-y-8 gap-x-4 pt-8 border-t border-white/10"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1.1 }}
+              >
+                {stats.map((stat: any, idx: number) => (
+                  <div key={stat.label} className="flex flex-col sm:flex-row items-center sm:items-start md:items-center gap-3 text-center sm:text-left">
+                    <div className="p-2 rounded-lg bg-white/5 md:bg-transparent">
+                      <Icon name={stat.icon} className="w-5 h-5 md:w-6 md:h-6 text-primary/80" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-xl md:text-2xl font-bold text-white leading-tight">{stat.value}</span>
+                      <span className="text-[10px] md:text-xs uppercase tracking-widest text-white/40 font-medium">{stat.label}</span>
+                    </div>
+                  </div>
+                ))}
+              </motion.div>
+            </div>
+          </div>
         </div>
       </div>
-
-      <motion.div
-        className="absolute hidden sm:flex bottom-10 left-1/2 -translate-x-1/2 flex-col items-center gap-3 z-20"
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 2.2, duration: 0.6 }}
-      >
-        <span className="text-foreground/40 text-[10px] uppercase tracking-[0.3em] font-light">
-          Discover
-        </span>
-        <motion.div
-          animate={{
-            y: [0, 6, 0],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        >
-          <FiChevronDown className="w-5 h-5 text-foreground/50" />
-        </motion.div>
-      </motion.div>
     </section>
   );
 };
