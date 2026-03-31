@@ -64,7 +64,7 @@ const getFeatureIcon = (iconName: string) => {
     return () => <Icon name={iconName} className="w-10 h-10" />;
 };
 
-const CinematicBackground = () => {
+const CinematicBackground = ({ isClient }: { isClient: boolean }) => {
     return (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <motion.div
@@ -108,7 +108,8 @@ const CinematicBackground = () => {
 
             <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background opacity-30" />
 
-            {[...Array(20)].map((_, i) => (
+
+            {isClient && [...Array(20)].map((_, i) => (
                 <motion.div
                     key={i}
                     className="absolute w-px h-px bg-primary/30"
@@ -638,7 +639,8 @@ const WhyChooseUs = () => {
         return () => ctx.revert();
     }, [isClient]);
 
-    if (!isClient) return null;
+
+    // if (!isClient) return null;
 
     return (
         <section
@@ -646,7 +648,7 @@ const WhyChooseUs = () => {
             className="relative bg-background py-20 md:py-24 lg:py-32 overflow-hidden"
             aria-label="Why Choose Eagle Revolution"
         >
-            <CinematicBackground />
+            <CinematicBackground isClient={isClient} />
 
             <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-20">
                 <header className="text-center max-w-4xl mx-auto mb-20">

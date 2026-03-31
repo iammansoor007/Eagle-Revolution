@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -14,9 +16,9 @@ import Footer from "@/components/Footer";
 import LoadingScreen from "@/components/LoadingScreen";
 import AggressiveRoofingSection from "@/components/RoofingExperts";
 import HowWeWork from "@/components/HowWeWork";
-import QuickQuote from "@/components/QuickQuote"; // ✅ Import the QuickQuote widget
+import QuickQuote from "@/components/QuickQuote";
 
-const Index = () => {
+export default function Index() {
   const [loading, setLoading] = useState(true);
 
   return (
@@ -95,6 +97,4 @@ const Index = () => {
       )}
     </div>
   );
-};
-
-export default Index;
+}

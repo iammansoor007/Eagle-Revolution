@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState, useCallback, useMemo } from "react";
+import Image from "next/image";
 import {
   motion,
   AnimatePresence,
@@ -23,7 +24,7 @@ import portfolio10 from "@/assets/eagle10.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const imageMap: Record<string, string> = {
+const imageMap: Record<string, any> = {
   home1: portfolio1,
   home2: portfolio2,
   home3: portfolio3,
@@ -79,10 +80,11 @@ const MarqueeItem = ({ project }: { project: any }) => {
       className="relative w-[200px] sm:w-[240px] md:w-[280px] h-[280px] sm:h-[320px] md:h-[360px] flex-shrink-0 cursor-pointer will-change-transform transition-transform duration-300"
     >
       <div className="relative w-full h-full rounded-xl overflow-hidden shadow-2xl shadow-gray-300/50">
-        <img
+        <Image
           src={imageMap[project.image as keyof typeof imageMap]}
           alt={project.title}
-          className="absolute inset-0 w-full h-full object-cover"
+          className="object-cover"
+          fill
           style={{
             transform: isHovered ? "scale(1.1)" : "scale(1)",
             transition: "transform 0.6s cubic-bezier(0.215, 0.61, 0.355, 1)",
@@ -321,15 +323,15 @@ const PremiumLightbox = ({
         Close
       </motion.button>
 
-      <motion.img
-        src={image}
-        alt="Project preview"
-        className="max-w-full max-h-[90vh] object-contain rounded-xl sm:rounded-2xl shadow-2xl"
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        transition={{ duration: 0.6, ease: [0.215, 0.61, 0.355, 1] }}
-      />
+      <div className="relative max-w-full max-h-[90vh] aspect-video w-full px-4">
+        <Image
+          src={image}
+          alt="Project preview"
+          className="object-contain rounded-xl sm:rounded-2xl shadow-2xl"
+          fill
+          sizes="90vw"
+        />
+      </div>
     </motion.div>
   );
 };
@@ -337,7 +339,7 @@ const PremiumLightbox = ({
 const Portfolio = () => {
   const { portfolio: portfolioData } = useContent();
   const sectionRef = useRef(null);
-  const [lightbox, setLightbox] = useState(null);
+  const [lightbox, setLightbox] = useState<any>(null);
   const [isClient, setIsClient] = useState(false);
 
   const { scrollYProgress } = useScroll({
@@ -359,7 +361,8 @@ const Portfolio = () => {
     setIsClient(true);
   }, []);
 
-  if (!isClient) return null;
+
+  // if (!isClient) return null;
 
   const row1 = projects.slice(0, 3);
   const row2 = projects.slice(2, 5);

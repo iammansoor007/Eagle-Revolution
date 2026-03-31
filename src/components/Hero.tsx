@@ -4,6 +4,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Icon } from "../config/icons";
 import { useContent } from "../hooks/useContent";
+import Image from "next/image";
+
 import bgfair from "../assets/bgfair.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -42,11 +44,12 @@ const Hero = () => {
             maskImage: "linear-gradient(to bottom, black 60%, transparent 95%)",
           }}
         >
-          <img
+          <Image
             src={bgfair}
             alt=""
             className="w-full h-full object-cover scale-105"
-            style={{ transform: "none" }}
+            fill
+            priority
           />
         </div>
 

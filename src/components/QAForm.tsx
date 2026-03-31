@@ -602,7 +602,8 @@ ${formData.message}
     return () => ctx.revert();
   }, [isClient]);
 
-  if (!isClient) return null;
+
+  // if (!isClient) return null;
 
   return (
     <section
@@ -645,7 +646,7 @@ ${formData.message}
       </LiquidParallax>
 
       <div className="absolute inset-0 pointer-events-none">
-        {[...Array(20)].map((_, i) => (
+        {isClient && [...Array(20)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute w-0.5 h-0.5 bg-primary/20 rounded-full"

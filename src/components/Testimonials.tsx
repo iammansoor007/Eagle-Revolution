@@ -379,7 +379,8 @@ const Testimonials = () => {
     return () => ctx.revert();
   }, [isClient]);
 
-  if (!isClient) return null;
+
+  // if (!isClient) return null;
 
   return (
     <>

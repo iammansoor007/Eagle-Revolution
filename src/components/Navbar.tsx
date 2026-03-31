@@ -4,6 +4,9 @@ import { Icon } from "../config/icons";
 import { useContent } from "../hooks/useContent";
 import logo from "../assets/eaglelogo.png";
 
+import Image from "next/image";
+import Link from "next/link";
+
 const Navbar = () => {
   const { navbar } = useContent();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -64,22 +67,21 @@ const Navbar = () => {
       >
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex items-center justify-between">
-            <motion.a
-              href="#"
+            <Link
+              href="/"
               className="flex items-center group"
               onClick={handleLinkClick}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
             >
-              <div className="h-12 sm:h-14 md:h-16 lg:h-18 w-24 sm:w-28 md:w-32 lg:w-36 flex items-center justify-center overflow-hidden">
-                <img
+              <div className="h-12 sm:h-14 md:h-16 lg:h-18 w-24 sm:w-28 md:w-32 lg:w-36 flex items-center justify-center overflow-hidden relative">
+                <Image
                   src={logo}
                   alt="Eagle Revolution Logo"
-                  className="h-full w-full object-contain"
-                  loading="eager"
+                  className="object-contain"
+                  fill
+                  priority
                 />
               </div>
-            </motion.a>
+            </Link>
 
             <div className="hidden lg:flex items-center space-x-2">
               <div className="relative">
@@ -218,7 +220,9 @@ const Navbar = () => {
               className="fixed top-0 right-0 h-full w-full max-w-sm bg-white z-50 lg:hidden shadow-2xl flex flex-col"
             >
               <div className="p-6 border-b border-border flex items-center justify-between">
-                <img src={logo} alt="Logo" className="h-10 w-auto" />
+                <div className="relative h-10 w-24">
+                  <Image src={logo} alt="Logo" className="object-contain" fill />
+                </div>
                 <button onClick={() => setIsMenuOpen(false)} className="p-2 text-foreground">
                   <Icon name="X" />
                 </button>

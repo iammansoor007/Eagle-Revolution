@@ -331,7 +331,8 @@ const Services = () => {
     return () => ctx.revert();
   }, [isClient]);
 
-  if (!isClient) return null;
+
+  // if (!isClient) return null;
 
   return (
     <section
@@ -407,7 +408,7 @@ const Services = () => {
                 >
                   <div className="relative aspect-[4/5]">
                     <motion.img
-                      src={serviceDetail}
+                      src={serviceDetail.src}
                       alt="Eagle Revolution Services"
                       className="absolute inset-0 w-full h-full object-cover"
                       style={{ scale: imageScale }}

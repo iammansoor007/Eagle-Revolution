@@ -8,9 +8,16 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
-dist-ssr
-*.local
+# next.js
+.next/
+out/
+
+# production
+build/
+
+# misc
+.DS_Store
+*.pem
 
 # Editor directories and files
 .vscode/*

@@ -35,6 +35,9 @@ const ParallaxLayer = ({ children, speed = 0.05, className = "" }: { children: R
 };
 
 const QuantumParticles = () => {
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => setIsClient(true), []);
+  
   const particles = [...Array(20)].map((_, i) => ({
     id: i,
     x: Math.random() * 100,
@@ -44,6 +47,9 @@ const QuantumParticles = () => {
     delay: Math.random() * 5,
     opacity: Math.random() * 0.2 + 0.05,
   }));
+
+  if (!isClient) return null;
+
 
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">

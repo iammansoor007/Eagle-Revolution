@@ -1,4 +1,5 @@
 import { motion, useInView, useReducedMotion } from "framer-motion";
+import Image from "next/image";
 import { useRef, useEffect, useState, useCallback, useMemo, memo } from "react";
 import { Icon } from "../config/icons";
 import { useContent } from "../hooks/useContent";
@@ -257,13 +258,13 @@ export default function AboutSection() {
 
                         <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-gray-300/50">
                             <div className="relative aspect-[4/5] lg:aspect-[3/4]">
-                                <img
+                                <Image
                                     src={EagleAboutImg}
                                     alt={image.alt}
-                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-7000 group-hover:scale-105"
+                                    className="object-cover transition-transform duration-7000 group-hover:scale-105"
+                                    fill
+                                    priority
                                     loading="eager"
-                                    width="800"
-                                    height="1000"
                                 />
 
                                 <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 via-transparent to-transparent" />
