@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "../config/icons";
@@ -89,7 +91,7 @@ const Navbar = () => {
                   ref={servicesButtonRef}
                   onMouseEnter={handleServicesMouseEnter}
                   onMouseLeave={handleServicesMouseLeave}
-                  className={`flex items-center space-x-2 px-5 py-2.5 transition-all duration-300 font-bold rounded-xl relative group ${scrolled ? "text-foreground hover:text-primary" : "text-white hover:text-primary"
+                  className={`flex items-center space-x-2 px-5 py-2.5 transition-all duration-300 font-bold rounded-xl relative group ${scrolled ? "text-black hover:text-primary" : "text-black hover:text-primary"
                     }`}
                 >
                   <Icon name="Wrench" className="h-4 w-4" />
@@ -116,7 +118,7 @@ const Navbar = () => {
                         {services.map((service: any) => {
                           const isThisHovered = hoveredService === service.title;
                           return (
-                            <motion.a
+                            <Link
                               key={service.title}
                               href="#services"
                               onMouseEnter={() => setHoveredService(service.title)}
@@ -145,7 +147,7 @@ const Navbar = () => {
                               <p className="text-muted-foreground text-xs leading-relaxed line-clamp-2">
                                 {service.description}
                               </p>
-                            </motion.a>
+                            </Link>
                           );
                         })}
                       </div>
@@ -156,20 +158,20 @@ const Navbar = () => {
 
               <div className="flex items-center space-x-1 ml-2">
                 {companyLinks.slice(1).map((link: any) => (
-                  <motion.a
+                  <Link
                     key={link.label}
                     href={link.href}
                     onClick={handleLinkClick}
-                    className={`flex items-center space-x-2 px-4 py-2.5 transition-all duration-300 font-bold rounded-xl relative group ${scrolled ? "text-foreground hover:text-primary" : "text-white hover:text-primary"
+                    className={`flex items-center space-x-2 px-4 py-2.5 transition-all duration-300 font-bold rounded-xl relative group ${scrolled ? "text-black hover:text-primary" : "text-black hover:text-primary"
                       }`}
-                    whileHover={{ y: -2 }}
                   >
                     <Icon name={link.icon} className="h-4 w-4" />
                     <span>{link.label}</span>
                     <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary group-hover:w-3/4 transition-all duration-500" />
-                  </motion.a>
+                  </Link>
                 ))}
               </div>
+
             </div>
 
             <motion.div className="hidden lg:flex items-center" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -190,7 +192,7 @@ const Navbar = () => {
                   h-11 w-11 rounded-xl transition-all duration-300
                   ${scrolled
                     ? "bg-white text-primary shadow-md border border-border"
-                    : "bg-white/20 text-white backdrop-blur-sm"
+                    : "bg-white/20 text-primary backdrop-blur-sm"
                   }
                 `}
                 whileTap={{ scale: 0.9 }}
@@ -233,7 +235,7 @@ const Navbar = () => {
                   <h3 className="text-primary font-bold uppercase tracking-widest text-xs mb-4">Our Services</h3>
                   <div className="grid gap-3">
                     {services.map((service: any) => (
-                      <a
+                      <Link
                         key={service.title}
                         href="#services"
                         onClick={handleLinkClick}
@@ -243,7 +245,7 @@ const Navbar = () => {
                           <Icon name="Wrench" className="h-5 w-5" />
                         </div>
                         <span className="font-bold text-foreground">{service.title}</span>
-                      </a>
+                      </Link>
                     ))}
                   </div>
                 </div>
@@ -252,14 +254,14 @@ const Navbar = () => {
                   <h3 className="text-primary font-bold uppercase tracking-widest text-xs mb-4">Quick Links</h3>
                   <div className="grid gap-2">
                     {companyLinks.map((link: any) => (
-                      <a
+                      <Link
                         key={link.label}
                         href={link.href}
                         onClick={handleLinkClick}
                         className="flex items-center space-x-3 p-3 font-bold text-foreground hover:text-primary"
                       >
                         <span>{link.label}</span>
-                      </a>
+                      </Link>
                     ))}
                   </div>
                 </div>

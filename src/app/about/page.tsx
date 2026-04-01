@@ -1,0 +1,1302 @@
+"use client";
+
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useContent } from "../../hooks/useContent";
+import owner from "../../assets/eagleowner.jpeg";
+import {
+  MousePointer2,
+  Globe,
+  ShieldCheck,
+  ArrowUpRight,
+  Clock,
+  CheckCircle2 as CheckCircle,
+  BadgeCheck,
+  TrendingUp,
+  Users,
+  Award,
+  Scale,
+  Gem,
+  Zap,
+  Heart,
+  Sparkles,
+  ArrowRight,
+  Target as LucideTarget,
+  Shield as LucideShield,
+  Home as LucideHome,
+  Building as LucideBuilding,
+  Window as LucideWindow,
+  Droplet as LucideDroplet,
+  Layers as LucideLayers,
+  Star as LucideStar
+} from 'lucide-react';
+import React from 'react';
+
+// ==================== CUSTOM SVG ICONS ====================
+const CustomIcons = {
+  Star: () => (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+    </svg>
+  ),
+  Shield: () => (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+    </svg>
+  ),
+  CheckCircle: () => (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  ),
+  ArrowRight: () => (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7-7 7M3 12h18" />
+    </svg>
+  ),
+  Target: () => (
+    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 22V19.4M12 2V4.6M22 12H19.4M2 12H4.6M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16ZM12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" />
+    </svg>
+  ),
+  Badge: () => (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+    </svg>
+  ),
+  Home: () => (
+    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+    </svg>
+  ),
+  Building: () => (
+    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+    </svg>
+  ),
+  Window: () => (
+    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4h16v16H4V4zM12 4v16M4 12h16" />
+    </svg>
+  ),
+  Droplet: () => (
+    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 2.25l-7.5 12a7.5 7.5 0 0015 0l-7.5-12z" />
+    </svg>
+  ),
+  Layers: () => (
+    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.25 12l8.954-4.477a2.25 2.25 0 012.092 0L21.75 12M2.25 12l8.954 4.477a2.25 2.25 0 012.092 0L21.75 12M2.25 12V16.5a2.25 2.25 0 002.25 2.25h15a2.25 2.25 0 002.25-2.25V12" />
+    </svg>
+  ),
+};
+
+// ==================== STAT COUNTER COMPONENT ====================
+const StatCounter = ({ value, label, suffix = "", delay = 0, icon: Icon, description }: {
+  value: number;
+  label: string;
+  suffix?: string;
+  delay?: number;
+  icon: any;
+  description?: string
+}) => {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-100px" });
+
+  useEffect(() => {
+    if (inView) {
+      let start = 0;
+      const duration = 2000;
+      const increment = value / (duration / 16);
+
+      const timer = setInterval(() => {
+        start += increment;
+        if (start >= value) {
+          setCount(value);
+          clearInterval(timer);
+        } else {
+          setCount(Math.floor(start));
+        }
+      }, 16);
+
+      return () => clearInterval(timer);
+    }
+  }, [inView, value]);
+
+  return (
+    <div
+      ref={ref}
+      className="group relative bg-card rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 text-center sm:text-left"
+      style={{ transitionDelay: `${delay}s` }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+      <div className="relative mb-6 flex justify-center sm:justify-start">
+        <div className="inline-flex p-3 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-all duration-500 group-hover:scale-110">
+          <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-primary" strokeWidth={1.5} />
+        </div>
+      </div>
+
+      <div className="relative">
+        <div className="flex items-baseline justify-center sm:justify-start gap-1 mb-3">
+          <span className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground tracking-tight">
+            {count}
+          </span>
+          <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary">
+            {suffix}
+          </span>
+        </div>
+
+        <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">
+          {label}
+        </h3>
+
+        {description && (
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            {description}
+          </p>
+        )}
+      </div>
+
+      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-12 h-0.5 bg-primary/30 group-hover:w-20 group-hover:bg-primary transition-all duration-500" />
+    </div>
+  );
+};
+
+// ==================== STATS SECTION ====================
+const StatsSection = () => {
+  const stats = [
+    {
+      value: 50,
+      label: "Years Combined Experience",
+      suffix: "+",
+      delay: 0.1,
+      icon: Clock,
+      description: "Industry expertise across our team"
+    },
+    {
+      value: 1000,
+      label: "Homes Transformed",
+      suffix: "+",
+      delay: 0.2,
+      icon: LucideHome,
+      description: "Satisfied homeowners"
+    },
+    {
+      value: 100,
+      label: "Veteran Owned",
+      suffix: "%",
+      delay: 0.3,
+      icon: BadgeCheck,
+      description: "Proudly serving our community"
+    },
+    {
+      value: 5,
+      label: "Year Workmanship Guarantee",
+      suffix: "YR",
+      delay: 0.4,
+      icon: LucideShield,
+      description: "Peace of mind guaranteed"
+    }
+  ];
+
+  return (
+    <section className="py-16 sm:py-24 bg-gradient-to-b from-muted/30 to-background">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12 sm:mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-6">
+            <TrendingUp className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium text-primary uppercase tracking-wider">
+              Our Impact
+            </span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+            Trusted by Homeowners
+            <br className="hidden sm:block" />
+            <span className="text-primary"> Across the Region</span>
+          </h2>
+          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
+            Numbers speak louder than words. Here's what we've achieved together with our valued customers.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+          {stats.map((stat, index) => (
+            <StatCounter
+              key={index}
+              value={stat.value}
+              label={stat.label}
+              suffix={stat.suffix}
+              delay={stat.delay}
+              icon={stat.icon}
+              description={stat.description}
+            />
+          ))}
+        </div>
+
+        <div className="mt-16 text-center">
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-8 items-center opacity-60">
+            <div className="flex items-center gap-2">
+              <Users className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+              <span className="text-xs sm:text-sm text-muted-foreground">500+ 5-Star Reviews</span>
+            </div>
+            <div className="w-1 h-1 bg-border rounded-full hidden sm:block" />
+            <div className="flex items-center gap-2">
+              <Award className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+              <span className="text-xs sm:text-sm text-muted-foreground">A+ BBB Rating</span>
+            </div>
+            <div className="w-1 h-1 bg-border rounded-full hidden sm:block" />
+            <div className="flex items-center gap-2">
+              <LucideStar className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+              <span className="text-xs sm:text-sm text-muted-foreground">Top Rated Contractor</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// ==================== HERO WITH BACKGROUND IMAGE ====================
+// ==================== HERO WITH BACKGROUND IMAGE ====================
+const Hero = () => {
+  const { scrollY } = useScroll();
+  const y1 = useTransform(scrollY, [0, 500], [0, 150]);
+  const textY = useTransform(scrollY, [0, 500], [0, -50]);
+
+  return (
+    <section className="relative min-h-screen w-full bg-background overflow-hidden flex items-center justify-center py-12">
+      {/* --- Background --- */}
+      <div className="absolute inset-0 z-0">
+        <motion.div style={{ y: y1 }} className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070"
+            alt="Modern Architecture"
+            className="w-full h-full object-cover opacity-30 scale-110 grayscale-[0.5]"
+          />
+        </motion.div>
+
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background z-10 md:bg-gradient-to-r md:from-background md:via-background/90 md:to-transparent" />
+
+        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-[-5%] left-[10%] w-[30%] h-[30%] bg-primary/5 rounded-full blur-[100px]" />
+      </div>
+
+      <div className="absolute inset-0 z-10 opacity-[0.05] pointer-events-none"
+        style={{ backgroundImage: `radial-gradient(hsl(var(--foreground)) 0.5px, transparent 0.5px)`, backgroundSize: '24px 24px' }} />
+
+      {/* --- Main Container: Added max-width to fix Big Screens --- */}
+      <div className="relative z-30 w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-16">
+
+          {/* Left Side: Adjusted Heading scaling */}
+          <motion.div
+            style={{ y: textY }}
+            className="w-full lg:w-7/12 text-center lg:text-left"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <h1 className="text-6xl sm:text-6xl md:text-7xl lg:text-[100px] xl:text-[110px] font-black leading-[1.1] sm:leading-[1.1] md:leading-[0.95] lg:leading-[0.85] tracking-tighter text-primary mb-6">
+              SOARING <br />
+              <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-foreground via-foreground/70 to-foreground/90">
+                BEYOND
+              </span>
+              <br />
+              EXPECTATIONS.
+            </h1>
+
+            <p className="text-muted-foreground text-lg md:text-xl lg:text-2xl max-w-xl mx-auto lg:mx-0 mb-8 font-medium leading-relaxed">
+              Born in St. Charles, MO. Built on military precision. Driven by integrity.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center">
+              <motion.button
+                whileHover={{ y: -5, boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full sm:w-auto px-10 py-5 bg-primary text-primary-foreground font-bold text-lg rounded-xl flex items-center justify-center gap-3 group transition-all"
+              >
+                Contact Now
+                <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              </motion.button>
+            </div>
+          </motion.div>
+
+          {/* Right Side: Fixed Card scaling for smaller screens */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.3 }}
+            className="w-full max-w-md lg:w-4/12"
+          >
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full opacity-50" />
+
+              <div className="relative bg-card/60 backdrop-blur-xl border border-border/60 p-8 md:p-10 rounded-[40px] shadow-2xl">
+                <div className="space-y-8 md:space-y-10">
+                  {[
+                    { label: 'Veteran Owned', val: 'USA', icon: <ShieldCheck className="text-primary w-6 h-6" /> },
+                    { label: 'Quality Guarantee', val: '5 YR', icon: <Zap className="text-primary w-6 h-6" /> },
+                    { label: 'Support', val: '24/7', icon: <Globe className="text-primary w-6 h-6" /> },
+                  ].map((stat, i) => (
+                    <div key={i} className="flex items-center gap-5 group">
+                      <div className="w-12 h-12 md:w-14 md:h-14 bg-card rounded-2xl shadow-sm border border-border flex items-center justify-center group-hover:scale-110 transition-transform">
+                        {stat.icon}
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground text-[10px] uppercase tracking-wider font-bold">{stat.label}</p>
+                        <p className="text-2xl md:text-3xl font-black text-foreground tracking-tight">{stat.val}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+};
+// ==================== FOUNDER SECTION ====================
+const FounderStory = () => {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-100px" });
+
+  return (
+    <section id="story" ref={ref} className="py-12 sm:py-16 md:py-20 bg-background overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-24">
+
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.8 }}
+            className="w-full lg:w-5/12"
+          >
+            <div className="relative group max-w-md mx-auto lg:mx-0">
+              <div className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl shadow-muted/20">
+                <Image
+                  src={owner}
+                  alt="Brandon Anderson - Founder"
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/20 to-transparent" />
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={inView ? { opacity: 1, scale: 1 } : {}}
+                transition={{ delay: 0.5 }}
+                className="absolute -bottom-4 -right-4 sm:-bottom-6 sm:-right-6 bg-primary text-primary-foreground p-4 sm:p-6 rounded-2xl shadow-2xl z-10"
+              >
+                <div className="text-center">
+                  <div className="text-lg sm:text-2xl font-black italic mb-0.5">U.S. ARMY</div>
+                  <div className="text-[8px] sm:text-[10px] font-bold uppercase tracking-widest opacity-80">Veteran Owned</div>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+
+          <div className="w-full lg:w-7/12 text-center lg:text-left">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              className="flex items-center justify-center lg:justify-start gap-3 mb-6"
+            >
+              <div className="w-10 h-px bg-primary hidden lg:block" />
+              <span className="text-xs font-black uppercase tracking-[0.3em] text-primary">Our Story</span>
+            </motion.div>
+
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 sm:mb-8 leading-tight">
+              Soaring Beyond
+              <br />
+              <span className=" font-bold">Expectations</span>
+            </h2>
+
+            <div className="space-y-4 sm:space-y-6 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto lg:mx-0">
+              <p>
+                <span className="text-foreground font-bold">Eagle Revolution</span> was founded to do more than just build roofs, windows, decks, and siding. We are here to build a movement.
+              </p>
+              <p>
+                Born in <span className="text-foreground font-bold">St. Charles, Missouri</span>, Eagle Revolution was launched by <span className="text-foreground font-bold">Brandon Anderson</span>, a U.S. Army veteran and globally licensed combat sports official who brings battlefield discipline and boardroom precision to every project.
+              </p>
+
+              <p>
+                Eagle Revolution is the local force that fights back. We go toe-to-toe with billion-dollar corporations and win, not with gimmicks or flash, but with fire, integrity, and a relentless commitment to the customer.
+              </p>
+
+              <blockquote className="border-l-4 border-primary pl-4 sm:pl-6 py-2 my-6 sm:my-8 text-left">
+                <p className="text-base sm:text-xl font-medium text-foreground italic">
+                  "This is freedom in construction form—freedom from overpriced corporate contractors, freedom from broken promises, and freedom to expect more from your remodeler."
+                </p>
+                <footer className="mt-3 font-bold text-xs sm:text-sm text-primary uppercase tracking-widest">— Brandon Anderson, CEO</footer>
+              </blockquote>
+
+              <p className="font-medium text-foreground">
+                We are not just another contractor. We are a Revolution, and we are only getting started.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// ==================== MISSION SECTION ====================
+const MissionSection = () => {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-100px", threshold: 0.1 });
+
+  const corePrinciples = [
+    {
+      title: "Fairness",
+      desc: "Honest pricing with zero hidden agendas. Every quote is transparent, every invoice is exact—building trust through radical transparency.",
+      val: "01",
+      icon: Scale,
+    },
+    {
+      title: "Honesty",
+      desc: "Transparent communication at every milestone. No surprises, no shortcuts—just unwavering integrity that defines our character.",
+      val: "02",
+      icon: Gem,
+    },
+    {
+      title: "Hard Work",
+      desc: "Relentless pursuit of perfection until excellence is achieved. We measure success by your satisfaction, not by the clock.",
+      val: "03",
+      icon: Zap,
+    },
+    {
+      title: "Precision",
+      desc: "Military-grade accuracy in every detail. From initial measurements to final execution—where craftsmanship meets mathematical certainty.",
+      val: "04",
+      icon: LucideTarget,
+    }
+  ];
+
+  return (
+    <section ref={ref} className="relative py-8 sm:py-10 lg:py-12 overflow-hidden bg-background">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-0 w-full h-full">
+          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="light-grid" width="50" height="50" patternUnits="userSpaceOnUse">
+                <path d="M 50 0 L 0 0 0 50" fill="none" stroke="currentColor" strokeWidth="0.3" className="text-border/10" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#light-grid)" />
+          </svg>
+        </div>
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+        <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 items-start">
+          <motion.div
+            initial={{ opacity: 0, x: -60 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 1, ease: [0.23, 1, 0.32, 1] }}
+            className="w-full lg:w-5/12 text-center lg:text-left"
+          >
+            <motion.div
+              initial={{ opacity: 0, scaleX: 0 }}
+              animate={inView ? { opacity: 1, scaleX: 1 } : {}}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="inline-flex items-center gap-4 mb-6 justify-center lg:justify-start"
+            >
+              <div className="w-12 sm:w-16 h-px bg-gradient-to-r from-primary to-transparent" />
+              <span className="text-[10px] font-mono font-medium tracking-[0.4em] text-primary/80 uppercase">
+                The Revolution
+              </span>
+            </motion.div>
+
+            <div className="mb-8 sm:mb-10">
+              <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-foreground leading-[1.1] tracking-tighter">
+                Our Mission
+              </h2>
+
+              <motion.div
+                initial={{ width: 0 }}
+                animate={inView ? { width: "80px" } : {}}
+                transition={{ duration: 1, delay: 0.8, ease: [0.77, 0, 0.18, 1] }}
+                className="h-[2px] bg-gradient-to-r from-primary to-transparent mt-4 mx-auto lg:mx-0"
+              />
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8, delay: 0.7 }}
+              className="relative mb-10 sm:mb-12"
+            >
+              <div className="absolute -left-4 sm:-left-6 -top-6 sm:-top-8 text-6xl sm:text-8xl font-serif text-primary/5 select-none leading-none">“</div>
+              <p className="text-base sm:text-lg md:text-xl text-muted-foreground/90 leading-relaxed px-2 sm:pl-6 relative z-10 font-light tracking-wide">
+                To revolutionize the exterior remodeling industry by delivering exceptional value and prioritizing the needs of our customers above maximizing profit margins. Together, we are improving the remodeling experience—one home, one family, and one community at a time.
+              </p>
+              <div className="absolute -bottom-6 sm:-bottom-8 right-0 text-6xl sm:text-8xl font-serif text-primary/5 select-none leading-none">”</div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.9 }}
+              className="pt-6 sm:pt-8 border-t border-border/30"
+            >
+              <div className="flex flex-wrap justify-center lg:justify-start gap-6 sm:gap-12">
+                {[
+                  { value: "100%", label: "Customer First", delay: 0 },
+                  { value: "0%", label: "Hidden Agendas", delay: 0.1 },
+                  { value: "∞", label: "Commitment", delay: 0.2 }
+                ].map((stat, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={inView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 0.5, delay: 1 + stat.delay }}
+                    className="group cursor-pointer text-center"
+                  >
+                    <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+                      {stat.value}
+                    </div>
+                    <div className="text-[8px] sm:text-[9px] text-muted-foreground uppercase tracking-[0.2em] mt-2 group-hover:tracking-[0.25em] transition-all duration-300">
+                      {stat.label}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+
+          <div className="w-full lg:w-7/12 grid sm:grid-cols-2 gap-4 sm:gap-5">
+            {corePrinciples.map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 50 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.7, delay: 0.4 + (i * 0.12), ease: [0.23, 1, 0.32, 1] }}
+                whileHover={{ y: -8 }}
+                className="group"
+              >
+                <div className="relative bg-gradient-to-br from-card via-card to-muted/5 rounded-2xl p-5 sm:p-7 border border-border/40 hover:border-primary/40 transition-all duration-500 h-full shadow-lg hover:shadow-2xl backdrop-blur-sm text-center sm:text-left">
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/0 via-primary/0 to-primary/0 group-hover:via-primary/10 transition-all duration-700" />
+
+                  <div className="relative z-10">
+                    <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 sm:gap-0 mb-6">
+                      <motion.div
+                        whileHover={{ rotate: 5, scale: 1.05 }}
+                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-500 flex items-center justify-center border border-primary/20 group-hover:border-primary/30"
+                      >
+                        <item.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" strokeWidth={1.5} />
+                      </motion.div>
+                      <span className="text-xs sm:text-sm font-mono font-medium text-muted-foreground/40 group-hover:text-muted-foreground transition-colors duration-500">
+                        {item.val}
+                      </span>
+                    </div>
+
+                    <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-3 tracking-tight">
+                      {item.title}
+                    </h3>
+
+                    <motion.div
+                      initial={{ width: 0 }}
+                      whileHover={{ width: "40px" }}
+                      className="w-8 h-0.5 bg-primary/50 mb-5 transition-all duration-500 mx-auto sm:mx-0"
+                    />
+
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                      {item.desc}
+                    </p>
+
+                    <motion.div
+                      initial={{ opacity: 0, x: -10 }}
+                      whileHover={{ opacity: 1, x: 0 }}
+                      className="absolute bottom-5 sm:bottom-6 right-5 sm:right-6 opacity-0 group-hover:opacity-100 transition-all duration-500"
+                    >
+                      <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
+                    </motion.div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={inView ? { scaleX: 1 } : {}}
+          transition={{ duration: 1.2, delay: 1.2, ease: [0.77, 0, 0.18, 1] }}
+          className="mt-16 sm:mt-24 lg:mt-32 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent origin-left"
+        />
+      </div>
+    </section>
+  );
+};
+
+// ==================== PREMIUM MARQUEE ====================
+const RecognitionMarquee = () => {
+  const certs = [
+    "ProVia Certified", "IKO Pro", "Shingle Master",
+    "TimberTech", "Veteran Owned", "Contractor Excellence"
+  ];
+
+  return (
+    <section className="py-8 sm:py-12 mt-2 overflow-hidden relative bg-background">
+      <div className="flex flex-col gap-2">
+        <div className="flex whitespace-nowrap leading-none">
+          <motion.div
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+            className="flex items-center gap-4 sm:gap-8"
+          >
+            {[...certs, ...certs].map((text, i) => (
+              <div key={i} className="flex items-center gap-4 sm:gap-8 group">
+                <span
+                  className="text-5xl sm:text-7xl md:text-8xl lg:text-[10rem] font-black uppercase tracking-tighter transition-all duration-500"
+                  style={{
+                    color: 'transparent',
+                    WebkitTextStroke: '2px hsl(var(--border))',
+                    WebkitTextStrokeColor: 'hsl(var(--border))'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = 'hsl(var(--primary))';
+                    e.currentTarget.style.WebkitTextStrokeColor = 'hsl(var(--primary))';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = 'transparent';
+                    e.currentTarget.style.WebkitTextStrokeColor = 'hsl(var(--border))';
+                  }}
+                >
+                  {text}
+                </span>
+                <div className="w-8 sm:w-12 lg:w-16 h-[2px] bg-border group-hover:bg-primary group-hover:scale-x-125 transition-all duration-500" />
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        <div className="flex whitespace-nowrap opacity-60">
+          <motion.div
+            animate={{ x: ["-50%", "0%"] }}
+            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+            className="flex items-center gap-6 sm:gap-12"
+          >
+            {[...certs, ...certs].map((text, i) => (
+              <div key={i} className="flex items-center gap-6 sm:gap-12 group">
+                <span
+                  className="text-base sm:text-xl md:text-2xl font-light tracking-[0.2em] sm:tracking-[0.3em] uppercase transition-all duration-500"
+                  style={{
+                    color: 'transparent',
+                    WebkitTextStroke: '1px hsl(var(--muted-foreground))',
+                    WebkitTextStrokeColor: 'hsl(var(--muted-foreground))'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = 'hsl(var(--primary))';
+                    e.currentTarget.style.WebkitTextStrokeColor = 'hsl(var(--primary))';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = 'transparent';
+                    e.currentTarget.style.WebkitTextStrokeColor = 'hsl(var(--muted-foreground))';
+                  }}
+                >
+                  {text}
+                </span>
+                <span className="text-border font-serif italic text-xl sm:text-2xl group-hover:text-primary transition-colors">
+                  &
+                </span>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+
+      <div className="absolute inset-y-0 left-0 w-16 sm:w-32 lg:w-64 bg-gradient-to-r from-background via-background/80 to-transparent z-10 pointer-events-none" />
+      <div className="absolute inset-y-0 right-0 w-16 sm:w-32 lg:w-64 bg-gradient-to-l from-background via-background/80 to-transparent z-10 pointer-events-none" />
+    </section>
+  );
+};
+
+// ==================== SERVICE CARDS ====================
+const ServiceCard = ({ service, index, inView }: { service: any; index: number; inView: boolean }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.7, delay: index * 0.1, ease: [0.23, 1, 0.32, 1] }}
+      className="group"
+    >
+      <div className="relative rounded-2xl overflow-hidden bg-card border border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl">
+        <div className="relative aspect-[4/5] overflow-hidden">
+          <Image
+            src={service.image}
+            alt={service.title}
+            fill
+            className="object-cover transition-all duration-700 group-hover:scale-110"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
+        </div>
+
+        <div className="absolute inset-0 p-4 sm:p-6 md:p-8 flex flex-col justify-end">
+          <div className="transform translate-y-2 sm:translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+            <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/50 backdrop-blur-sm flex items-center justify-center group-hover:bg-primary/30 transition-all duration-300">
+                <div className="text-primary text-base sm:text-xl group-hover:scale-110 transition-transform duration-300">
+                  {service.icon}
+                </div>
+              </div>
+              <span className="text-[10px] sm:text-xs font-mono text-white/60 tracking-wider">
+                0{index + 1}
+              </span>
+            </div>
+
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2 sm:mb-3 tracking-tight">
+              {service.title}
+            </h3>
+
+            <div className="w-8 sm:w-12 h-0.5 bg-primary/50 group-hover:w-12 sm:group-hover:w-24 group-hover:bg-primary transition-all duration-500 mb-3 sm:mb-4" />
+
+            <p className="text-white/70 text-xs sm:text-sm leading-relaxed opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100">
+              {service.desc}
+            </p>
+
+            <div className="mt-4 sm:mt-6 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-200">
+              <div className="inline-flex items-center gap-2 text-[10px] sm:text-xs font-medium tracking-wider text-white/80 group-hover:text-white">
+                <span>LEARN MORE</span>
+                <svg className="w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+const ServicesSection = () => {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-100px", threshold: 0.1 });
+
+  const services = [
+    {
+      title: "Residential Roofing",
+      icon: <CustomIcons.Home />,
+      desc: "Premium roofing solutions that combine durability with architectural elegance. Protecting your home with excellence.",
+      image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=2069"
+    },
+    {
+      title: "Commercial Roofing",
+      icon: <CustomIcons.Building />,
+      desc: "Engineered for performance and longevity. We deliver commercial roofing systems that stand the test of time.",
+      image: "https://images.unsplash.com/photo-1541888946425-d81bb19480c5?q=80&w=2070"
+    },
+    {
+      title: "Windows & Doors",
+      icon: <CustomIcons.Window />,
+      desc: "Transform your home with energy-efficient windows and doors that elevate aesthetics and functionality.",
+      image: "https://images.unsplash.com/photo-1503387762-592dea58ef23?q=80&w=2000"
+    },
+    {
+      title: "Decks & Outdoor Living",
+      icon: <CustomIcons.Star />,
+      desc: "Create stunning outdoor spaces that extend your living area. Perfect for entertaining and relaxation.",
+      image: "https://images.unsplash.com/photo-1590059132718-500fd97553ef?q=80&w=2000"
+    },
+    {
+      title: "Siding, Soffit & Fascia",
+      icon: <CustomIcons.Layers />,
+      desc: "Enhance curb appeal with premium siding solutions that offer beauty, durability, and energy efficiency.",
+      image: "https://images.unsplash.com/photo-1621333649344-914954386222?q=80&w=2070"
+    },
+    {
+      title: "Gutter Systems",
+      icon: <CustomIcons.Droplet />,
+      desc: "Protect your investment with seamless gutter systems designed for optimal water management and aesthetics.",
+      image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=2073"
+    }
+  ];
+
+  return (
+    <section ref={ref} className="relative py-16 sm:py-20 md:py-24 bg-background">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-0 w-full h-full">
+          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="light-grid-services" width="50" height="50" patternUnits="userSpaceOnUse">
+                <path d="M 50 0 L 0 0 0 50" fill="none" stroke="currentColor" strokeWidth="0.3" className="text-border/10" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#light-grid-services)" />
+          </svg>
+        </div>
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+        <div className="max-w-4xl mx-auto text-center mb-12 sm:mb-16 md:mb-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
+            className="inline-flex items-center gap-3 mb-6"
+          >
+            <div className="w-6 sm:w-8 h-px bg-primary" />
+            <span className="text-[10px] sm:text-xs font-medium tracking-[0.3em] text-primary uppercase">Our Services</span>
+            <div className="w-6 sm:w-8 h-px bg-primary" />
+          </motion.div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6 px-2"
+          >
+            Comprehensive Exterior
+            <br />
+            <span className="text-primary">Solutions</span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto px-4"
+          >
+            From roof to foundation, we deliver excellence across every aspect of your home's exterior
+          </motion.p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
+          {services.map((service, i) => (
+            <ServiceCard key={i} service={service} index={i} inView={inView} />
+          ))}
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="text-center mt-12 sm:mt-16"
+        >
+          <Link href="/services">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="group relative px-6 sm:px-8 py-3 sm:py-4 bg-primary text-primary-foreground font-semibold rounded-full overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              <span className="relative z-10 flex items-center gap-2 text-sm sm:text-base">
+                View All Services
+                <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform duration-300" />
+              </span>
+              <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+            </motion.button>
+          </Link>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+// ==================== CTA ====================
+const AwardCTABanner = () => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8, delay: 0.3 }}
+      className="relative mt-12 sm:mt-16 md:mt-20 mb-12 sm:mb-16 md:mb-20 overflow-hidden"
+    >
+      <div className="relative bg-card border border-border rounded-2xl">
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rotate-12"
+            animate={{ rotate: [12, 15, 12] }}
+            transition={{ duration: 8, repeat: Infinity }}
+          />
+          <motion.div
+            className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary/5 -rotate-12"
+            animate={{ rotate: [-12, -15, -12] }}
+            transition={{ duration: 8, repeat: Infinity }}
+          />
+        </div>
+
+        <motion.div
+          className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent"
+          animate={{ x: ["-100%", "100%"] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent"
+          animate={{ x: ["100%", "-100%"] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+        />
+
+        <div className="absolute top-0 left-0 w-12 h-12 sm:w-16 sm:h-16 border-t-2 border-l-2 border-primary/30" />
+        <div className="absolute top-0 right-0 w-12 h-12 sm:w-16 sm:h-16 border-t-2 border-r-2 border-primary/30" />
+        <div className="absolute bottom-0 left-0 w-12 h-12 sm:w-16 sm:h-16 border-b-2 border-l-2 border-primary/30" />
+        <div className="absolute bottom-0 right-0 w-12 h-12 sm:w-16 sm:h-16 border-b-2 border-r-2 border-primary/30" />
+
+        <div className="relative px-5 sm:px-8 md:px-12 lg:px-20 py-10 sm:py-12 md:py-16 lg:py-20 flex flex-col lg:flex-row items-center justify-between gap-8 sm:gap-10 z-30 text-center lg:text-left">
+          <div className="max-w-2xl">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              className="flex items-center justify-center lg:justify-start gap-2 mb-4"
+            >
+              <span className="w-6 sm:w-8 h-[2px] bg-primary" />
+              <span className="text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase text-primary">
+                Get Preapproved
+              </span>
+            </motion.div>
+
+            <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3 sm:mb-4 leading-tight">
+              Ready to Start Your <br />
+              <span className="text-primary">Revolution?</span>
+            </h3>
+
+            <p className="text-muted-foreground text-sm sm:text-base md:text-lg leading-relaxed max-w-lg mx-auto lg:mx-0">
+              Get preapproved in seconds and take the first step toward transforming your home with military precision and unwavering integrity.
+            </p>
+
+            <div className="flex flex-wrap justify-center lg:justify-start items-center gap-4 sm:gap-6 mt-4 sm:mt-6">
+              <div className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                <span className="text-[10px] sm:text-xs text-muted-foreground">No Obligation</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                <span className="text-[10px] sm:text-xs text-muted-foreground">Free Estimate</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                <span className="text-[10px] sm:text-xs text-muted-foreground">5 Year Guarantee</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
+            <motion.a
+              href="/contact"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              className="relative px-5 sm:px-6 md:px-8 py-3 sm:py-4 bg-primary text-primary-foreground font-bold rounded-full shadow-lg hover:shadow-xl hover:text-white transition-all duration-300 overflow-hidden flex items-center justify-center gap-2"
+            >
+              <span className="relative z-10 flex items-center gap-2 text-xs sm:text-sm md:text-base whitespace-nowrap">
+                Get Preapproved in Seconds
+                <motion.svg
+                  className="w-3 h-3 sm:w-4 sm:h-4 transition-transform duration-300 group-hover:translate-x-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </motion.svg>
+              </span>
+            </motion.a>
+
+            <motion.a
+              href="/contact"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              className="relative px-5 sm:px-6 md:px-8 py-3 sm:py-4 bg-background text-primary border-2 border-primary font-bold rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-300 overflow-hidden flex items-center justify-center gap-2"
+            >
+              <span className="relative z-10 flex items-center gap-2 text-xs sm:text-sm md:text-base whitespace-nowrap">
+                Contact Us
+              </span>
+            </motion.a>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+// ==================== CORE VALUES (PREMIUM CARD VERSION) ====================
+const ValuesGrid = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+
+  const values = [
+    {
+      title: 'Extreme Ownership',
+      description: 'By embracing this mindset, we ensure that we always act in the best interests of our clients, driving continuous improvement and achieving excellence in every project we undertake. We are not perfect by any means, but we are perfect at fixing any mistake along the way.',
+      icon: LucideShield,
+      number: '01',
+      stat: '100%',
+      statLabel: 'Accountability',
+    },
+    {
+      title: 'Integrity',
+      description: 'In the remodeling industry, integrity means consistently doing what is right, even when no one is watching. We believe in keeping our promises, providing accurate estimates, and delivering on our commitments without cutting corners.',
+      icon: CheckCircle,
+      number: '02',
+      stat: '0%',
+      statLabel: 'Hidden Fees',
+    },
+    {
+      title: 'Humility',
+      description: 'Humility is about putting the needs of the customer above our own and being open to feedback, learning, and improvement. By embracing humility, we stay grounded, continually refining our skills and enhancing the customer experience.',
+      icon: Heart,
+      number: '03',
+      stat: '24/7',
+      statLabel: 'Client Focus',
+    },
+    {
+      title: 'Customer First',
+      description: 'Our customers always come first here at Eagle Revolution. We ensure that our customers can have complete confidence in the quality of our work, knowing that we will always act in their best interests and stand behind our products and services with unwavering dedication.',
+      icon: BadgeCheck,
+      number: '04',
+      stat: '500+',
+      statLabel: 'Happy Clients',
+    },
+    {
+      title: 'Growth',
+      description: 'We believe that growth is essential not only for individual team members but also for the company as a whole. This core value drives us to seek out new learning opportunities, embrace innovation, and stay up-to-date with industry trends and best practices.',
+      icon: TrendingUp,
+      number: '05',
+      stat: '∞',
+      statLabel: 'Continuous',
+    },
+    {
+      title: 'Gratitude',
+      description: 'By expressing gratitude, we build lasting relationships and create a positive impact, ensuring every interaction is rooted in kindness and acknowledgment. We believe that a thankful mindset inspires excellence in service and craftsmanship, making every project a shared celebration.',
+      icon: Sparkles,
+      number: '06',
+      stat: '100%',
+      statLabel: 'Grateful',
+    },
+  ];
+
+  return (
+    <section className="relative py-16 sm:py-20 lg:py-24 bg-gradient-to-b from-background via-muted/30 to-background overflow-hidden">
+      <div className="absolute inset-0 opacity-30">
+        <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+              <circle cx="2" cy="2" r="1" fill="currentColor" className="text-muted-foreground/20" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#dots)" />
+        </svg>
+      </div>
+
+      <div className="absolute top-0 left-0 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-primary/5 rounded-full blur-3xl animate-pulse-slow" />
+      <div className="absolute bottom-0 right-0 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-primary/3 rounded-full blur-3xl animate-pulse-slower" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] sm:w-[800px] h-[500px] sm:h-[800px] bg-primary/2 rounded-full blur-3xl" />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="text-center mb-12 sm:mb-16 md:mb-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 sm:gap-3 mb-6"
+          >
+            <div className="w-6 sm:w-8 h-px bg-primary" />
+            <span className="text-[10px] sm:text-xs font-mono tracking-[0.3em] text-primary uppercase">
+              Our Core Values
+            </span>
+            <div className="w-6 sm:w-8 h-px bg-primary" />
+          </motion.div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight px-2"
+          >
+            <span className="text-foreground">Built on</span>
+            <br />
+            <span className="bg-gradient-to-r from-primary to-primary/95 bg-clip-text text-transparent">
+              Unshakable Principles
+            </span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-muted-foreground mt-4 sm:mt-6 max-w-2xl mx-auto text-sm sm:text-base px-4"
+          >
+            Six principles that guide every decision, every interaction, and every project we undertake.
+          </motion.p>
+
+          <motion.div
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="w-16 sm:w-20 h-px bg-primary/40 mx-auto mt-6 sm:mt-8"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 md:gap-8">
+          {values.map((value, idx) => {
+            const Icon = value.icon;
+            const isHovered = hoveredCard === idx;
+
+            return (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1, duration: 0.6 }}
+                onMouseEnter={() => {
+                  setActiveIndex(idx);
+                  setHoveredCard(idx);
+                }}
+                onMouseLeave={() => {
+                  setActiveIndex(null);
+                  setHoveredCard(null);
+                }}
+                className="group"
+              >
+                <div className="relative h-full">
+                  <motion.div
+                    animate={{
+                      opacity: isHovered ? 1 : 0,
+                      scale: isHovered ? 1 : 0.9,
+                    }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute -inset-0.5 bg-gradient-to-r from-primary/30 to-primary/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  />
+
+                  <div className={`relative bg-card rounded-2xl overflow-hidden transition-all duration-500 ${isHovered
+                    ? 'shadow-2xl border-primary/30'
+                    : 'shadow-lg border-border'
+                    } border`}>
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-primary/40 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+
+                    <div className="p-5 sm:p-6 md:p-8">
+                      <div className="relative mb-6 sm:mb-8">
+                        <motion.div
+                          animate={{
+                            rotate: isHovered ? [0, -5, 5, 0] : 0,
+                          }}
+                          transition={{ duration: 0.5 }}
+                          className="relative z-10 flex justify-center sm:justify-start"
+                        >
+                          <div className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center transition-all duration-500 ${isHovered
+                            ? 'bg-primary/10 shadow-lg shadow-primary/20'
+                            : 'bg-muted/50'
+                            }`}>
+                            <Icon
+                              className={`w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 transition-all duration-500 ${isHovered ? 'text-primary scale-110' : 'text-muted-foreground'
+                                }`}
+                              strokeWidth={1.5}
+                            />
+                          </div>
+                        </motion.div>
+
+                        <motion.div
+                          animate={{
+                            scale: isHovered ? [1, 1.2, 1] : 1,
+                            opacity: isHovered ? [0.5, 0.2, 0.5] : 0,
+                          }}
+                          transition={{ duration: 1.5, repeat: isHovered ? Infinity : 0 }}
+                          className="absolute inset-0 bg-primary/20 rounded-2xl blur-md"
+                        />
+                      </div>
+
+                      <div className="absolute top-5 sm:top-6 md:top-8 right-5 sm:right-6 md:right-8">
+                        <span className={`text-xs sm:text-sm font-mono transition-all duration-500 ${isHovered ? 'text-primary font-semibold' : 'text-muted-foreground/40'
+                          }`}>
+                          {value.number}
+                        </span>
+                      </div>
+
+                      <h3 className={`text-lg sm:text-xl md:text-2xl font-bold mb-2 sm:mb-3 transition-all duration-500 text-center sm:text-left ${isHovered ? 'text-primary' : 'text-foreground'
+                        }`}>
+                        {value.title}
+                      </h3>
+
+                      <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6 text-center sm:text-left">
+                        {value.description}
+                      </p>
+
+                      <div className="pt-4 sm:pt-6 border-t border-border/50">
+                        <div className="flex items-baseline justify-between mb-2">
+                          <span className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider">
+                            {value.statLabel}
+                          </span>
+                          <motion.span
+                            animate={{
+                              scale: isHovered ? 1.1 : 1,
+                              color: isHovered ? 'hsl(var(--primary))' : 'hsl(var(--foreground))',
+                            }}
+                            className="text-lg sm:text-xl md:text-2xl font-bold"
+                          >
+                            {value.stat}
+                          </motion.span>
+                        </div>
+                        <motion.div
+                          animate={{
+                            width: isHovered ? '100%' : '0%',
+                          }}
+                          transition={{ duration: 0.5 }}
+                          className="h-0.5 bg-primary/50 rounded-full"
+                        />
+                      </div>
+                    </div>
+
+                    <motion.div
+                      animate={{
+                        opacity: isHovered ? 1 : 0,
+                      }}
+                      className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent"
+                    />
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+
+      <style jsx>{`
+        @keyframes pulse-slow {
+          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+          50% { transform: translate(30px, -30px) scale(1.1); opacity: 0.5; }
+        }
+        @keyframes pulse-slower {
+          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+          50% { transform: translate(-40px, 40px) scale(1.2); opacity: 0.4; }
+        }
+        .animate-pulse-slow {
+          animation: pulse-slow 15s ease-in-out infinite;
+        }
+        .animate-pulse-slower {
+          animation: pulse-slower 18s ease-in-out infinite;
+        }
+      `}</style>
+    </section>
+  );
+};
+
+export default function AboutPage() {
+  return (
+    <main className="bg-background overflow-x-hidden">
+      <Hero />
+      <RecognitionMarquee />
+      <FounderStory />
+      <StatsSection />
+      <MissionSection />
+      <ServicesSection />
+      <ValuesGrid />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 relative z-20">
+        <AwardCTABanner />
+      </div>
+    </main>
+  );
+}

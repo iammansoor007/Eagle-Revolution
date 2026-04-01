@@ -1,3 +1,5 @@
+"use client"
+
 import { useRef, useEffect, useState } from "react";
 import {
   motion,
@@ -10,6 +12,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Icon } from "../config/icons";
 import { useContent } from "../hooks/useContent";
+import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -37,7 +40,7 @@ const ParallaxLayer = ({ children, speed = 0.05, className = "" }: { children: R
 const QuantumParticles = () => {
   const [isClient, setIsClient] = useState(false);
   useEffect(() => setIsClient(true), []);
-  
+
   const particles = [...Array(20)].map((_, i) => ({
     id: i,
     x: Math.random() * 100,
@@ -158,17 +161,16 @@ const ServiceLinks = () => {
       </h4>
       <div className="grid grid-cols-1 gap-2">
         {services.main.map((service: any) => (
-          <motion.a
+          <Link
             key={service.label}
             href={service.href}
-            whileHover={{ x: 5 }}
             className="inline-flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-all duration-300 group py-1"
           >
             <span className="text-muted-foreground/60 group-hover:text-primary transition-colors">
               <Icon name={service.icon} className="w-5 h-5" />
             </span>
             <span>{service.label}</span>
-          </motion.a>
+          </Link>
         ))}
       </div>
     </div>
@@ -186,15 +188,14 @@ const MaterialsSection = () => {
       </h5>
       <div className="space-y-2">
         {services.materials.items.map((material: any) => (
-          <motion.a
+          <Link
             key={material.label}
             href={material.href}
-            whileHover={{ x: 5 }}
             className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-primary/80 transition-colors"
           >
             <span className="text-[8px] text-primary/40">●</span>
             {material.label}
-          </motion.a>
+          </Link>
         ))}
       </div>
     </div>
@@ -484,9 +485,9 @@ const Footer = () => {
 
             <div className="flex flex-wrap gap-3 pt-2">
               {quickLinks.map((link: any) => (
-                <a key={link.label} href={link.href} className="text-[10px] text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                <Link key={link.label} href={link.href} className="text-[10px] text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
                   <Icon name={link.icon} className="w-3 h-3" /> {link.label}
-                </a>
+                </Link>
               ))}
             </div>
           </div>
@@ -519,7 +520,7 @@ const Footer = () => {
           </div>
           <div className="flex items-center gap-6">
             {bottom.links.map((link: any) => (
-              <a key={link.label} href={link.href} className="hover:text-primary transition-colors">{link.label}</a>
+              <Link key={link.label} href={link.href} className="hover:text-primary transition-colors">{link.label}</Link>
             ))}
           </div>
           <div className="text-muted-foreground/60">

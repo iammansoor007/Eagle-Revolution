@@ -30,7 +30,7 @@
           "Pergolas"
         ],
         "features": [
-          "TimberTech Certified",
+          "Wolf Home Products Certified",
           "50-Year Warranty",
           "Low Maintenance"
         ]
@@ -61,7 +61,7 @@
       },
       {
         "label": "About",
-        "href": "#about",
+        "href": "/about",
         "icon": "Users"
       },
       {
@@ -269,11 +269,11 @@
       {
         "number": "03",
         "title": "Custom Decks",
-        "description": "Beautiful, low-maintenance decks designed for outdoor living. TimberTech/Azek Certified installers for premium composite decking.",
+        "description": "Beautiful, low-maintenance decks designed for outdoor living.  Wolf Home Products Certified installers for premium composite decking.",
         "icon": "TreePine",
         "tag": "Decks",
         "features": [
-          "Composite Decking",
+          "Wolf Serenity Decking",
           "Custom Designs",
           "Pergolas",
           "Covered Decks"
@@ -339,7 +339,7 @@
       "alt": "Brandon Anderson - Founder, Eagle Revolution",
       "badges": {
         "top": "VETERAN OWNED",
-        "bottom": "ProVia • IKO • CertainTeed"
+        "bottom": "ProVia • IKO • CertainTeed • Wolf"
       },
       "quotes": [
         "Eagle Revolution was founded to do more than just build roofs, windows, decks, and siding. We are here to build a movement. Born in St. Charles, Missouri, I launched Eagle Revolution to bring battlefield discipline and boardroom precision to every project."
@@ -369,7 +369,7 @@
         "year": "2024",
         "accent": "from-primary to-primary/80",
         "scope": "Composite Decking",
-        "desc": "Beautiful TimberTech composite deck with custom pergola and built-in seating for outdoor entertaining.",
+        "desc": "Beautiful Wolf Home Products composite deck with custom pergola and built-in seating for outdoor entertaining.",
         "architect": "Eagle Revolution"
       },
       {
@@ -527,7 +527,7 @@
       {
         "icon": "Certified",
         "title": "Certified Expertise",
-        "description": "ProVia Certified Installer, IKO Certified Pro, CertainTeed Certified Shingle Master, and TimberTech/Azek Certified."
+        "description": "ProVia Certified Installer, IKO Certified Pro, CertainTeed Certified Shingle Master, and Wolf Home Products Certified Installers."
       },
       {
         "icon": "Community",
@@ -724,7 +724,7 @@
         "id": 8,
         "category": "decks",
         "question": "What decking materials do you use?",
-        "answer": "As TimberTech/Azek Certified installers, we specialize in premium composite decking that offers durability, low maintenance, and beautiful aesthetics. We also offer pressure-treated wood options for traditional decks.",
+        "answer": "As  Wolf Home Products Certified installers, we specialize in premium composite decking that offers durability, low maintenance, and beautiful aesthetics. We also offer pressure-treated wood options for traditional decks.",
         "metadata": [
           {
             "label": "Materials",
@@ -919,8 +919,8 @@
             "href": "/certainteed"
           },
           {
-            "label": "TimberTech/Azek Certified",
-            "href": "/timbertech"
+            "label": " Wolf Home Products Certified",
+            "href": "/wolf"
           }
         ]
       }
@@ -955,8 +955,8 @@
         "icon": "Warranty"
       },
       {
-        "cert": "TimberTech",
-        "number": "Azek Certified",
+        "cert": "Wolf",
+        "number": "Home Products Certified",
         "icon": "Warranty"
       },
       {

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
+import SiteLayout from "@/components/SiteLayout";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -15,16 +16,8 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: "Eagle Revolution | Soaring Beyond Expectations",
-  description: "Aggressive roofing experts providing professional, high-quality roofing, solar, and home improvement solutions. Architectural-grade roof systems engineered for endurance, beauty, and structural integrity.",
+  description: "Aggressive roofing experts providing professional, high-quality roofing, solar, and home improvement solutions.",
   authors: [{ name: "Eagle Revolution" }],
-  openGraph: {
-    title: "Eagle Revolution — Soaring Beyond Expectations",
-    description: "Architectural-grade roof systems engineered for endurance.",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-  },
 };
 
 export default function RootLayout({
@@ -35,7 +28,25 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${spaceGrotesk.variable} ${dmSans.variable} antialiased`}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <div className="relative min-h-screen overflow-x-hidden flex flex-col">
+            {/* Common background grid for all pages */}
+            <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.03]">
+              <div 
+                className="absolute inset-0"
+                style={{
+                  backgroundImage: `
+                    linear-gradient(to right, #2563eb 1px, transparent 1px),
+                    linear-gradient(to bottom, #2563eb 1px, transparent 1px)
+                  `,
+                  backgroundSize: '80px 80px',
+                }}
+              />
+            </div>
+            
+            <SiteLayout>{children}</SiteLayout>
+          </div>
+        </Providers>
       </body>
     </html>
   );

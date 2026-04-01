@@ -9,7 +9,7 @@ const SimpleDark = () => {
   return (
     <motion.div
       className="absolute inset-0 bg-background"
-      initial={{ opacity: 0 }}
+      initial={{ opacity: 1 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.6 }}
@@ -109,10 +109,10 @@ const PremiumLoader = ({ onComplete }: LoaderProps) => {
   const [phase, setPhase] = useState<1 | 2 | 3 | 4>(1);
 
   const phases = loader?.phases || {
-    simpleDark: 700,
-    roofDraw: 800,
-    logoText: 900,
-    ready: 400
+    simpleDark: 200,
+    roofDraw: 300,
+    logoText: 400,
+    ready: 100
   };
 
   useEffect(() => {
@@ -131,7 +131,7 @@ const PremiumLoader = ({ onComplete }: LoaderProps) => {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[300]"
+      className="fixed inset-0 z-[300] bg-background"
       exit={{ opacity: 0 }}
       transition={{ duration: 0.6 }}
     >

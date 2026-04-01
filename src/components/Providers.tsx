@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
+import { LoadingProvider } from "./LoadingContext";
 import { useState } from "react";
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -11,11 +12,14 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        {children}
-        <Toaster />
-        <Sonner />
-      </TooltipProvider>
+      <LoadingProvider>
+        <TooltipProvider>
+          {children}
+          <Toaster />
+          <Sonner />
+        </TooltipProvider>
+      </LoadingProvider>
     </QueryClientProvider>
   );
 }
+
