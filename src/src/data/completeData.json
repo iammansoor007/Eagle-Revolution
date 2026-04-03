@@ -66,22 +66,22 @@
       },
       {
         "label": "Gallery",
-        "href": "#gallery",
+        "href": "/gallery",
         "icon": "Image"
       },
       {
         "label": "Reviews",
-        "href": "#reviews",
+        "href": "/reviews",
         "icon": "Star"
       },
       {
         "label": "FAQ",
-        "href": "#faq",
+        "href": "/faq",
         "icon": "MessageSquare"
       },
       {
         "label": "Contact",
-        "href": "#contact",
+        "href": "/contact",
         "icon": "Phone"
       }
     ],
