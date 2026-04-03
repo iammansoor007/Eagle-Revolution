@@ -27,7 +27,7 @@ import {
   Shield as LucideShield,
   Home as LucideHome,
   Building as LucideBuilding,
-  Window as LucideWindow,
+  Wind as LucideWindow,
   Droplet as LucideDroplet,
   Layers as LucideLayers,
   Star as LucideStar
