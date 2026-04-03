@@ -11,7 +11,7 @@ const Counter = memo(({ value, suffix = "", duration = 1.8 }: { value: number; s
     const inView = useInView(ref, { once: true, margin: "-50px" });
     const shouldReduceMotion = useReducedMotion();
     const hasAnimatedRef = useRef(false);
-    const animationFrameRef = useRef<number>();
+    const animationFrameRef = useRef<number | null>(null);
 
     useEffect(() => {
         if (!inView || hasAnimatedRef.current) return;

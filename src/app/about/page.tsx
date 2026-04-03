@@ -261,7 +261,6 @@ const StatsSection = () => {
 };
 
 // ==================== HERO WITH BACKGROUND IMAGE ====================
-// ==================== HERO WITH BACKGROUND IMAGE ====================
 const Hero = () => {
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 500], [0, 150]);
@@ -361,6 +360,7 @@ const Hero = () => {
     </section>
   );
 };
+
 // ==================== FOUNDER SECTION ====================
 const FounderStory = () => {
   const ref = useRef(null);
@@ -452,7 +452,13 @@ const FounderStory = () => {
 // ==================== MISSION SECTION ====================
 const MissionSection = () => {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-100px", threshold: 0.1 });
+
+  // ✅ FIXED HERE (amount instead of threshold)
+  const inView = useInView(ref, {
+    once: true,
+    margin: "-100px",
+    amount: 0.1,
+  });
 
   const corePrinciples = [
     {
@@ -478,160 +484,113 @@ const MissionSection = () => {
       desc: "Military-grade accuracy in every detail. From initial measurements to final execution—where craftsmanship meets mathematical certainty.",
       val: "04",
       icon: LucideTarget,
-    }
+    },
   ];
 
   return (
-    <section ref={ref} className="relative py-8 sm:py-10 lg:py-12 overflow-hidden bg-background">
+    <section
+      ref={ref}
+      className="relative py-8 sm:py-10 lg:py-12 overflow-hidden bg-background"
+    >
+      {/* Background Grid */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-full">
-          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="light-grid" width="50" height="50" patternUnits="userSpaceOnUse">
-                <path d="M 50 0 L 0 0 0 50" fill="none" stroke="currentColor" strokeWidth="0.3" className="text-border/10" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#light-grid)" />
-          </svg>
-        </div>
+        <svg className="absolute inset-0 w-full h-full">
+          <defs>
+            <pattern
+              id="light-grid"
+              width="50"
+              height="50"
+              patternUnits="userSpaceOnUse"
+            >
+              <path
+                d="M 50 0 L 0 0 0 50"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="0.3"
+                className="text-border/10"
+              />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#light-grid)" />
+        </svg>
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 items-start">
+
+          {/* LEFT CONTENT */}
           <motion.div
             initial={{ opacity: 0, x: -60 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 1, ease: [0.23, 1, 0.32, 1] }}
+            transition={{ duration: 1 }}
             className="w-full lg:w-5/12 text-center lg:text-left"
           >
-            <motion.div
-              initial={{ opacity: 0, scaleX: 0 }}
-              animate={inView ? { opacity: 1, scaleX: 1 } : {}}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="inline-flex items-center gap-4 mb-6 justify-center lg:justify-start"
-            >
-              <div className="w-12 sm:w-16 h-px bg-gradient-to-r from-primary to-transparent" />
-              <span className="text-[10px] font-mono font-medium tracking-[0.4em] text-primary/80 uppercase">
-                The Revolution
-              </span>
-            </motion.div>
-
-            <div className="mb-8 sm:mb-10">
-              <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-foreground leading-[1.1] tracking-tighter">
+            <div className="mb-8">
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold">
                 Our Mission
               </h2>
-
               <motion.div
                 initial={{ width: 0 }}
-                animate={inView ? { width: "80px" } : {}}
-                transition={{ duration: 1, delay: 0.8, ease: [0.77, 0, 0.18, 1] }}
-                className="h-[2px] bg-gradient-to-r from-primary to-transparent mt-4 mx-auto lg:mx-0"
+                animate={inView ? { width: 80 } : {}}
+                className="h-[2px] bg-primary mt-4 mx-auto lg:mx-0"
               />
             </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: 0.7 }}
-              className="relative mb-10 sm:mb-12"
-            >
-              <div className="absolute -left-4 sm:-left-6 -top-6 sm:-top-8 text-6xl sm:text-8xl font-serif text-primary/5 select-none leading-none">“</div>
-              <p className="text-base sm:text-lg md:text-xl text-muted-foreground/90 leading-relaxed px-2 sm:pl-6 relative z-10 font-light tracking-wide">
-                To revolutionize the exterior remodeling industry by delivering exceptional value and prioritizing the needs of our customers above maximizing profit margins. Together, we are improving the remodeling experience—one home, one family, and one community at a time.
-              </p>
-              <div className="absolute -bottom-6 sm:-bottom-8 right-0 text-6xl sm:text-8xl font-serif text-primary/5 select-none leading-none">”</div>
-            </motion.div>
+            <p className="text-base sm:text-lg text-muted-foreground mb-8">
+              To revolutionize the exterior remodeling industry by delivering
+              exceptional value and prioritizing customers over profit.
+            </p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.9 }}
-              className="pt-6 sm:pt-8 border-t border-border/30"
-            >
-              <div className="flex flex-wrap justify-center lg:justify-start gap-6 sm:gap-12">
-                {[
-                  { value: "100%", label: "Customer First", delay: 0 },
-                  { value: "0%", label: "Hidden Agendas", delay: 0.1 },
-                  { value: "∞", label: "Commitment", delay: 0.2 }
-                ].map((stat, idx) => (
-                  <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.5, delay: 1 + stat.delay }}
-                    className="group cursor-pointer text-center"
-                  >
-                    <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">
-                      {stat.value}
-                    </div>
-                    <div className="text-[8px] sm:text-[9px] text-muted-foreground uppercase tracking-[0.2em] mt-2 group-hover:tracking-[0.25em] transition-all duration-300">
-                      {stat.label}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
+            <div className="flex gap-6 justify-center lg:justify-start">
+              {[
+                { value: "100%", label: "Customer First" },
+                { value: "0%", label: "Hidden Agendas" },
+                { value: "∞", label: "Commitment" },
+              ].map((stat, i) => (
+                <div key={i} className="text-center">
+                  <div className="text-2xl font-bold">{stat.value}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
+            </div>
           </motion.div>
 
-          <div className="w-full lg:w-7/12 grid sm:grid-cols-2 gap-4 sm:gap-5">
+          {/* RIGHT CARDS */}
+          <div className="w-full lg:w-7/12 grid sm:grid-cols-2 gap-5">
             {corePrinciples.map((item, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 50 }}
+                initial={{ opacity: 0, y: 40 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.7, delay: 0.4 + (i * 0.12), ease: [0.23, 1, 0.32, 1] }}
+                transition={{ delay: i * 0.15 }}
                 whileHover={{ y: -8 }}
-                className="group"
+                className="p-6 rounded-2xl border shadow-md hover:shadow-xl transition"
               >
-                <div className="relative bg-gradient-to-br from-card via-card to-muted/5 rounded-2xl p-5 sm:p-7 border border-border/40 hover:border-primary/40 transition-all duration-500 h-full shadow-lg hover:shadow-2xl backdrop-blur-sm text-center sm:text-left">
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/0 via-primary/0 to-primary/0 group-hover:via-primary/10 transition-all duration-700" />
+                <div className="flex justify-between mb-4">
+                  <item.icon className="w-6 h-6 text-primary" />
+                  <span className="text-xs text-muted-foreground">
+                    {item.val}
+                  </span>
+                </div>
 
-                  <div className="relative z-10">
-                    <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 sm:gap-0 mb-6">
-                      <motion.div
-                        whileHover={{ rotate: 5, scale: 1.05 }}
-                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-500 flex items-center justify-center border border-primary/20 group-hover:border-primary/30"
-                      >
-                        <item.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" strokeWidth={1.5} />
-                      </motion.div>
-                      <span className="text-xs sm:text-sm font-mono font-medium text-muted-foreground/40 group-hover:text-muted-foreground transition-colors duration-500">
-                        {item.val}
-                      </span>
-                    </div>
+                <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+                <p className="text-sm text-muted-foreground">{item.desc}</p>
 
-                    <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-3 tracking-tight">
-                      {item.title}
-                    </h3>
-
-                    <motion.div
-                      initial={{ width: 0 }}
-                      whileHover={{ width: "40px" }}
-                      className="w-8 h-0.5 bg-primary/50 mb-5 transition-all duration-500 mx-auto sm:mx-0"
-                    />
-
-                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                      {item.desc}
-                    </p>
-
-                    <motion.div
-                      initial={{ opacity: 0, x: -10 }}
-                      whileHover={{ opacity: 1, x: 0 }}
-                      className="absolute bottom-5 sm:bottom-6 right-5 sm:right-6 opacity-0 group-hover:opacity-100 transition-all duration-500"
-                    >
-                      <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
-                    </motion.div>
-                  </div>
+                <div className="mt-4 opacity-0 group-hover:opacity-100 transition">
+                  <ArrowRight className="w-4 h-4 text-primary" />
                 </div>
               </motion.div>
             ))}
           </div>
         </div>
 
+        {/* Bottom Line */}
         <motion.div
           initial={{ scaleX: 0 }}
           animate={inView ? { scaleX: 1 } : {}}
-          transition={{ duration: 1.2, delay: 1.2, ease: [0.77, 0, 0.18, 1] }}
-          className="mt-16 sm:mt-24 lg:mt-32 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent origin-left"
+          className="mt-16 h-px bg-primary origin-left"
         />
       </div>
     </section>
@@ -665,11 +624,11 @@ const RecognitionMarquee = () => {
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.color = 'hsl(var(--primary))';
-                    e.currentTarget.style.WebkitTextStrokeColor = 'hsl(var(--primary))';
+                    e.currentTarget.style.webkitTextStrokeColor = 'hsl(var(--primary))';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.color = 'transparent';
-                    e.currentTarget.style.WebkitTextStrokeColor = 'hsl(var(--border))';
+                    e.currentTarget.style.webkitTextStrokeColor = 'hsl(var(--border))';
                   }}
                 >
                   {text}
@@ -697,11 +656,11 @@ const RecognitionMarquee = () => {
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.color = 'hsl(var(--primary))';
-                    e.currentTarget.style.WebkitTextStrokeColor = 'hsl(var(--primary))';
+                    e.currentTarget.style.webkitTextStrokeColor = 'hsl(var(--primary))';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.color = 'transparent';
-                    e.currentTarget.style.WebkitTextStrokeColor = 'hsl(var(--muted-foreground))';
+                    e.currentTarget.style.webkitTextStrokeColor = 'hsl(var(--muted-foreground))';
                   }}
                 >
                   {text}
@@ -781,7 +740,7 @@ const ServiceCard = ({ service, index, inView }: { service: any; index: number; 
 
 const ServicesSection = () => {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-100px", threshold: 0.1 });
+  const inView = useInView(ref, { once: true, margin: "-100px", amount: 0.1 });
 
   const services = [
     {
@@ -1284,6 +1243,7 @@ const ValuesGrid = () => {
   );
 };
 
+// ==================== MAIN PAGE COMPONENT ====================
 export default function AboutPage() {
   return (
     <main className="bg-background overflow-x-hidden">
