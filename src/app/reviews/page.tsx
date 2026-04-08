@@ -1,351 +1,179 @@
 "use client";
 
-import { useRef, useEffect, useState, useCallback } from "react";
-import {
-    motion,
-    useScroll,
-    useTransform,
-    useInView,
-    AnimatePresence,
-    useSpring,
-    useMotionValue,
-} from "framer-motion";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef, useState, useEffect } from "react";
+import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
 import { Icon } from "../../config/icons";
 import { useContent } from "../../hooks/useContent";
 
-gsap.registerPlugin(ScrollTrigger);
+// ============================================================================
+// CONSTANTS
+// ============================================================================
+const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=800&h=450&fit=crop&q=80";
+
+const getVideoThumbnail = (videoId: string) => 
+    `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
 
 // ============================================================================
-// HELPER FUNCTIONS
+// SMOOTH COUNTER
 // ============================================================================
-const getVideoThumbnail = (videoId: string) => {
-    return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-};
-
-const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=400&h=225&fit=crop";
-
-// ============================================================================
-// 3D TILT CARD COMPONENT
-// ============================================================================
-const TiltCard = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
-    const ref = useRef<HTMLDivElement>(null);
-    const x = useMotionValue(0);
-    const y = useMotionValue(0);
-    const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [8, -8]), { stiffness: 300, damping: 30 });
-    const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-8, 8]), { stiffness: 300, damping: 30 });
-
-    const handleMouseMove = (e: React.MouseEvent) => {
-        if (!ref.current) return;
-        const rect = ref.current.getBoundingClientRect();
-        const mouseX = (e.clientX - rect.left) / rect.width - 0.5;
-        const mouseY = (e.clientY - rect.top) / rect.height - 0.5;
-        x.set(mouseX);
-        y.set(mouseY);
-    };
-
-    const handleMouseLeave = () => {
-        x.set(0);
-        y.set(0);
-    };
-
-    return (
-        <motion.div
-            ref={ref}
-            style={{ rotateX, rotateY, transformPerspective: 1000 }}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            className={className}
-        >
-            {children}
-        </motion.div>
-    );
-};
-
-// ============================================================================
-// GLOWING BORDER CARD
-// ============================================================================
-const GlowCard = ({ children, className = "", isActive = false }: { children: React.ReactNode; className?: string; isActive?: boolean }) => {
-    return (
-        <div className={`relative group ${className}`}>
-            <motion.div
-                animate={{
-                    opacity: isActive ? 0.4 : 0,
-                    scale: isActive ? 1.05 : 1,
-                }}
-                className="absolute -inset-0.5 bg-gradient-to-r from-primary via-primary/60 to-primary rounded-2xl blur-xl"
-                transition={{ duration: 0.4 }}
-            />
-            <div className="relative bg-gradient-to-br from-card/90 to-card/50 backdrop-blur-xl rounded-2xl border border-white/10 group-hover:border-primary/30 transition-all duration-500">
-                {children}
-            </div>
-        </div>
-    );
-};
-
-// ============================================================================
-// ANIMATED COUNTER
-// ============================================================================
-const AnimatedCounter = ({ value, suffix = "" }: { value: number; suffix?: string }) => {
+const Counter = ({ value, suffix = "" }: { value: number; suffix?: string }) => {
     const [count, setCount] = useState(0);
     const ref = useRef(null);
-    const isInView = useInView(ref, { once: true, margin: "-100px" });
+    const inView = useInView(ref, { once: true });
 
     useEffect(() => {
-        if (isInView) {
-            let start = 0;
-            const duration = 2000;
-            const increment = value / (duration / 16);
-            const timer = setInterval(() => {
-                start += increment;
-                if (start >= value) {
-                    setCount(value);
-                    clearInterval(timer);
-                } else {
-                    setCount(Math.floor(start));
-                }
-            }, 16);
-            return () => clearInterval(timer);
-        }
-    }, [isInView, value]);
+        if (!inView) return;
+        
+        let start = 0;
+        const step = value / 60;
+        const timer = setInterval(() => {
+            start += step;
+            if (start >= value) {
+                setCount(value);
+                clearInterval(timer);
+            } else {
+                setCount(Math.floor(start));
+            }
+        }, 16);
+        
+        return () => clearInterval(timer);
+    }, [inView, value]);
 
-    return (
-        <span ref={ref} className="tabular-nums">
-            {count}{suffix}
-        </span>
-    );
+    return <span ref={ref}>{count}{suffix}</span>;
 };
 
 // ============================================================================
-// PREMIUM TESTIMONIAL CARD
+// TESTIMONIAL CARD
 // ============================================================================
-const PremiumTestimonialCard = ({ testimonial, index, onPlayVideo }: { testimonial: any; index: number; onPlayVideo?: (videoId: string, title: string) => void }) => {
-    const [isHovered, setIsHovered] = useState(false);
-    const cardRef = useRef(null);
-    const isInView = useInView(cardRef, { once: true, margin: "-100px" });
-
-    return (
-        <motion.div
-            ref={cardRef}
-            initial={{ opacity: 0, y: 80, rotateX: 10 }}
-            animate={isInView ? { opacity: 1, y: 0, rotateX: 0 } : {}}
-            transition={{ duration: 0.7, delay: index * 0.1, ease: [0.21, 0.45, 0.27, 0.9] }}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-        >
-            <TiltCard>
-                <GlowCard isActive={isHovered}>
-                    <div className="relative p-8 md:p-10 overflow-hidden">
-                        <motion.div
-                            animate={{
-                                background: isHovered
-                                    ? "radial-gradient(circle at 0% 0%, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0) 70%)"
-                                    : "radial-gradient(circle at 100% 100%, rgba(245, 158, 11, 0.05) 0%, rgba(245, 158, 11, 0) 70%)",
-                            }}
-                            transition={{ duration: 0.5 }}
-                            className="absolute inset-0 pointer-events-none"
-                        />
-
-                        <motion.div
-                            animate={{ rotate: isHovered ? 5 : 0, scale: isHovered ? 1.05 : 1 }}
-                            className="absolute top-6 right-6 opacity-10"
-                        >
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" className="text-primary">
-                                <path d="M10 11h-4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1zM10 21h-4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1zM19 11h-4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1zM19 21h-4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1z" />
-                            </svg>
-                        </motion.div>
-
-                        <div className="flex gap-1.5 mb-6">
-                            {[...Array(5)].map((_, i) => (
-                                <motion.svg
-                                    key={i}
-                                    initial={{ scale: 0, opacity: 0 }}
-                                    animate={{ scale: 1, opacity: 1 }}
-                                    transition={{ delay: index * 0.1 + i * 0.05, type: "spring" }}
-                                    width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-primary"
-                                >
-                                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" />
-                                </motion.svg>
-                            ))}
-                        </div>
-
-                        <motion.p
-                            animate={{ y: isHovered ? -2 : 0 }}
-                            className="text-foreground/90 text-lg md:text-xl leading-relaxed mb-8 font-light"
-                        >
-                            "{testimonial.text}"
-                        </motion.p>
-
-                        <div className="flex items-center justify-between pt-6 border-t border-white/10">
-                            <div className="flex items-center gap-4">
-                                <motion.div
-                                    animate={{ scale: isHovered ? 1.05 : 1 }}
-                                    className="relative"
-                                >
-                                    <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/50 rounded-full blur-md opacity-60" />
-                                    <div className="relative w-14 h-14 rounded-full bg-gradient-to-br from-primary/40 to-primary/20 flex items-center justify-center">
-                                        <span className="text-primary font-semibold text-xl">
-                                            {testimonial.avatar || testimonial.name?.charAt(0) || "✓"}
-                                        </span>
-                                    </div>
-                                </motion.div>
-
-                                <div>
-                                    <h4 className="font-semibold text-foreground text-base md:text-lg">
-                                        {testimonial.name}
-                                    </h4>
-                                    <p className="text-sm text-muted-foreground">
-                                        {testimonial.position}, {testimonial.company}
-                                    </p>
-                                </div>
-                            </div>
-
-                            {testimonial.videoId && onPlayVideo && (
-                                <motion.button
-                                    whileHover={{ scale: 1.1 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={() => onPlayVideo(testimonial.videoId, testimonial.name)}
-                                    className="relative group/btn"
-                                >
-                                    <motion.div
-                                        animate={{ scale: isHovered ? 1.2 : 1 }}
-                                        className="absolute inset-0 bg-primary rounded-full blur-md opacity-0 group-hover/btn:opacity-50 transition-opacity"
-                                    />
-                                    <div className="relative w-12 h-12 rounded-full bg-primary flex items-center justify-center shadow-xl">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="white" className="ml-0.5">
-                                            <polygon points="5 3 19 12 5 21 5 3" />
-                                        </svg>
-                                    </div>
-                                </motion.button>
-                            )}
-                        </div>
-
-                        <div className="absolute top-6 left-6 w-8 h-8 border-t-2 border-l-2 border-primary/20" />
-                        <div className="absolute bottom-6 right-6 w-8 h-8 border-b-2 border-r-2 border-primary/20" />
-                    </div>
-                </GlowCard>
-            </TiltCard>
-        </motion.div>
-    );
-};
-
-// ============================================================================
-// CINEMATIC VIDEO CARD
-// ============================================================================
-const CinematicVideoCard = ({ video, onClick, index }: { video: any; onClick: () => void; index: number }) => {
-    const [isHovered, setIsHovered] = useState(false);
-    const [imageError, setImageError] = useState(false);
+const TestimonialCard = ({ 
+    testimonial, 
+    index,
+    onPlay 
+}: { 
+    testimonial: any; 
+    index: number;
+    onPlay?: (id: string, title: string) => void;
+}) => {
     const ref = useRef(null);
-    const isInView = useInView(ref, { once: true, margin: "-50px" });
-
-    const thumbnailUrl = imageError ? FALLBACK_IMAGE : getVideoThumbnail(video.videoId);
+    const inView = useInView(ref, { once: true, margin: "-50px" });
 
     return (
         <motion.div
             ref={ref}
-            initial={{ opacity: 0, y: 40 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: index * 0.08 }}
-            className="relative group cursor-pointer"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            onClick={onClick}
+            initial={{ opacity: 0, y: 30 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: index * 0.08 }}
+            className="group relative bg-card/40 backdrop-blur-sm rounded-2xl p-5 sm:p-8 border border-white/5 hover:border-primary/20 transition-all duration-300"
         >
-            <div className="relative aspect-video rounded-xl overflow-hidden bg-gradient-to-br from-muted to-muted/80">
-                <motion.img
-                    animate={{ scale: isHovered ? 1.1 : 1 }}
-                    transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
-                    src={thumbnailUrl}
-                    alt={video.name}
-                    className="w-full h-full object-cover"
-                    onError={() => setImageError(true)}
-                    loading="lazy"
-                />
-
-                <motion.div
-                    animate={{ opacity: isHovered ? 1 : 0 }}
-                    className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
-                />
-
-                <motion.div
-                    initial={false}
-                    animate={{ scale: isHovered ? 1 : 0.9, opacity: isHovered ? 1 : 0 }}
-                    className="absolute inset-0 flex items-center justify-center"
-                >
-                    <div className="relative">
-                        <motion.div
-                            animate={{ scale: [1, 1.3, 1] }}
-                            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                            className="absolute inset-0 bg-white rounded-full blur-xl opacity-50"
-                        />
-                        <div className="relative w-16 h-16 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border-2 border-white/50 shadow-2xl">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="white" className="ml-1">
-                                <polygon points="5 3 19 12 5 21 5 3" />
-                            </svg>
-                        </div>
-                    </div>
-                </motion.div>
-
-                <motion.div
-                    animate={{ y: isHovered ? -5 : 0 }}
-                    className="absolute bottom-3 right-3 px-2.5 py-1 bg-black/70 backdrop-blur-sm rounded-md text-white text-xs font-mono"
-                >
-                    {video.duration}
-                </motion.div>
+            {/* Quote */}
+            <div className="absolute top-4 right-4 sm:top-8 sm:right-8 text-5xl sm:text-6xl text-primary/10 font-serif">"</div>
+            
+            {/* Stars */}
+            <div className="flex gap-0.5 mb-4 sm:mb-6">
+                {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" />
+                    </svg>
+                ))}
             </div>
 
-            <motion.div animate={{ x: isHovered ? 5 : 0 }} className="mt-3">
-                <h4 className="text-sm font-medium text-foreground line-clamp-1 group-hover:text-primary transition-colors">
-                    {video.name}
-                </h4>
-                <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
-                    {video.title}
-                </p>
-            </motion.div>
+            {/* Content */}
+            <p className="text-foreground/80 text-sm sm:text-base md:text-lg leading-relaxed mb-6 sm:mb-8 line-clamp-6">
+                {testimonial.text}
+            </p>
+
+            {/* Author */}
+            <div className="flex items-center justify-between pt-4 sm:pt-6 border-t border-white/5">
+                <div className="min-w-0 flex-1">
+                    <h4 className="font-medium text-foreground text-sm sm:text-base truncate">
+                        {testimonial.name}
+                    </h4>
+                    <p className="text-xs sm:text-sm text-muted-foreground truncate">
+                        {testimonial.position}, {testimonial.company}
+                    </p>
+                </div>
+
+                {testimonial.videoId && onPlay && (
+                    <button
+                        onClick={() => onPlay(testimonial.videoId, testimonial.name)}
+                        className="ml-3 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/10 hover:bg-primary flex items-center justify-center transition-all flex-shrink-0 group/btn"
+                        aria-label="Play video testimonial"
+                    >
+                        <svg className="w-3 h-3 sm:w-4 sm:h-4 text-primary group-hover/btn:text-white transition-colors ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                            <polygon points="5 3 19 12 5 21 5 3" />
+                        </svg>
+                    </button>
+                )}
+            </div>
         </motion.div>
     );
 };
 
 // ============================================================================
-// FLOATING ORB BACKGROUND
+// VIDEO CARD
 // ============================================================================
-const FloatingOrbs = () => {
-    const orbs = Array.from({ length: 12 }, (_, i) => ({
-        id: i,
-        size: 100 + Math.random() * 300,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        duration: 20 + Math.random() * 20,
-        delay: Math.random() * 10,
-    }));
+const VideoCard = ({ video, index, onClick }: { video: any; index: number; onClick: () => void }) => {
+    const [error, setError] = useState(false);
+    const ref = useRef(null);
+    const inView = useInView(ref, { once: true });
 
     return (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {orbs.map((orb) => (
-                <motion.div
-                    key={orb.id}
-                    className="absolute rounded-full bg-primary/5 blur-3xl"
-                    style={{
-                        width: orb.size,
-                        height: orb.size,
-                        left: `${orb.x}%`,
-                        top: `${orb.y}%`,
-                    }}
-                    animate={{
-                        x: [0, 50, -30, 20, 0],
-                        y: [0, -30, 40, -20, 0],
-                        scale: [1, 1.2, 0.9, 1.1, 1],
-                    }}
-                    transition={{
-                        duration: orb.duration,
-                        repeat: Infinity,
-                        delay: orb.delay,
-                        ease: "easeInOut",
-                    }}
+        <motion.div
+            ref={ref}
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.4, delay: index * 0.06 }}
+            className="cursor-pointer group"
+            onClick={onClick}
+        >
+            <div className="relative aspect-video rounded-lg sm:rounded-xl overflow-hidden bg-muted/20">
+                <img
+                    src={error ? FALLBACK_IMAGE : getVideoThumbnail(video.videoId)}
+                    alt={video.title}
+                    onError={() => setError(true)}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
                 />
-            ))}
-        </div>
+                
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-white/90 group-hover:bg-primary group-hover:scale-110 flex items-center justify-center transition-all duration-300 shadow-lg">
+                        <svg className="w-3 h-3 sm:w-4 sm:h-4 text-black group-hover:text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                            <polygon points="5 3 19 12 5 21 5 3" />
+                        </svg>
+                    </div>
+                </div>
+
+                <span className="absolute bottom-1.5 right-1.5 sm:bottom-2 sm:right-2 px-1.5 py-0.5 sm:px-2 sm:py-1 bg-black/70 backdrop-blur-sm rounded text-white text-[10px] sm:text-xs font-medium">
+                    {video.duration}
+                </span>
+            </div>
+
+            <h4 className="mt-2 sm:mt-3 text-xs sm:text-sm font-medium text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                {video.title}
+            </h4>
+        </motion.div>
+    );
+};
+
+// ============================================================================
+// STAT CARD
+// ============================================================================
+const StatCard = ({ value, label, suffix = "", index }: { value: number; label: string; suffix?: string; index: number }) => {
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: index * 0.08 }}
+            viewport={{ once: true }}
+            className="text-center p-3 sm:p-4"
+        >
+            <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-1 sm:mb-2">
+                <Counter value={value} suffix={suffix} />
+            </div>
+            <div className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider">
+                {label}
+            </div>
+        </motion.div>
     );
 };
 
@@ -354,51 +182,46 @@ const FloatingOrbs = () => {
 // ============================================================================
 const VideoModal = ({ isOpen, onClose, videoId, title }: { isOpen: boolean; onClose: () => void; videoId: string; title: string }) => {
     useEffect(() => {
-        if (isOpen) document.body.style.overflow = "hidden";
-        else document.body.style.overflow = "unset";
-        return () => { document.body.style.overflow = "unset"; };
+        document.body.style.overflow = isOpen ? "hidden" : "";
     }, [isOpen]);
-
-    if (!isOpen) return null;
 
     return (
         <AnimatePresence>
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-2xl"
-                onClick={onClose}
-            >
-                <motion.button
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    onClick={onClose}
-                    className="absolute top-6 right-6 z-50 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all"
-                >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                        <path d="M18 6L6 18M6 6L18 18" />
-                    </svg>
-                </motion.button>
-
+            {isOpen && (
                 <motion.div
-                    initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                    animate={{ scale: 1, opacity: 1, y: 0 }}
-                    exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                    transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                    className="relative w-full max-w-5xl aspect-video rounded-2xl overflow-hidden shadow-2xl"
-                    onClick={(e) => e.stopPropagation()}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/95 backdrop-blur-xl"
+                    onClick={onClose}
                 >
-                    <iframe
-                        className="w-full h-full"
-                        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0&showinfo=0&color=white`}
-                        title={title}
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                    />
+                    <button
+                        onClick={onClose}
+                        className="absolute top-3 right-3 sm:top-6 sm:right-6 z-10 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+                        aria-label="Close video"
+                    >
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+
+                    <motion.div
+                        initial={{ scale: 0.95, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.95, opacity: 0 }}
+                        className="relative w-full max-w-5xl aspect-video rounded-lg sm:rounded-xl overflow-hidden shadow-2xl"
+                        onClick={e => e.stopPropagation()}
+                    >
+                        <iframe
+                            className="w-full h-full"
+                            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0`}
+                            title={title}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        />
+                    </motion.div>
                 </motion.div>
-            </motion.div>
+            )}
         </AnimatePresence>
     );
 };
@@ -407,616 +230,407 @@ const VideoModal = ({ isOpen, onClose, videoId, title }: { isOpen: boolean; onCl
 // SUCCESS MODAL
 // ============================================================================
 const SuccessModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
-    if (!isOpen) return null;
-
     return (
         <AnimatePresence>
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl"
-                onClick={onClose}
-            >
+            {isOpen && (
                 <motion.div
-                    initial={{ scale: 0.8, opacity: 0, y: 40 }}
-                    animate={{ scale: 1, opacity: 1, y: 0 }}
-                    exit={{ scale: 0.8, opacity: 0, y: 40 }}
-                    transition={{ type: "spring", damping: 20, stiffness: 200 }}
-                    className="relative bg-gradient-to-br from-card to-card/95 rounded-2xl max-w-md w-full p-10 text-center border border-white/10 shadow-2xl"
-                    onClick={(e) => e.stopPropagation()}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl"
+                    onClick={onClose}
                 >
                     <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ delay: 0.2, type: "spring" }}
-                        className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-r from-primary to-primary/80 flex items-center justify-center shadow-2xl"
+                        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                        animate={{ scale: 1, opacity: 1, y: 0 }}
+                        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                        className="relative bg-card w-full max-w-sm rounded-2xl p-6 sm:p-8 text-center shadow-2xl border border-white/10"
+                        onClick={e => e.stopPropagation()}
                     >
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-                            <path d="M20 6L9 17L4 12" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                    </motion.div>
+                        <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 rounded-full bg-primary/20 flex items-center justify-center">
+                            <svg className="w-7 h-7 sm:w-8 sm:h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
 
-                    <motion.h3
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3 }}
-                        className="text-2xl font-medium text-foreground mb-2"
-                    >
-                        Thank You!
-                    </motion.h3>
+                        <h3 className="text-xl sm:text-2xl font-semibold mb-2">Thank You!</h3>
+                        <p className="text-sm text-muted-foreground mb-6">
+                            Your testimonial has been submitted successfully.
+                        </p>
 
-                    <motion.p
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.4 }}
-                        className="text-muted-foreground text-sm leading-relaxed"
-                    >
-                        Your testimonial has been submitted successfully.
-                        <br />
-                        <span className="text-primary font-medium mt-2 block">We appreciate your feedback!</span>
-                    </motion.p>
-
-                    <motion.button
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.5 }}
-                        onClick={onClose}
-                        className="mt-8 px-8 py-3 bg-primary text-primary-foreground text-sm font-medium rounded-full hover:bg-primary/90 transition-all"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                    >
-                        Close
-                    </motion.button>
-                </motion.div>
-            </motion.div>
-        </AnimatePresence>
-    );
-};
-
-// ============================================================================
-// ERROR MODAL
-// ============================================================================
-const ErrorModal = ({ isOpen, onClose, message }: { isOpen: boolean; onClose: () => void; message: string }) => {
-    if (!isOpen) return null;
-
-    return (
-        <AnimatePresence>
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl"
-                onClick={onClose}
-            >
-                <motion.div
-                    initial={{ scale: 0.8, opacity: 0, y: 40 }}
-                    animate={{ scale: 1, opacity: 1, y: 0 }}
-                    exit={{ scale: 0.8, opacity: 0, y: 40 }}
-                    transition={{ type: "spring", damping: 20, stiffness: 200 }}
-                    className="relative bg-gradient-to-br from-card to-card/95 rounded-2xl max-w-md w-full p-10 text-center border border-red-500/20 shadow-2xl"
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ delay: 0.2, type: "spring" }}
-                        className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-r from-red-500 to-red-500/80 flex items-center justify-center shadow-2xl"
-                    >
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                            <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" />
-                        </svg>
-                    </motion.div>
-
-                    <motion.h3
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3 }}
-                        className="text-2xl font-medium text-foreground mb-2"
-                    >
-                        Submission Failed
-                    </motion.h3>
-
-                    <motion.p
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.4 }}
-                        className="text-muted-foreground text-sm leading-relaxed"
-                    >
-                        {message}
-                    </motion.p>
-
-                    <motion.button
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.5 }}
-                        onClick={onClose}
-                        className="mt-8 px-8 py-3 bg-primary text-primary-foreground text-sm font-medium rounded-full hover:bg-primary/90 transition-all"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                    >
-                        Try Again
-                    </motion.button>
-                </motion.div>
-            </motion.div>
-        </AnimatePresence>
-    );
-};
-
-// ============================================================================
-// TESTIMONIAL FORM
-// ============================================================================
-const TestimonialForm = ({ onSubmit, isSubmitting }: { onSubmit: (data: any) => void; isSubmitting: boolean }) => {
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        company: "",
-        position: "",
-        rating: 5,
-        testimonial: "",
-        allowPublish: true,
-    });
-    const [hoveredRating, setHoveredRating] = useState(0);
-
-    const inputs = [
-        { icon: "User", name: "name", label: "Full Name", type: "text" },
-        { icon: "Mail", name: "email", label: "Email Address", type: "email" },
-        { icon: "Building2", name: "company", label: "Company", type: "text" },
-        { icon: "Briefcase", name: "position", label: "Position", type: "text" },
-    ];
-
-    return (
-        <form onSubmit={(e) => { e.preventDefault(); onSubmit(formData); }} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                {inputs.map((input) => (
-                    <div key={input.name} className="relative group">
-                        <motion.div
-                            whileHover={{ scale: 1.02 }}
-                            className="relative"
+                        <button
+                            onClick={onClose}
+                            className="px-6 py-2.5 bg-primary text-primary-foreground rounded-full text-sm font-medium hover:bg-primary/90 transition-colors"
                         >
-                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors">
-                                <Icon name={input.icon} className="w-5 h-5" />
-                            </div>
+                            Close
+                        </button>
+                    </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>
+    );
+};
+
+// ============================================================================
+// FORM MODAL
+// ============================================================================
+const FormModal = ({ isOpen, onClose, onSubmit, isSubmitting }: any) => {
+    const [form, setForm] = useState({
+        name: "", email: "", company: "", position: "", rating: 5, testimonial: ""
+    });
+    const [hoverRating, setHoverRating] = useState(0);
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        onSubmit(form);
+    };
+
+    if (!isOpen) return null;
+
+    return (
+        <AnimatePresence>
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/90 backdrop-blur-xl overflow-y-auto"
+                onClick={onClose}
+            >
+                <motion.div
+                    initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                    exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                    className="relative bg-card w-full max-w-lg rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 shadow-2xl border border-white/10 my-4"
+                    onClick={e => e.stopPropagation()}
+                >
+                    <button
+                        onClick={onClose}
+                        className="absolute top-3 right-3 sm:top-4 sm:right-4 text-muted-foreground hover:text-foreground transition-colors"
+                        aria-label="Close form"
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+
+                    <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6 pr-6">Share Your Experience</h2>
+
+                    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                             <input
-                                type={input.type}
-                                name={input.name}
-                                value={formData[input.name as keyof typeof formData] as string}
-                                onChange={(e) => setFormData({ ...formData, [input.name]: e.target.value })}
-                                className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
-                                placeholder={input.label}
+                                type="text"
+                                placeholder="Name"
+                                value={form.name}
+                                onChange={e => setForm({ ...form, name: e.target.value })}
+                                className="px-3 sm:px-4 py-2.5 sm:py-3 text-sm bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary/50 transition-colors"
                                 required
                             />
-                        </motion.div>
-                    </div>
-                ))}
-            </div>
-
-            <div className="space-y-3">
-                <label className="text-xs font-mono tracking-wider uppercase text-muted-foreground">Your Rating</label>
-                <div className="flex gap-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                        <motion.button
-                            key={star}
-                            type="button"
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => setFormData({ ...formData, rating: star })}
-                            onMouseEnter={() => setHoveredRating(star)}
-                            onMouseLeave={() => setHoveredRating(0)}
-                            className="focus:outline-none"
-                        >
-                            <svg
-                                width="32"
-                                height="32"
-                                viewBox="0 0 24 24"
-                                fill={(hoveredRating >= star || formData.rating >= star) ? "currentColor" : "none"}
-                                stroke="currentColor"
-                                className={`transition-all duration-200 ${(hoveredRating >= star || formData.rating >= star) ? "text-primary scale-110" : "text-muted-foreground"}`}
-                            >
-                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" />
-                            </svg>
-                        </motion.button>
-                    ))}
-                </div>
-            </div>
-
-            <div className="relative group">
-                <div className="absolute left-4 top-4 text-muted-foreground group-focus-within:text-primary transition-colors">
-                    <Icon name="MessageCircle" className="w-5 h-5" />
-                </div>
-                <textarea
-                    name="testimonial"
-                    rows={5}
-                    value={formData.testimonial}
-                    onChange={(e) => setFormData({ ...formData, testimonial: e.target.value })}
-                    className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all resize-none"
-                    placeholder="Share your experience with us..."
-                    required
-                />
-            </div>
-
-            <div className="flex items-center gap-3">
-                <input
-                    type="checkbox"
-                    id="allowPublish"
-                    checked={formData.allowPublish}
-                    onChange={(e) => setFormData({ ...formData, allowPublish: e.target.checked })}
-                    className="w-4 h-4 rounded border-white/20 bg-white/5 text-primary focus:ring-primary/30"
-                />
-                <label htmlFor="allowPublish" className="text-xs text-muted-foreground">
-                    I agree to have my testimonial published
-                </label>
-            </div>
-
-            <motion.button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full relative py-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground font-medium rounded-xl overflow-hidden disabled:opacity-50 group"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-            >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                    {isSubmitting ? (
-                        <>
-                            <motion.div
-                                animate={{ rotate: 360 }}
-                                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                                className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
+                            <input
+                                type="email"
+                                placeholder="Email"
+                                value={form.email}
+                                onChange={e => setForm({ ...form, email: e.target.value })}
+                                className="px-3 sm:px-4 py-2.5 sm:py-3 text-sm bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary/50 transition-colors"
+                                required
                             />
-                            Submitting...
-                        </>
-                    ) : (
-                        <>
-                            Share Your Story
-                            <Icon name="Send" className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </>
-                    )}
-                </span>
-            </motion.button>
-        </form>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                            <input
+                                type="text"
+                                placeholder="Company"
+                                value={form.company}
+                                onChange={e => setForm({ ...form, company: e.target.value })}
+                                className="px-3 sm:px-4 py-2.5 sm:py-3 text-sm bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary/50 transition-colors"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Position"
+                                value={form.position}
+                                onChange={e => setForm({ ...form, position: e.target.value })}
+                                className="px-3 sm:px-4 py-2.5 sm:py-3 text-sm bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary/50 transition-colors"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-xs sm:text-sm text-muted-foreground mb-2">Rating</label>
+                            <div className="flex gap-1 sm:gap-2">
+                                {[1, 2, 3, 4, 5].map(star => (
+                                    <button
+                                        key={star}
+                                        type="button"
+                                        onClick={() => setForm({ ...form, rating: star })}
+                                        onMouseEnter={() => setHoverRating(star)}
+                                        onMouseLeave={() => setHoverRating(0)}
+                                        className="focus:outline-none p-1"
+                                    >
+                                        <svg
+                                            className={`w-6 h-6 sm:w-7 sm:h-7 transition-all ${(hoverRating >= star || form.rating >= star) ? "text-primary scale-110" : "text-muted-foreground/30"}`}
+                                            fill="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" />
+                                        </svg>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <textarea
+                            placeholder="Your testimonial..."
+                            rows={4}
+                            value={form.testimonial}
+                            onChange={e => setForm({ ...form, testimonial: e.target.value })}
+                            className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-primary/50 transition-colors resize-none"
+                            required
+                        />
+
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="w-full py-2.5 sm:py-3 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
+                        >
+                            {isSubmitting ? "Submitting..." : "Submit Testimonial"}
+                        </button>
+
+                        <p className="text-[10px] sm:text-xs text-muted-foreground text-center">
+                            Submitting will open your email client
+                        </p>
+                    </form>
+                </motion.div>
+            </motion.div>
+        </AnimatePresence>
     );
 };
 
 // ============================================================================
-// MAIN PAGE COMPONENT
+// MAIN PAGE
 // ============================================================================
-const TestimonialsPage = () => {
-    const { testimonials: testimonialsData } = useContent();
-    const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
-    const [selectedVideoTitle, setSelectedVideoTitle] = useState<string | null>(null);
-    const [showVideoModal, setShowVideoModal] = useState(false);
+export default function TestimonialsPage() {
+    const { testimonials: data } = useContent();
+    const containerRef = useRef(null);
+    const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end start"] });
+    
+    const [selectedVideo, setSelectedVideo] = useState<{ id: string; title: string } | null>(null);
+    const [showForm, setShowForm] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
-    const [showError, setShowError] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const heroRef = useRef(null);
-    const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-    const heroY = useTransform(scrollYProgress, [0, 1], [0, 200]);
-    const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
-    const { section, testimonials, videos, stats } = testimonialsData || {};
-
-    // Safe stats with default values - using type assertion to avoid TypeScript errors
+    const { section, testimonials = [], videos = [], stats = {} } = data || {};
+    
+    // Safe stats with proper fallbacks
     const safeStats = {
-        totalReviews: (stats as any)?.totalReviews || 150,
-        averageRating: (stats as any)?.averageRating || 5.0,
-        subscribers: stats?.subscribers || 500,
-        totalVideos: stats?.totalVideos || 8,
+        reviews: (stats as any)?.totalReviews || 150,
+        rating: (stats as any)?.averageRating || 5.0,
+        customers: (stats as any)?.subscribers || 500,
+        videos: (stats as any)?.totalVideos || 8,
     };
 
-    const handlePlayVideo = (videoId: string, title: string) => {
-        setSelectedVideo(videoId);
-        setSelectedVideoTitle(title);
-        setShowVideoModal(true);
-    };
+    const y = useTransform(scrollYProgress, [0, 1], [0, 100]);
+    const opacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.3]);
 
-    const handleSubmitTestimonial = async (formData: any) => {
+    const handleSubmit = async (formData: any) => {
         setIsSubmitting(true);
-
+        
         try {
-            const subject = encodeURIComponent(`Eagle Revolution Testimonial - ${formData.name}`);
+            const subject = encodeURIComponent(`Testimonial - ${formData.name}`);
             const body = encodeURIComponent(`
-📋 TESTIMONIAL SUBMISSION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
 Name: ${formData.name}
 Email: ${formData.email}
 Company: ${formData.company}
 Position: ${formData.position}
-Rating: ${formData.rating}/5 stars
+Rating: ${formData.rating}/5
 
-📝 TESTIMONIAL:
 ${formData.testimonial}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Allow Publish: ${formData.allowPublish ? 'Yes' : 'No'}
-Submitted: ${new Date().toLocaleString()}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      `);
-
+            `);
             window.location.href = `mailto:banderson@eaglerevolution.com?subject=${subject}&body=${body}`;
+            setShowForm(false);
             setShowSuccess(true);
-
-            const form = document.querySelector('form');
-            if (form) form.reset();
-
         } catch (error) {
             console.error('Submission error:', error);
-            setErrorMessage("Unable to open email client. Please email us directly at banderson@eaglerevolution.com");
-            setShowError(true);
         } finally {
             setIsSubmitting(false);
         }
     };
 
-    useEffect(() => {
-        const ctx = gsap.context(() => {
-            gsap.fromTo(".fade-up", { y: 60, opacity: 0 }, {
-                y: 0,
-                opacity: 1,
-                duration: 1,
-                stagger: 0.2,
-                ease: "power3.out",
-                scrollTrigger: { trigger: ".fade-up-container", start: "top 80%" },
-            });
-        });
-        return () => ctx.revert();
-    }, []);
-
     return (
-        <>
-            <main className="relative min-h-screen bg-background overflow-hidden">
-                <FloatingOrbs />
+        <main ref={containerRef} className="relative min-h-screen bg-background">
+            {/* Hero Section */}
+            <section className="relative min-h-[80vh] sm:min-h-[85vh] flex items-center justify-center overflow-hidden px-4 sm:px-6">
+                <motion.div style={{ y, opacity }} className="absolute inset-0">
+                    <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[500px] md:w-[800px] h-[300px] sm:h-[500px] md:h-[800px] bg-primary/5 rounded-full blur-[80px] sm:blur-[120px]" />
+                </motion.div>
 
-                {/* Hero Section */}
-                <section ref={heroRef} className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
-                    <motion.div style={{ y: heroY, opacity: heroOpacity }} className="absolute inset-0">
-                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] md:w-[1200px] h-[500px] md:h-[700px] bg-primary/20 blur-[120px] rounded-full" />
-                        <div className="absolute bottom-0 right-0 w-[500px] md:w-[800px] h-[500px] md:h-[800px] bg-primary/10 blur-[100px] rounded-full" />
-                    </motion.div>
+                <div className="relative max-w-6xl mx-auto text-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                    >
+                        <span className="inline-block px-2.5 sm:px-3 py-1 text-[10px] sm:text-xs font-medium tracking-wider text-primary uppercase bg-primary/5 rounded-full border border-primary/10 mb-4 sm:mb-6 md:mb-8">
+                            {section?.badge || "Testimonials"}
+                        </span>
 
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-                        <motion.div
-                            initial={{ opacity: 0, y: 40 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, ease: [0.21, 0.45, 0.27, 0.9] }}
-                            className="text-center max-w-4xl mx-auto"
-                        >
-                            <motion.div
-                                initial={{ scale: 0.8, opacity: 0 }}
-                                animate={{ scale: 1, opacity: 1 }}
-                                transition={{ delay: 0.2, type: "spring" }}
-                                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-8"
-                            >
-                                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                                <span className="text-xs font-medium tracking-wider text-primary uppercase">
-                                    {section?.badge || "Testimonials"}
+                        <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight mb-3 sm:mb-4 md:mb-6">
+                            <span className="text-foreground">What Our</span>
+                            <br className="sm:hidden" />
+                            <span className="sm:inline"> </span>
+                            <span className="text-primary">Customers Say</span>
+                        </h1>
+
+                        <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground max-w-sm sm:max-w-md md:max-w-xl mx-auto mb-6 sm:mb-8 md:mb-12 px-4">
+                            {section?.description || "Real stories from people who've experienced the difference"}
+                        </p>
+
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 md:gap-8">
+                            <div className="flex items-center gap-2 sm:gap-3">
+                                <span className="text-2xl sm:text-3xl font-bold text-foreground">
+                                    <Counter value={safeStats.rating} />
                                 </span>
-                            </motion.div>
-
-                            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6">
-                                What Our
-                                <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent"> Customers </span>
-                                Say
-                            </h1>
-
-                            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto font-light">
-                                {section?.description || "Real stories from real people who've experienced the Eagle Revolution difference"}
-                            </p>
-
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.4 }}
-                                className="flex items-center justify-center gap-6 mt-10"
-                            >
-                                <div className="flex items-center gap-3 px-5 py-2.5 bg-white/5 rounded-full border border-white/10">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-primary">
-                                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" />
-                                    </svg>
-                                    <span className="text-sm font-medium">{safeStats.averageRating} out of 5</span>
-                                </div>
-                                <div className="w-px h-8 bg-white/20" />
-                                <div className="text-sm text-muted-foreground">
-                                    Based on <span className="text-primary font-semibold">{safeStats.totalReviews}+</span> verified reviews
-                                </div>
-                            </motion.div>
-                        </motion.div>
-                    </div>
-                </section>
-
-                {/* Stats Grid */}
-                <section className="py-16">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                            {[
-                                { value: safeStats.totalReviews, label: "Total Reviews", icon: "MessageSquare", suffix: "+" },
-                                { value: safeStats.averageRating, label: "Average Rating", icon: "Star", suffix: "" },
-                                { value: safeStats.subscribers, label: "Happy Customers", icon: "Users", suffix: "+" },
-                                { value: safeStats.totalVideos, label: "Video Stories", icon: "Video", suffix: "+" },
-                            ].map((stat, i) => (
-                                <motion.div
-                                    key={i}
-                                    initial={{ opacity: 0, y: 30 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: i * 0.1, duration: 0.5 }}
-                                    viewport={{ once: true }}
-                                    className="relative group"
-                                >
-                                    <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/5 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                    <div className="relative text-center p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm group-hover:border-primary/30 transition-all">
-                                        <Icon name={stat.icon} className="w-8 h-8 text-primary mx-auto mb-3" />
-                                        <div className="text-3xl md:text-4xl font-bold text-primary mb-1">
-                                            <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-                                        </div>
-                                        <div className="text-xs text-muted-foreground tracking-wide uppercase">{stat.label}</div>
+                                <div className="text-left">
+                                    <div className="flex">
+                                        {[...Array(5)].map((_, i) => (
+                                            <svg key={i} className="w-3 h-3 sm:w-4 sm:h-4 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" />
+                                            </svg>
+                                        ))}
                                     </div>
-                                </motion.div>
-                            ))}
+                                    <span className="text-xs sm:text-sm text-muted-foreground">{safeStats.reviews}+ reviews</span>
+                                </div>
+                            </div>
+                            <div className="hidden sm:block w-px h-8 md:h-12 bg-white/10" />
+                            <div className="block sm:hidden w-20 h-px bg-white/10 my-1" />
+                            <button
+                                onClick={() => setShowForm(true)}
+                                className="px-5 sm:px-6 py-2.5 sm:py-3 bg-primary text-primary-foreground rounded-full text-xs sm:text-sm font-medium hover:bg-primary/90 transition-colors"
+                            >
+                                Share Your Story
+                            </button>
                         </div>
-                    </div>
-                </section>
+                    </motion.div>
+                </div>
+            </section>
 
-                {/* Testimonials Grid */}
-                <section className="py-20">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Stats Section */}
+            <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6">
+                <div className="max-w-5xl mx-auto">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 md:gap-8">
+                        {[
+                            { value: safeStats.reviews, label: "Reviews", suffix: "+" },
+                            { value: safeStats.rating, label: "Rating", suffix: "" },
+                            { value: safeStats.customers, label: "Customers", suffix: "+" },
+                            { value: safeStats.videos, label: "Video Stories", suffix: "+" },
+                        ].map((stat, i) => (
+                            <StatCard key={i} {...stat} index={i} />
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Testimonials Grid */}
+            <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 bg-gradient-to-b from-transparent via-primary/3 to-transparent">
+                <div className="max-w-6xl mx-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
+                        {testimonials.slice(0, 4).map((item: any, i: number) => (
+                            <TestimonialCard
+                                key={i}
+                                testimonial={item}
+                                index={i}
+                                onPlay={(id, title) => setSelectedVideo({ id, title })}
+                            />
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Videos Section */}
+            {videos.length > 0 && (
+                <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6">
+                    <div className="max-w-6xl mx-auto">
                         <motion.div
                             initial={{ opacity: 0 }}
                             whileInView={{ opacity: 1 }}
                             viewport={{ once: true }}
-                            className="grid grid-cols-1 md:grid-cols-2 gap-8"
+                            className="text-center mb-8 sm:mb-10 md:mb-12"
                         >
-                            {testimonials?.slice(0, 4).map((testimonial: any, idx: number) => (
-                                <PremiumTestimonialCard
-                                    key={testimonial.id || idx}
-                                    testimonial={testimonial}
-                                    index={idx}
-                                    onPlayVideo={handlePlayVideo}
+                            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3 md:mb-4">
+                                Watch <span className="text-primary">Customer Stories</span>
+                            </h2>
+                            <p className="text-sm sm:text-base text-muted-foreground">
+                                Hear directly from our customers
+                            </p>
+                        </motion.div>
+
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
+                            {videos.map((item: any, i: number) => (
+                                <VideoCard
+                                    key={i}
+                                    video={item}
+                                    index={i}
+                                    onClick={() => setSelectedVideo({ id: item.videoId, title: item.title })}
                                 />
                             ))}
-                        </motion.div>
-                    </div>
-                </section>
-
-                {/* Video Section */}
-                {videos && videos.length > 0 && (
-                    <section className="py-20 bg-gradient-to-b from-transparent via-white/5 to-transparent">
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <motion.div
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                className="text-center mb-12"
-                            >
-                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-4">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                                    <span className="text-xs font-medium tracking-wider text-primary uppercase">In Their Own Words</span>
-                                </div>
-                                <h2 className="text-3xl md:text-4xl font-bold mb-4">Watch Customer Stories</h2>
-                                <p className="text-muted-foreground max-w-2xl mx-auto">
-                                    Hear directly from our customers about their experience
-                                </p>
-                            </motion.div>
-
-                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
-                                {videos.map((video: any, idx: number) => (
-                                    <CinematicVideoCard
-                                        key={video.id || idx}
-                                        video={video}
-                                        index={idx}
-                                        onClick={() => handlePlayVideo(video.videoId, video.title)}
-                                    />
-                                ))}
-                            </div>
-
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                whileInView={{ opacity: 1 }}
-                                viewport={{ once: true }}
-                                className="text-center mt-10"
-                            >
-                                <a
-                                    href="https://g.page/r/eaglerevolution"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 text-sm text-primary hover:gap-3 transition-all group"
-                                >
-                                    <Icon name="Google" className="w-5 h-5" />
-                                    Read all {safeStats.totalReviews}+ reviews on Google
-                                    <Icon name="ArrowRight" className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                                </a>
-                            </motion.div>
-                        </div>
-                    </section>
-                )}
-
-                {/* Share Your Story Section */}
-                <section className="py-20">
-                    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <motion.div
-                            initial={{ opacity: 0, y: 40 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            className="relative"
-                        >
-                            <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-3xl blur-3xl" />
-                            <div className="relative bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl rounded-3xl border border-white/10 p-8 md:p-12 shadow-2xl">
-                                <div className="text-center mb-8">
-                                    <div className="w-12 h-1 bg-primary mx-auto mb-6 rounded-full" />
-                                    <h2 className="text-3xl md:text-4xl font-bold mb-3">Share Your Story</h2>
-                                    <p className="text-muted-foreground">
-                                        Have you worked with us? We'd love to hear about your experience
-                                    </p>
-                                    <p className="text-xs text-primary/60 mt-2">
-                                        Clicking submit will open your email client
-                                    </p>
-                                </div>
-
-                                <TestimonialForm onSubmit={handleSubmitTestimonial} isSubmitting={isSubmitting} />
-                            </div>
-                        </motion.div>
-                    </div>
-                </section>
-
-                {/* Footer */}
-                <footer className="py-12 border-t border-white/10 mt-12">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="flex flex-wrap items-center justify-between gap-4">
-                            <div className="flex items-center gap-3">
-                                <div className="flex -space-x-2">
-                                    {testimonials?.slice(0, 5).map((t: any, i: number) => (
-                                        <motion.div
-                                            key={i}
-                                            initial={{ scale: 0 }}
-                                            whileInView={{ scale: 1 }}
-                                            transition={{ delay: i * 0.05 }}
-                                            className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 border-2 border-background flex items-center justify-center text-primary text-xs font-medium"
-                                        >
-                                            {t.avatar || t.name?.charAt(0) || "✓"}
-                                        </motion.div>
-                                    ))}
-                                </div>
-                                <div className="text-sm text-muted-foreground">
-                                    <span className="font-semibold text-foreground">{safeStats.subscribers}+</span> satisfied customers
-                                </div>
-                            </div>
-
-                            <div className="flex items-center gap-3 text-sm">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                                    <span className="text-muted-foreground">Veteran Owned</span>
-                                </div>
-                                <div className="w-px h-4 bg-white/20" />
-                                <div className="flex items-center gap-1">
-                                    {[...Array(5)].map((_, i) => (
-                                        <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-primary">
-                                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" />
-                                        </svg>
-                                    ))}
-                                    <span className="font-medium ml-1">{safeStats.averageRating}</span>
-                                </div>
-                            </div>
                         </div>
                     </div>
-                </footer>
-            </main>
+                </section>
+            )}
 
+            {/* CTA Section */}
+            <section className="py-16 sm:py-20 md:py-28 px-4 sm:px-6 text-center">
+                <div className="max-w-xl sm:max-w-2xl mx-auto">
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Ready to share your story?</h2>
+                    <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8">
+                        Join hundreds of satisfied customers and tell us about your experience
+                    </p>
+                    <button
+                        onClick={() => setShowForm(true)}
+                        className="px-6 sm:px-8 py-3 sm:py-4 bg-primary text-primary-foreground rounded-full text-sm font-medium hover:bg-primary/90 transition-colors"
+                    >
+                        Write a Testimonial
+                    </button>
+                </div>
+            </section>
+
+            {/* Footer */}
+            <footer className="py-6 sm:py-8 px-4 sm:px-6 border-t border-white/5">
+                <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-center sm:text-left">
+                    <a
+                        href="https://g.page/r/eaglerevolution"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
+                    >
+                        <Icon name="Google" className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        Read all reviews on Google
+                    </a>
+                    <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
+                        <span>Veteran Owned</span>
+                        <span className="w-1 h-1 bg-muted-foreground/30 rounded-full" />
+                        <span>{safeStats.rating} ★ Rating</span>
+                    </div>
+                </div>
+            </footer>
+
+            {/* Modals */}
             <VideoModal
-                isOpen={showVideoModal}
-                onClose={() => setShowVideoModal(false)}
-                videoId={selectedVideo || ""}
-                title={selectedVideoTitle || ""}
+                isOpen={!!selectedVideo}
+                onClose={() => setSelectedVideo(null)}
+                videoId={selectedVideo?.id || ""}
+                title={selectedVideo?.title || ""}
             />
 
-            <SuccessModal isOpen={showSuccess} onClose={() => setShowSuccess(false)} />
-
-            <ErrorModal
-                isOpen={showError}
-                onClose={() => setShowError(false)}
-                message={errorMessage}
+            <FormModal
+                isOpen={showForm}
+                onClose={() => setShowForm(false)}
+                onSubmit={handleSubmit}
+                isSubmitting={isSubmitting}
             />
-        </>
+
+            <SuccessModal
+                isOpen={showSuccess}
+                onClose={() => setShowSuccess(false)}
+            />
+        </main>
     );
-};
-
-export default TestimonialsPage;
+}
