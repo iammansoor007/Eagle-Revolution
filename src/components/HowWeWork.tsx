@@ -551,7 +551,7 @@ const AwardCTABanner = () => {
                             className="flex items-center gap-2 mb-4"
                         >
                             <span className="w-8 h-[2px] bg-primary" />
-                            <span className="text-xs font-bold tracking-[0.3em] uppercase text-primary">
+                            <span className="text-lg font-bold tracking-[0.3em] uppercase text-primary">
                                 {cta.badge}
                             </span>
                         </motion.div>

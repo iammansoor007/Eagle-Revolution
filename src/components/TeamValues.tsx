@@ -11,7 +11,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Icon } from "../config/icons";
 import { useContent } from "../hooks/useContent";
-import brandonImg from "@/assets/ownerimage2.png";
+import brandonImg from "@/assets/ownerupdatedimage.jpeg";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -87,7 +87,7 @@ const CeoPortrait = () => {
           initial={{ opacity: 0, x: -20 }}
           animate={inView ? { opacity: 1, x: 0 } : {}}
           transition={{ delay: 0.3 }}
-          className="absolute top-6 left-6"
+          className="absolute top-6 left-6 z-10"
         >
           <div className="bg-card/95 backdrop-blur-sm px-5 py-2.5 rounded-full shadow-xl border border-border">
             <span className="flex items-center gap-2 text-xs font-bold text-primary">
@@ -101,7 +101,7 @@ const CeoPortrait = () => {
           initial={{ opacity: 0, x: 20 }}
           animate={inView ? { opacity: 1, x: 0 } : {}}
           transition={{ delay: 0.4 }}
-          className="absolute bottom-6 right-6"
+          className="absolute bottom-6 right-6 z-10"
         >
           <div className="bg-card/95 backdrop-blur-sm px-5 py-2.5 rounded-full shadow-xl border border-border">
             <span className="flex items-center gap-2 text-xs font-bold text-primary">
@@ -155,7 +155,7 @@ const Leadership = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative bg-background py-14 md:py-18 lg:py-20 overflow-hidden"
+      className="relative bg-background py-16 md:py-24 lg:py-32 overflow-hidden"
     >
       <div className="absolute inset-0 pointer-events-none">
         <div
@@ -193,7 +193,7 @@ const Leadership = () => {
       </ParallaxLayer>
 
       <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-30">
-        <div className="max-w-3xl mx-auto text-center mb-20 leadership-reveal">
+        <div className="max-w-3xl mx-auto text-center mb-16 md:mb-20 leadership-reveal">
           <div className="flex items-center justify-center gap-3 mb-6">
             <div className="w-8 h-[2px] bg-gradient-to-r from-primary/30 to-primary" />
             <span className="text-xs font-medium tracking-[0.2em] uppercase text-primary">
@@ -212,38 +212,40 @@ const Leadership = () => {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div className="leadership-reveal">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 xl:gap-20 items-start">
+          <div className="leadership-reveal lg:sticky lg:top-24">
             <CeoPortrait />
           </div>
 
-          <div className="space-y-8 leadership-reveal">
+          <div className="space-y-10 leadership-reveal">
             <div>
-              <h3 className="text-3xl md:text-4xl font-light text-foreground mb-3">
+              <h3 className="text-3xl md:text-4xl font-light text-foreground mb-4">
                 {ceo.name}
                 <span className="block text-sm font-mono text-primary mt-2 tracking-[0.2em] uppercase">
                   {ceo.title}
                 </span>
               </h3>
 
-              <div className="mt-6 relative">
-                <div className="absolute -left-4 top-0 text-primary/20">
-                  <Icon name="Quote" className="w-8 h-8" />
+              <div className="mt-8 relative">
+                <div className="absolute -left-4 -top-2 text-primary/20">
+                  <Icon name="Quote" className="w-10 h-10" />
                 </div>
                 {ceo.quotes.map((quote: string, idx: number) => (
-                  <p key={idx} className="text-muted-foreground text-base md:text-lg leading-relaxed pl-6">
-                    {quote}
+                  <p key={idx} className="text-foreground text-lg md:text-xl font-medium leading-relaxed pl-8">
+                    &ldquo;{quote}&rdquo;
                   </p>
                 ))}
               </div>
 
-              {ceo.description.map((desc: string, idx: number) => (
-                <p key={idx} className="mt-6 space-y-3 text-muted-foreground text-sm md:text-base">
-                  {desc}
-                </p>
-              ))}
+              <div className="mt-8 space-y-5">
+                {ceo.description.map((desc: string, idx: number) => (
+                  <p key={idx} className="text-muted-foreground text-base md:text-lg leading-relaxed">
+                    {desc}
+                  </p>
+                ))}
+              </div>
 
-              <div className="flex items-center gap-4 mt-8">
+              <div className="flex flex-wrap items-center gap-4 mt-10 pt-4 border-t border-border">
                 <motion.a
                   href={ceo.social.linkedin}
                   whileHover={{ scale: 1.1 }}
@@ -262,7 +264,9 @@ const Leadership = () => {
                 >
                   <Icon name="Mail" className="w-5 h-5" />
                 </motion.a>
-                <span className="text-sm text-muted-foreground ml-2">{ceo.social.email}</span>
+                <span className="text-sm text-muted-foreground break-all">
+                  {ceo.social.email}
+                </span>
               </div>
             </div>
           </div>

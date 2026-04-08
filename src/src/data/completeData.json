@@ -110,7 +110,7 @@
     "cta": {
       "title": "Get Your Free Quote",
       "description": "Book your free consultation today and save 15%",
-      "buttonText": "Get Free Quote",
+      "buttonText": "Get Preapproved Now",
       "buttonLink": "#quote"
     }
   },
@@ -163,7 +163,7 @@
       "highlight": "Expectations",
       "suffix": ""
     },
-    "description": "Eagle Revolution was founded to do more than just build roofs, windows, decks, and siding. We are here to build a movement. Born in St. Charles, Missouri, Eagle Revolution was launched by Brandon Anderson, a U.S. Army veteran and globally licensed combat sports official who brings battlefield discipline and boardroom precision to every project.",
+    "description": "Eagle Revolution was founded to do more than just build roofs, windows, decks, and siding. We are here to build a movement. Born in O’Fallon, Missouri, Eagle Revolution was launched by Brandon Anderson, a U.S. Army veteran and globally licensed combat sports official who brings battlefield discipline and boardroom precision to every project.",
     "image": {
       "src": "EagleRevolutionTeam",
       "alt": "Eagle Revolution team - Veteran owned roofing and exterior remodeling company",
@@ -205,10 +205,11 @@
       "emergency": "24/7"
     },
     "coreValues": [
-      "Extreme Ownership",
+      "Customer First",
       "Integrity",
-      "Humility",
-      "Customer First"
+      "Extreme Ownership",
+      "Gratitude",
+      "Growth"
     ]
   },
   "services": {
@@ -220,7 +221,7 @@
     },
     "description": [
       "Eagle Revolution provides expert exterior remodeling services for homes and businesses. From windows and doors to roofing and decks, our team delivers quality craftsmanship with military precision.",
-      "<span class=\"font-semibold text-primary\">Veteran Owned • Licensed • Insured</span>"
+      "<span class=\"font-semibold text-primary\">Veteran Owned • Licensed • Bonded & Insured</span>"
     ],
     "stats": [
       {
@@ -334,7 +335,7 @@
     },
     "ceo": {
       "name": "Brandon Anderson",
-      "title": "Founder • U.S. Army Veteran",
+      "title": "Founder • U.S. Army Veteran • Globally Licensed Combat Sports Official",
       "image": "brandon",
       "alt": "Brandon Anderson - Founder, Eagle Revolution",
       "badges": {
@@ -342,11 +343,12 @@
         "bottom": "ProVia • IKO • CertainTeed • Wolf"
       },
       "quotes": [
-        "Eagle Revolution was founded to do more than just build roofs, windows, decks, and siding. We are here to build a movement. Born in St. Charles, Missouri, I launched Eagle Revolution to bring battlefield discipline and boardroom precision to every project."
+        "Eagle Revolution was built to be more than just a remodeling company. It was built to lead a movement."
       ],
       "description": [
-        "With years of high-level leadership experience at some of the largest home improvement companies in North America, Brandon saw firsthand how the industry had lost its way. It had become driven by profit margins instead of people.",
-        "Eagle Revolution is the local force that fights back. We go toe-to-toe with billion-dollar corporations and win—not with gimmicks or flash, but with fire, integrity, and a relentless commitment to the customer."
+        "Based in O'Fallon, Missouri, Eagle Revolution was founded by Brandon Anderson, an Army veteran and globally licensed combat sports official who brings discipline, precision, and accountability to every project. With years of leadership experience at some of the largest home improvement companies in North America, Brandon saw firsthand how the industry had shifted away from homeowners and toward profits, leaving people with high prices, poor communication, and broken trust.",
+        "He knew it didn't have to be that way. Eagle Revolution was created to restore what the industry lost—trust, craftsmanship, and doing the job right the first time. Today, we stand as a local company built to compete with the biggest names in the country, not through gimmicks, but through transparency, quality work, and a relentless commitment to our customers.",
+        "Our systems are built for precision, but our strength is our people—driven professionals who take ownership, communicate clearly, and treat every home like their own."
       ],
       "social": {
         "linkedin": "#",
@@ -564,6 +566,7 @@
       "trustBadges": [
         "Veteran Owned",
         "Licensed",
+        "Bonded",
         "Insured"
       ],
       "buttons": [
@@ -658,7 +661,7 @@
         "metadata": [
           {
             "label": "Status",
-            "value": "Licensed & Insured"
+            "value": "Licensed  & Bonded & Insured"
           }
         ],
         "links": []
@@ -996,17 +999,22 @@
       {
         "platform": "Facebook",
         "icon": "Facebook",
-        "href": "#"
+        "href": "https://www.facebook.com/profile.php?id=61564977483096"
       },
       {
         "platform": "Instagram",
         "icon": "Instagram",
-        "href": "#"
+        "href": "https://www.instagram.com/eagle_revolutionllc"
       },
       {
-        "platform": "Google",
-        "icon": "Google",
-        "href": "#"
+        "platform": "LinkedIn",
+        "icon": "Linkedin",
+        "href": "https://www.linkedin.com/company/eagle-revolution/people/"
+      },
+      {
+        "platform": "X (Twitter)",
+        "icon": "Twitter",
+        "href": "https://x.com/Eagle_Rev_LLC"
       }
     ],
     "bottom": {
@@ -1062,16 +1070,16 @@
     "services": "/src/assets/fairservice.png",
     "ceo": "/src/assets/eagleowner.jpeg",
     "portfolio": {
-      "home1": "/src/assets/eagle1.jpg",
-      "home2": "/src/assets/eagle2.jpg",
-      "home3": "/src/assets/eagle3.jpg",
-      "home4": "/src/assets/eagle4.jpg",
-      "home5": "/src/assets/eagle5.jpg",
-      "home6": "/src/assets/eagle6.jpg",
-      "home7": "/src/assets/eagle7.jpg",
-      "home8": "/src/assets/eagle8.jpg",
-      "home9": "/src/assets/eagle9.jpg",
-      "home10": "/src/assets/eagle10.jpg"
+      "home1": "/src/assets/portfolio1.png",
+      "home2": "/src/assets/portfolio2.jpg",
+      "home3": "/src/assets/portfolio3.jpg",
+      "home4": "/src/assets/portfolio4.jpg",
+      "home5": "/src/assets/portfolio5.jpg",
+      "home6": "/src/assets/portfolio7.jpg",
+      "home7": "/src/assets/portfolio1.png",
+      "home8": "/src/assets/portfolio2.jpg",
+      "home9": "/src/assets/portfolio3.jpg",
+      "home10": "/src/assets/portfolio4.jpg"
     }
   },
   "loader": {

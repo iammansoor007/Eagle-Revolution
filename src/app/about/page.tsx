@@ -309,7 +309,7 @@ const Hero = () => {
             </h1>
 
             <p className="text-muted-foreground text-lg md:text-xl lg:text-2xl max-w-xl mx-auto lg:mx-0 mb-8 font-medium leading-relaxed">
-              Born in St. Charles, MO. Built on military precision. Driven by integrity.
+              Born in  O’Fallon, Missouri. Built on military precision. Driven by integrity.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center">
@@ -601,7 +601,7 @@ const MissionSection = () => {
 const RecognitionMarquee = () => {
   const certs = [
     "ProVia Certified", "IKO Pro", "Shingle Master",
-    "TimberTech", "Veteran Owned", "Contractor Excellence"
+    "TimberTech", "Veteran Owned", "Contractor Excellence", "Wolf Home Products Certified"
   ];
 
   return (

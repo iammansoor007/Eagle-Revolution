@@ -12,6 +12,7 @@ import FAQ from "@/components/FAQ";
 import AggressiveRoofingSection from "@/components/RoofingExperts";
 import HowWeWork from "@/components/HowWeWork";
 import QuickQuote from "@/components/QuickQuote";
+import BrandStore from "@/components/BrandStore";
 
 export default function Index() {
   return (
@@ -27,6 +28,7 @@ export default function Index() {
       <section id="portfolio">
         <Portfolio />
       </section>
+      <BrandStore />
       <Testimonials />
       <section id="about">
         <HowWeWork />

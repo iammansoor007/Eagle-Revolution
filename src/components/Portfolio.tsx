@@ -11,16 +11,16 @@ import {
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useContent } from "../hooks/useContent";
-import portfolio1 from "@/assets/eagle1.jpg";
-import portfolio2 from "@/assets/eagle2.jpg";
-import portfolio3 from "@/assets/eagle3.jpg";
-import portfolio4 from "@/assets/eagle4.jpg";
-import portfolio5 from "@/assets/eagle5.jpg";
-import portfolio6 from "@/assets/eagle6.jpg";
-import portfolio7 from "@/assets/eagle7.jpg";
-import portfolio8 from "@/assets/eagle8.jpg";
-import portfolio9 from "@/assets/eagle9.jpg";
-import portfolio10 from "@/assets/eagle10.jpg";
+import portfolio1 from "@/assets/portfolio1.png";
+import portfolio2 from "@/assets/portfolio2.jpg";
+import portfolio3 from "@/assets/portfolio3.jpg";
+import portfolio4 from "@/assets/portfolio4.jpg";
+import portfolio5 from "@/assets/portfolio5.jpg";
+import portfolio6 from "@/assets/portfolio7.jpg";
+import portfolio7 from "@/assets/portfolio1.png";
+import portfolio8 from "@/assets/portfolio2.jpg";
+import portfolio9 from "@/assets/portfolio3.jpg";
+import portfolio10 from "@/assets/portfolio4.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
 

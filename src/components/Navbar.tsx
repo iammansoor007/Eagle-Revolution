@@ -176,11 +176,11 @@ const Navbar = () => {
 
             <motion.div className="hidden lg:flex items-center" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <a
-                href="#contact"
+                href="https://portal.foundationfinance.com/links/?i=w7bzUVnHPqz9EeyK5DqICNwzpOmDZvQbKp5k8Wj5b3w="
                 className="flex items-center space-x-2 px-7 py-3.5 rounded-xl font-bold transition-all duration-300 bg-primary text-white shadow-lg shadow-primary/20 hover:text-white"
               >
                 <Icon name="Calendar" className="h-4 w-4" />
-                <span>Get Free Quote</span>
+                <span>Get Preapproved Now</span>
               </a>
             </motion.div>
 
@@ -273,7 +273,7 @@ const Navbar = () => {
                   onClick={handleLinkClick}
                   className="block w-full py-4 bg-primary text-white font-bold rounded-xl text-center shadow-lg shadow-primary/20"
                 >
-                  Get Free Quote Now
+                  Get Preapproved Now
                 </a>
               </div>
             </motion.div>

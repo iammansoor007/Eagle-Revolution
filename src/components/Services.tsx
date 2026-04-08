@@ -379,11 +379,10 @@ const Services = () => {
                   <p key={idx} className="text-muted-foreground text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: text }} />
                 ))}
               </div>
-
-              <div className="flex items-center gap-8 mt-8 pt-6 border-t border-border">
+              <div className="flex items-center justify-between gap-8 mt-8 pt-6 border-t border-border">
                 {stats.map((stat: any) => (
-                  <div key={stat.label}>
-                    <div className="text-3xl md:text-4xl font-bold text-primary">
+                  <div key={stat.label} className="flex-1 text-center">
+                    <div className="text-3xl md:text-4xl font-bold text-primary whitespace-nowrap">
                       <Counter value={stat.value} suffix={stat.suffix} />
                     </div>
                     <div className="text-xs font-semibold tracking-wider uppercase text-muted-foreground mt-1">

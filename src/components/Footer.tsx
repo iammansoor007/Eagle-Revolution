@@ -53,7 +53,6 @@ const QuantumParticles = () => {
 
   if (!isClient) return null;
 
-
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
       {particles.map((particle) => (
@@ -309,18 +308,33 @@ const SocialLinks = () => {
   const { footer } = useContent();
   const { social } = footer;
 
+  // Map platform names to ensure proper icon mapping
+  const getIconName = (platform: string) => {
+    const iconMap: { [key: string]: string } = {
+      'Facebook': 'Facebook',
+      'Instagram': 'Instagram',
+      'LinkedIn': 'Linkedin',
+      'X (Twitter)': 'Twitter',
+      'Twitter': 'Twitter',
+      'Google': 'Google'
+    };
+    return iconMap[platform] || platform;
+  };
+
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3 flex-wrap">
       {social.map((socialItem: any) => (
         <motion.a
           key={socialItem.platform}
           href={socialItem.href}
+          target="_blank"
+          rel="noopener noreferrer"
           whileHover={{ y: -3, scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
           className="relative w-10 h-10 rounded-full bg-muted border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/5 hover:border-primary/20 transition-all duration-300 group"
           aria-label={socialItem.platform}
         >
-          <Icon name={socialItem.icon} className="w-5 h-5" />
+          <Icon name={getIconName(socialItem.platform)} className="w-5 h-5" />
           <motion.div
             className="absolute inset-0 rounded-full bg-primary/20 blur-lg"
             initial={{ opacity: 0, scale: 0.8 }}
@@ -518,7 +532,7 @@ const Footer = () => {
             <span className="w-1 h-1 rounded-full bg-border" />
             <span>{bottom.rights}</span>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6 flex-wrap justify-center">
             {bottom.links.map((link: any) => (
               <Link key={link.label} href={link.href} className="hover:text-primary transition-colors">{link.label}</Link>
             ))}
