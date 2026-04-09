@@ -2,15 +2,25 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useRef } from 'react';
-import { motion, useInView, useScroll, useTransform } from 'framer-motion';
-import { 
-  Home, Layout, TreePine, Building2, Building, Droplets, 
+import { useState, useRef, useEffect } from 'react';
+import {
+  motion,
+  AnimatePresence,
+  useInView,
+  useScroll,
+  useTransform,
+  useMotionValue,
+  useSpring
+} from 'framer-motion';
+import {
+  Home, Layout, TreePine, Building2, Building, Droplets,
   ArrowRight, Star, Shield, Clock, Award, Users, CheckCircle,
-  Phone, Calendar, ArrowUpRight, Play, ChevronRight
+  Phone, Calendar, ArrowUpRight, Play, ChevronRight, Trophy,
+  ThumbsUp, FileText, ClipboardCheck, Truck, Hammer, Minus, Plus
 } from 'lucide-react';
-import servicesData from '../../src/data/completeData.json';
+import servicesData from '../../data/servicesData.json';
 
+import breakcrumb from '@/assets/Breadcrumb-Image.jpeg';
 import roofingImg from '@/assets/portfolio1.png';
 import windowsImg from '@/assets/portfolio2.jpg';
 import decksImg from '@/assets/portfolio3.jpg';
@@ -18,7 +28,11 @@ import commercialImg from '@/assets/portfolio4.jpg';
 import sidingImg from '@/assets/portfolio5.jpg';
 import heroBg from '@/assets/bgfair.jpg';
 
-const iconMap = { Home, Layout, TreePine, Building2, Building, Droplets };
+const iconMap = {
+  Home, Layout, TreePine, Building2, Building, Droplets,
+  Shield, Trophy, Users, ThumbsUp, FileText, ClipboardCheck,
+  Truck, Hammer, CheckCircle, Award, Clock
+};
 
 const imageMap = {
   'Residential Roofing': roofingImg,
@@ -29,103 +43,232 @@ const imageMap = {
   'Gutters & Protection': sidingImg,
 };
 
-// Premium Service Card Component
-const ServiceCard = ({ service, index }) => {
-  const IconComponent = iconMap[service.icon] || Home;
-  const [isHovered, setIsHovered] = useState(false);
-  
+// --- Counter Component ---
+const Counter = ({ value, suffix = "", duration = 2 }) => {
+  const [count, setCount] = useState(0);
+  const countRef = useRef(null);
+  const inView = useInView(countRef, { once: true, margin: "-100px" });
+
+  useEffect(() => {
+    if (inView) {
+      let startTime;
+      const animate = (timestamp) => {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
+        const easedProgress = 1 - Math.pow(1 - progress, 4);
+        setCount(Math.floor(easedProgress * value));
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      };
+      requestAnimationFrame(animate);
+    }
+  }, [inView, value, duration]);
+
+  return (
+    <span ref={countRef} className="tabular-nums">
+      {count.toLocaleString()}
+      {suffix}
+    </span>
+  );
+};
+
+// --- StatCard Component ---
+const StatCard = ({ stat, index }) => {
+  const IconComponent = stat.icon;
   return (
     <motion.div
-      initial={{ opacity: 0, y: 60 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
       className="group relative"
     >
-      <Link href={`/services/${service.slug}`} className="block">
-        <div className="relative overflow-hidden rounded-[2.5rem] bg-white transition-all duration-700 ease-out group-hover:shadow-2xl group-hover:shadow-black/10 group-hover:-translate-y-2">
-          {/* Image Container */}
-          <div className="relative aspect-[4/5] overflow-hidden">
-            <motion.div
-              animate={{ scale: isHovered ? 1.1 : 1 }}
-              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute inset-0"
-            >
-              <Image 
-                src={service.image} 
-                alt={service.title}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="object-cover"
-              />
-            </motion.div>
-            
-            {/* Premium Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-700" />
-            
-            {/* Top Badges */}
-            <div className="absolute top-6 left-6 right-6 flex items-center justify-between z-10">
-              <motion.span
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-                className="px-4 py-2 bg-white/95 backdrop-blur-md text-gray-900 text-xs font-bold rounded-full tracking-wider shadow-lg"
-              >
-                {service.tag}
-              </motion.span>
-              
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-                className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-xl"
-              >
-                <IconComponent className="w-6 h-6 text-gray-900" />
-              </motion.div>
+      <div className="bg-white border border-border/60 rounded-[2rem] p-8 shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-500 text-center lg:text-left h-full">
+        <div className="w-12 h-12 rounded-xl bg-primary/5 text-primary flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all duration-500 mx-auto lg:mx-0 shadow-inner">
+          <IconComponent className="w-6 h-6" />
+        </div>
+        <div className="space-y-1">
+          <h3 className="text-4xl xs:text-5xl font-black text-foreground tracking-tighter">
+            <Counter
+              value={parseInt(stat.value.replace(/[^0-9]/g, ''))}
+              suffix={stat.value.includes('%') ? '%' : (stat.value.includes('+') ? '+' : '')}
+            />
+          </h3>
+          <p className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground group-hover:text-primary transition-colors">
+            {stat.label}
+          </p>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+// --- Interactive Background (Matching Testimonials Style) ---
+const InteractiveBackground = () => {
+  const [mousePos, setMousePos] = useState({ x: -200, y: -200 });
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 640);
+      setIsTablet(window.innerWidth >= 640 && window.innerWidth < 1024);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+
+    const handleMouseMove = (e) => {
+      setMousePos({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener('resize', checkScreenSize);
+    };
+  }, []);
+
+  return (
+    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+      {/* Diagonal Grid Lines - Exactly like Testimonials */}
+      <div className="absolute inset-0 opacity-[0.03]">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `
+              repeating-linear-gradient(45deg, hsl(var(--primary)) 0px, hsl(var(--primary)) 1px, transparent 1px, transparent 40px),
+              repeating-linear-gradient(135deg, hsl(var(--primary)) 0px, hsl(var(--primary)) 1px, transparent 1px, transparent 40px)
+            `,
+          }}
+        />
+      </div>
+
+      {/* Animated Blob 1 - Matching Testimonials */}
+      <motion.div
+        animate={{
+          x: [0, 100, 0, -100, 0],
+          y: [0, -50, 100, 50, 0],
+        }}
+        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+        className="absolute top-1/4 -left-1/4 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl"
+      />
+
+      {/* Animated Blob 2 - Matching Testimonials */}
+      <motion.div
+        animate={{
+          x: [0, -100, 50, 100, 0],
+          y: [0, 50, -100, -50, 0],
+        }}
+        transition={{ duration: 35, repeat: Infinity, ease: "linear", delay: 2 }}
+        className="absolute bottom-1/4 -right-1/4 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl"
+      />
+
+      {/* Desktop Mouse Follower (Additional enhancement - keeps interactivity) */}
+      {!isMobile && !isTablet && (
+        <motion.div
+          animate={{
+            x: mousePos.x - 400,
+            y: mousePos.y - 400,
+          }}
+          transition={{
+            type: "spring",
+            damping: 30,
+            stiffness: 80,
+            restDelta: 0.001
+          }}
+          className="absolute w-[800px] h-[800px] bg-primary/[0.04] rounded-full blur-[120px]"
+        />
+      )}
+    </div>
+  );
+};
+
+// --- Enhanced Service Card with Fixed Hover ---
+const ServiceCard = ({ service, index }) => {
+  const SIcon = iconMap[service.icon] || Home;
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+      className="group"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <Link href={`/services/${service.slug}`} className="block h-full">
+        <div className="flex flex-col h-full">
+          {/* Image Container - Fixed aspect ratio */}
+          <div className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 shadow-lg transition-all duration-700 group-hover:shadow-2xl">
+            <Image
+              src={imageMap[service.title] || roofingImg}
+              alt={service.title}
+              fill
+              className="object-cover transition-transform duration-1000 group-hover:scale-105"
+              priority={index < 3}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+            {/* Subtle Border Glow on Hover */}
+            <div className="absolute inset-0 rounded-[2.5rem] border-2 border-transparent group-hover:border-primary/20 transition-all duration-500 pointer-events-none" />
+
+            {/* Floating Badge */}
+            <div className="absolute top-6 left-6 z-10">
+              <div className="px-5 py-2.5 bg-white/95 backdrop-blur-md rounded-xl border border-white/30 shadow-lg">
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+                  {service.tag}
+                </span>
+              </div>
             </div>
-            
-            {/* Content Overlay */}
-            <div className="absolute inset-x-0 bottom-0 p-8 z-10">
-              <motion.div
-                animate={{ y: isHovered ? 0 : 0, opacity: 1 }}
-                className="space-y-4"
-              >
-                <h3 className="text-3xl font-bold text-white leading-tight tracking-tight">
-                  {service.title}
-                </h3>
-                
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ 
-                    opacity: isHovered ? 1 : 0,
-                    height: isHovered ? 'auto' : 0
-                  }}
-                  transition={{ duration: 0.4 }}
-                  className="overflow-hidden"
-                >
-                  <p className="text-white/80 text-sm leading-relaxed mb-6">
-                    {service.description}
-                  </p>
-                  
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {service.features.slice(0, 3).map((feature, idx) => (
-                      <span key={idx} className="px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white text-xs">
-                        {feature}
-                      </span>
-                    ))}
-                  </div>
-                  
-                  <span className="inline-flex items-center text-white font-semibold text-sm group/link">
-                    <span className="relative">
-                      Discover More
-                      <span className="absolute -bottom-1 left-0 w-full h-px bg-white scale-x-0 group-hover/link:scale-x-100 transition-transform duration-500 origin-left" />
-                    </span>
-                    <ArrowUpRight className="w-4 h-4 ml-2 transition-all duration-300 group-hover/link:translate-x-1 group-hover/link:-translate-y-1" />
-                  </span>
-                </motion.div>
-              </motion.div>
+
+            {/* Hover Arrow Button */}
+            <motion.div
+              className="absolute bottom-6 right-6 z-10"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={isHovered ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow">
+                <ArrowUpRight className="w-6 h-6" />
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Content - Fixed spacing */}
+          <div className="flex-1 mt-6 px-4 flex flex-col items-center text-center">
+            {/* Index Number */}
+            <div className="flex items-center gap-3 mb-4 opacity-40">
+              <span className="w-6 h-[1px] bg-foreground" />
+              <span className="text-[10px] font-bold uppercase tracking-widest leading-none">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <span className="w-6 h-[1px] bg-foreground" />
+            </div>
+
+            {/* Title */}
+            <h3 className="text-2xl sm:text-3xl font-heading font-black text-foreground mb-2 tracking-tighter leading-tight group-hover:text-primary transition-colors duration-300">
+              {service.title}
+            </h3>
+
+            {/* Tagline */}
+            <p className="text-muted-foreground text-xs sm:text-sm font-medium uppercase tracking-[0.1em] opacity-60 group-hover:opacity-80 transition-opacity">
+              {service.tagline}
+            </p>
+
+            {/* Learn More Link */}
+            <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary">
+                Learn More
+                <ArrowRight className="w-3 h-3" />
+              </span>
             </div>
           </div>
         </div>
@@ -134,265 +277,266 @@ const ServiceCard = ({ service, index }) => {
   );
 };
 
-// Animated Counter Component
-const AnimatedCounter = ({ value, label, suffix = '' }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  
+// --- Award CTA Banner Component (Enhanced) ---
+const AwardCTABanner = () => {
   return (
-    <div ref={ref} className="text-center">
-      <div className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-2 tracking-tight">
-        {isInView ? value : '0'}{suffix}
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-20px" }}
+      transition={{ duration: 0.7, delay: 0.2 }}
+      className="relative overflow-hidden "
+    >
+      <div className="relative bg-gradient-to-br from-primary/5 via-white to-primary/5 border border-primary/20 rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl">
+        {/* Animated Background */}
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            className="absolute -top-20 -right-20 w-48 xs:w-64 sm:w-96 h-48 xs:h-64 sm:h-96 bg-primary/5 rounded-full blur-3xl"
+            animate={{
+              x: [0, 30, 0, -30, 0],
+              y: [0, -20, 0, 20, 0],
+            }}
+            transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+          />
+          <motion.div
+            className="absolute -bottom-20 -left-20 w-48 xs:w-64 sm:w-96 h-48 xs:h-64 sm:h-96 bg-primary/5 rounded-full blur-3xl"
+            animate={{
+              x: [0, -30, 0, 30, 0],
+              y: [0, 20, 0, -20, 0],
+            }}
+            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          />
+        </div>
+
+        {/* Animated Borders */}
+        <motion.div
+          className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary to-transparent"
+          animate={{ x: ["-100%", "100%"] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary to-transparent"
+          animate={{ x: ["100%", "-100%"] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+        />
+
+        {/* Content */}
+        <div className="relative px-4 xs:px-6 sm:px-8 lg:px-12 py-8 xs:py-10 sm:py-14 lg:py-16 flex flex-col lg:flex-row items-center justify-between gap-6 xs:gap-8 z-20">
+          <div className="max-w-2xl text-center lg:text-left">
+            {/* Stars Rating */}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="flex items-center justify-center lg:justify-start gap-2 xs:gap-3 mb-3 xs:mb-4"
+            >
+              <div className="flex items-center gap-0.5">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-3 h-3 xs:w-4 xs:h-4 text-yellow-500 fill-yellow-500" />
+                ))}
+              </div>
+              <span className="text-[10px] xs:text-xs sm:text-sm font-bold tracking-[0.15em] xs:tracking-[0.2em] uppercase text-primary">
+                Trusted by Thousands
+              </span>
+            </motion.div>
+
+            {/* Headline */}
+            <h3 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3 xs:mb-4 leading-tight">
+              America's{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/70">
+                #1 Rated
+              </span>
+              <br className="hidden xs:block" /> Home Improvement Team
+            </h3>
+
+            {/* Description */}
+            <p className="text-muted-foreground text-xs xs:text-sm sm:text-base md:text-lg leading-relaxed max-w-lg mb-4 xs:mb-6">
+              Join thousands of satisfied homeowners who trusted us with their most valuable investment.
+            </p>
+
+            {/* Trust Badges */}
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 xs:gap-3">
+              {[
+                { text: "A+ BBB Rating", icon: Award },
+                { text: "24/7 Support", icon: Clock },
+                { text: "Free Estimates", icon: FileText }
+              ].map((badge, i) => {
+                const BadgeIcon = badge.icon;
+                return (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.4 + i * 0.08 }}
+                    className="flex items-center gap-1.5 xs:gap-2 px-2 xs:px-3 py-1 xs:py-1.5 bg-primary/5 rounded-full border border-primary/15"
+                  >
+                    <BadgeIcon className="w-2.5 h-2.5 xs:w-3 xs:h-3 sm:w-3.5 sm:h-3.5 text-primary" />
+                    <span className="text-[8px] xs:text-[10px] sm:text-xs text-foreground font-medium uppercase tracking-wide">
+                      {badge.text}
+                    </span>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* CTA Buttons */}
+          <div className="flex lg:flex-row sm:flex-col gap-3 xs:gap-4">
+            <motion.a
+              href="/contact"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              className="group relative px-5 xs:px-6 sm:px-8 py-3 xs:py-3.5 sm:py-4 bg-primary text-white font-bold rounded-full shadow-lg hover:text-white transition-all duration-300 overflow-hidden"
+            >
+              <span className="relative z-10 flex items-center justify-center gap-2 text-xs xs:text-sm sm:text-base">
+                Get Free Quote
+                <ArrowRight className="w-3 h-3 xs:w-4 xs:h-4 group-hover:translate-x-1 transition-transform" />
+              </span>
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                animate={{ x: ["-100%", "100%"] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+              />
+            </motion.a>
+
+            <motion.a
+              href="tel:636-449-9714"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              className="group relative px-5 xs:px-6 sm:px-8 py-3 xs:py-3.5 sm:py-4 bg-white text-primary border-2 border-primary font-bold rounded-full shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden"
+            >
+              <span className="relative z-10 flex items-center justify-center gap-2 text-xs xs:text-sm sm:text-base">
+                <Phone className="w-3 h-3 xs:w-4 xs:h-4 group-hover:scale-110 transition-transform" />
+                <span className="whitespace-nowrap">636-449-9714</span>
+              </span>
+            </motion.a>
+          </div>
+        </div>
       </div>
-      <div className="text-white/50 text-sm uppercase tracking-widest font-medium">
-        {label}
-      </div>
-    </div>
+    </motion.div>
   );
 };
 
+
 export default function ServicesPage() {
-  const heroRef = useRef(null);
-  const { scrollY } = useScroll();
-  
-  const heroScale = useTransform(scrollY, [0, 800], [1, 1.15]);
-  const heroOpacity = useTransform(scrollY, [0, 600], [1, 0]);
-  const titleY = useTransform(scrollY, [0, 500], [0, 100]);
-  const overlayOpacity = useTransform(scrollY, [0, 300], [0.6, 0.9]);
-  
-  const services = servicesData.services.services.map(service => ({
+  const services = (servicesData?.services || []).map(service => ({
     ...service,
-    slug: service.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
     image: imageMap[service.title] || roofingImg
   }));
 
+  const statsData = (servicesData?.shared?.stats || []).map(s => ({
+    ...s,
+    icon: iconMap[s.icon] || Shield
+  }));
+
   return (
-    <main className="bg-white">
-      {/* Hero Section - Cinematic */}
-      <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* Parallax Background */}
-        <motion.div 
-          style={{ scale: heroScale }}
-          className="absolute inset-0 z-0"
-        >
-          <Image 
-            src={heroBg} 
-            alt="Premium Exterior Solutions" 
-            fill 
-            className="object-cover object-center"
-            priority
-            quality={100}
-          />
-        </motion.div>
-        
-        {/* Dynamic Overlay */}
-        <motion.div 
-          style={{ opacity: overlayOpacity }}
-          className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80 z-10"
+    <main className="bg-white relative overflow-hidden min-h-screen font-body scroll-smooth">
+      <InteractiveBackground />
+
+      {/* Hero Section */}
+      <section className="relative h-[300px] xs:h-[350px] sm:h-[400px] md:h-[500px] w-full">
+        <Image
+          src={breakcrumb}
+          alt="Our Services"
+          fill
+          className="object-cover"
+          priority
+          sizes="100vw"
         />
-        
-        {/* Hero Content */}
-        <motion.div 
-          style={{ opacity: heroOpacity, y: titleY }}
-          className="relative z-20 w-full max-w-[1600px] mx-auto px-6 lg:px-20 text-center"
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-5xl mx-auto"
-          >
-            {/* Premium Badge */}
-            <div className="inline-flex items-center gap-3 mb-12">
-              <div className="w-12 h-px bg-white/30" />
-              <div className="flex items-center gap-2">
-                <Star className="w-4 h-4 text-white fill-white" />
-                <span className="text-white/80 text-sm font-medium tracking-[0.3em] uppercase">
-                  Veteran Owned & Operated
-                </span>
-                <Star className="w-4 h-4 text-white fill-white" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
+
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+            <div className="max-w-3xl">
+              <div className="flex items-center gap-1 sm:gap-2 text-[10px] xs:text-xs sm:text-sm mb-3 sm:mb-6">
+                <Link href="/" className="text-white/70 hover:text-white transition-colors">
+                  Home
+                </Link>
+                <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-white/40" />
+                <span className="text-white">Services</span>
               </div>
-              <div className="w-12 h-px bg-white/30" />
-            </div>
-            
-            {/* Main Title */}
-            <h1 className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold text-white leading-[1.1] tracking-tight mb-8">
-              Crafting
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/60 mt-4">
-                Excellence
-              </span>
-            </h1>
-            
-            {/* Description */}
-            <p className="text-white/60 text-xl md:text-2xl max-w-3xl mx-auto mb-16 font-light leading-relaxed">
-              Military precision meets architectural mastery. 
-              Transforming homes across St. Louis with uncompromising quality.
-            </p>
-            
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-              <Link
-                href="/contact"
-                className="group relative px-12 py-5 bg-white text-gray-900 rounded-full text-lg font-semibold overflow-hidden transition-all hover:shadow-2xl hover:shadow-white/20"
+
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="text-2xl xs:text-3xl sm:text-5xl md:text-7xl font-heading font-bold text-white mb-3 sm:mb-6 leading-tight"
               >
-                <span className="relative z-10 flex items-center gap-3">
-                  Start Your Project
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-500" />
-                </span>
-                <motion.div 
-                  className="absolute inset-0 bg-gradient-to-r from-gray-100 to-white"
-                  initial={{ x: '-100%' }}
-                  whileHover={{ x: 0 }}
-                  transition={{ duration: 0.5 }}
-                />
-              </Link>
-              
-              <Link
-                href="tel:636-449-9714"
-                className="group flex items-center gap-3 px-8 py-5 text-white/80 hover:text-white transition-colors duration-500"
+                Our Services
+              </motion.h1>
+
+              <motion.div
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="w-16 sm:w-20 h-0.5 sm:h-1 bg-primary mb-4 sm:mb-6 origin-left"
+              />
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="text-white/80 text-sm xs:text-base sm:text-xl max-w-2xl"
               >
-                <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:border-white/40 group-hover:scale-110 transition-all duration-500">
-                  <Phone className="w-5 h-5" />
-                </div>
-                <span className="text-lg">636-449-9714</span>
-              </Link>
+                Comprehensive home improvement solutions with military precision and architectural excellence.
+              </motion.p>
             </div>
-          </motion.div>
-        </motion.div>
-        
-        {/* Scroll Indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 1 }}
-          className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20"
-        >
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="flex flex-col items-center gap-4 cursor-pointer"
-            onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
-          >
-            <span className="text-white/40 text-xs tracking-[0.3em] uppercase">Scroll</span>
-            <div className="w-px h-16 bg-gradient-to-b from-white/60 to-transparent" />
-          </motion.div>
-        </motion.div>
-      </section>
-      
-      {/* Stats Section */}
-      <section className="relative -mt-32 z-30 px-6 lg:px-20 pb-24">
-        <div className="max-w-[1600px] mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { value: '15+', label: 'Years of Excellence' },
-              { value: '2.5K', label: 'Projects Delivered' },
-              { value: '50+', label: 'Expert Craftsmen' },
-              { value: '4.9', label: 'Client Rating' }
-            ].map((stat, idx) => (
-              <AnimatedCounter key={idx} {...stat} />
-            ))}
           </div>
         </div>
       </section>
-      
-      {/* Services Grid Section */}
-      <section className="px-6 lg:px-20 pb-32">
-        <div className="max-w-[1600px] mx-auto">
+
+      {/* Stats Section */}
+      <section className="relative py-6 sm:py-8 px-4 sm:px-8 w-full z-20">
+        <div className="w-full max-w-7xl mx-auto">
+          <div className="relative bg-white/90 backdrop-blur-2xl border border-border/40 rounded-3xl sm:rounded-[2.5rem] p-4 sm:p-12 lg:p-16 shadow-2xl overflow-hidden">
+            <div className="absolute top-0 right-0 w-1/3 h-1/2 bg-gradient-to-br from-primary/5 to-transparent blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-1/3 h-1/2 bg-gradient-to-tr from-primary/5 to-transparent blur-3xl pointer-events-none" />
+
+            <div className="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
+              {statsData.map((stat, idx) => (
+                <StatCard key={idx} stat={stat} index={idx} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Main Services Grid */}
+      <section className="py-16 md:py-24 px-6 lg:px-12 bg-transparent relative">
+        <div className="w-full max-w-7xl mx-auto">
           {/* Section Header */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="mb-20"
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
           >
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-20 h-px bg-gray-300" />
-              <span className="text-gray-500 text-sm font-medium tracking-[0.2em] uppercase">
-                Our Expertise
-              </span>
-            </div>
-            
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
-              <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-[1.1] tracking-tight max-w-3xl">
-                Premium Exterior
-                <span className="block text-gray-400">Solutions</span>
-              </h2>
-              
-              <p className="text-gray-500 text-lg max-w-md leading-relaxed">
-                Comprehensive services delivered with precision and care, 
-                backed by industry-leading warranties and military-grade standards.
-              </p>
-            </div>
+            <span className="inline-block text-primary text-xs font-black uppercase tracking-[0.5em] mb-4">
+              Eagle Revolution
+            </span>
+            <h2 className="text-4xl md:text-6xl font-heading font-bold mb-6 tracking-tighter text-foreground">
+              World Class <span className="text-primary">Capabilities</span>
+            </h2>
+            <div className="w-24 h-1 bg-primary mx-auto rounded-full mb-6" />
+            <p className="max-w-3xl mx-auto text-muted-foreground text-lg md:text-xl leading-relaxed">
+              Every detail matters when it comes to structural integrity. Our team brings military-grade standards to every project across the St. Louis area.
+            </p>
           </motion.div>
-          
+
           {/* Services Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 relative z-30">
             {services.map((service, index) => (
               <ServiceCard key={index} service={service} index={index} />
             ))}
           </div>
         </div>
       </section>
-      
-      {/* CTA Section */}
-      <section className="relative py-40 px-6 lg:px-20 overflow-hidden">
-        <div className="absolute inset-0 bg-black" />
-        
-        {/* Animated Gradient */}
-        <motion.div
-          animate={{ 
-            rotate: [0, 360],
-            scale: [1, 1.2, 1]
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute inset-0 bg-gradient-to-r from-primary/20 via-purple-500/10 to-blue-500/20 blur-3xl"
-        />
-        
-        <div className="relative z-10 max-w-5xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <span className="inline-block text-primary text-sm font-bold tracking-[0.3em] uppercase mb-8">
-              Limited Time Offer
-            </span>
-            
-            <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-[1.1] tracking-tight mb-8">
-              Ready to
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60">
-                Transform
-              </span>
-            </h2>
-            
-            <p className="text-white/50 text-xl max-w-2xl mx-auto mb-12">
-              Schedule your free consultation today and receive 15% off your project 
-              plus a comprehensive estimate with no obligation.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <Link
-                href="/contact"
-                className="group relative px-14 py-6 bg-white text-gray-900 rounded-full text-lg font-semibold overflow-hidden transition-all hover:shadow-2xl hover:shadow-white/30"
-              >
-                <span className="relative z-10 flex items-center gap-3">
-                  Get Free Estimate
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-2 group-hover:-translate-y-0.5 transition-all duration-500" />
-                </span>
-              </Link>
-              
-              <Link
-                href="tel:636-449-9714"
-                className="px-14 py-6 border border-white/20 rounded-full text-white text-lg font-medium hover:bg-white/5 transition-all duration-500"
-              >
-                Call 636-449-9714
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+
+      {/* Award CTA Banner */}
+      <div className="w-full max-w-7xl mx-auto px-4 py-12">
+        <AwardCTABanner />
+      </div>
     </main>
   );
 }

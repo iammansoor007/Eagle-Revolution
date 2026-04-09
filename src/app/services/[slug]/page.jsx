@@ -1,15 +1,28 @@
+'use client';
+
+import React, { use, useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { notFound } from 'next/navigation';
-import breakcrumb from '../../../assets/Breadcrumb-Image.jpeg';
-import { 
-  Home, Layout, TreePine, Building2, Building, Droplets, 
-  CheckCircle, ArrowRight, Phone, Calendar, Clock, Shield, Award,
-  ChevronRight, Star, ThumbsUp, Truck, Wrench, HelpCircle, Sparkles
+import {
+  motion,
+  AnimatePresence,
+  useInView,
+  useMotionValue,
+  useSpring,
+  useTransform
+} from 'framer-motion';
+import {
+  Home, Layout, TreePine, Building2, Building, Droplets,
+  CheckCircle, ArrowRight, Phone, Clock, Shield, Award,
+  ChevronRight, Star, ThumbsUp, Truck,
+  ChevronDown, ArrowUpRight, Users, Trophy,
+  FileText, ClipboardCheck, Hammer, Minus, Plus
 } from 'lucide-react';
-import servicesData from '../../../src/data/completeData.json';
+import { notFound } from 'next/navigation';
 
-// Import images
+import breakcrumb from '../../../assets/Breadcrumb-Image.jpeg';
+import servicesData from '../../../data/servicesData.json';
+
 import roofingImg from '@/assets/portfolio1.png';
 import windowsImg from '@/assets/portfolio2.jpg';
 import decksImg from '@/assets/portfolio3.jpg';
@@ -17,7 +30,9 @@ import commercialImg from '@/assets/portfolio4.jpg';
 import sidingImg from '@/assets/portfolio5.jpg';
 
 const iconMap = {
-  Home, Layout, TreePine, Building2, Building, Droplets
+  Home, Layout, TreePine, Building2, Building, Droplets,
+  Shield, Trophy, Users, ThumbsUp, FileText, ClipboardCheck,
+  Truck, Hammer, CheckCircle, Award, Clock
 };
 
 const imageMap = {
@@ -29,37 +44,563 @@ const imageMap = {
   'Gutters & Protection': sidingImg,
 };
 
-export async function generateStaticParams() {
-  const services = servicesData.services.services;
-  return services.map(service => ({
-    slug: service.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
-  }));
-}
+// --- Counter Component ---
+const Counter = ({ value, suffix = "", duration = 2 }) => {
+  const [count, setCount] = useState(0);
+  const countRef = useRef(null);
+  const inView = useInView(countRef, { once: true, margin: "-100px" });
 
-// Fixed: Removed TypeScript type annotation
-function Clipboard({ className }) {
+  useEffect(() => {
+    if (inView) {
+      let startTime;
+      const animate = (timestamp) => {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
+        const easedProgress = 1 - Math.pow(1 - progress, 4);
+        setCount(Math.floor(easedProgress * value));
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      };
+      requestAnimationFrame(animate);
+    }
+  }, [inView, value, duration]);
+
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-      <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
-    </svg>
+    <span ref={countRef} className="tabular-nums">
+      {count.toLocaleString()}
+      {suffix}
+    </span>
   );
-}
+};
 
-// Fixed: Removed TypeScript type annotation for params
-export default async function ServiceDetailPage({ params }) {
-  const { slug } = await params;
-  
-  const allServices = servicesData.services.services.map(service => ({
+// --- StatCard Component ---
+const StatCard = ({ stat, index }) => {
+  const cardRef = useRef(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const rotateX = useTransform(y, [-0.5, 0.5], [10, -10]);
+  const rotateY = useTransform(x, [-0.5, 0.5], [-10, 10]);
+
+  const handleMouseMove = (e) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const mouseX = (e.clientX - rect.left) / rect.width - 0.5;
+    const mouseY = (e.clientY - rect.top) / rect.height - 0.5;
+    x.set(mouseX);
+    y.set(mouseY);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.div
+      ref={cardRef}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ rotateX, rotateY, transformPerspective: 1000 }}
+      className="relative group lg:px-2"
+    >
+      <div className="relative h-full bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-8 overflow-hidden transition-all duration-500 group-hover:bg-white/[0.06] group-hover:border-primary/30 group-hover:shadow-[0_20px_50px_rgba(36,48,210,0.15)]">
+        <div className="absolute -inset-24 bg-primary/5 rounded-full blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+
+        <div className="relative z-10">
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-xl sm:rounded-2xl bg-primary/10 text-primary border border-primary/20 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+              <stat.icon className="w-5 h-5 sm:w-6 sm:h-6" />
+            </div>
+            <div className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] text-primary/40 group-hover:text-primary transition-colors">
+              Impact
+            </div>
+          </div>
+
+          <div className="space-y-0.5 sm:space-y-1">
+            <h3 className="text-2xl xs:text-4xl sm:text-5xl font-black text-foreground tracking-tight">
+              <Counter
+                value={parseInt(stat.value.replace(/[^0-9]/g, ''))}
+                suffix={stat.value.includes('%') ? '%' : (stat.value.includes('+') ? '+' : '')}
+              />
+            </h3>
+            <p className="text-[10px] sm:text-sm font-semibold uppercase tracking-widest text-muted-foreground group-hover:text-foreground transition-colors duration-300">
+              {stat.label}
+            </p>
+          </div>
+
+          <div className="mt-4 sm:mt-8 flex items-center gap-2 sm:gap-4">
+            <div className="h-[1.5px] sm:h-[2px] w-6 sm:w-8 bg-primary/20 group-hover:w-full group-hover:bg-primary transition-all duration-500 rounded-full" />
+            <div className="w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full bg-primary opacity-0 group-hover:opacity-100 transition-all duration-500" />
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+// --- Process Card Component ---
+const ProcessCard = ({ step, index }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const cardRef = useRef(null);
+  const inView = useInView(cardRef, { once: true, margin: "-50px" });
+
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const springX = useSpring(x, { stiffness: 120, damping: 15 });
+  const springY = useSpring(y, { stiffness: 120, damping: 15 });
+  const rotateX = useTransform(springY, [-0.3, 0.3], [3, -3]);
+  const rotateY = useTransform(springX, [-0.3, 0.3], [-3, 3]);
+
+  const handleMouseMove = (e) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    const xPct = (mouseX / rect.width - 0.5) * 0.3;
+    const yPct = (mouseY / rect.height - 0.5) * 0.3;
+    x.set(xPct);
+    y.set(yPct);
+    setMousePosition({ x: mouseX, y: mouseY });
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.div
+      ref={cardRef}
+      initial={{ opacity: 0, y: 60 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{
+        duration: 0.7,
+        delay: index * 0.1,
+        ease: [0.16, 1, 0.3, 1]
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={handleMouseLeave}
+      onMouseMove={handleMouseMove}
+      style={{
+        rotateX,
+        rotateY,
+        transformPerspective: 1500,
+      }}
+      className="relative group h-full"
+    >
+      <div className="relative h-full bg-card/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl border border-border/50 overflow-hidden">
+
+        <motion.div
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+          style={{
+            background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, hsl(var(--primary)/0.08), transparent 50%)`,
+          }}
+        />
+
+        <motion.div
+          className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-primary to-transparent"
+          initial={{ x: '-100%', opacity: 0 }}
+          animate={{
+            x: isHovered ? '100%' : '-100%',
+            opacity: isHovered ? 1 : 0
+          }}
+          transition={{ duration: 0.7, ease: "easeInOut" }}
+        />
+
+        <motion.div
+          className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-primary to-transparent"
+          initial={{ x: '100%', opacity: 0 }}
+          animate={{
+            x: isHovered ? '-100%' : '100%',
+            opacity: isHovered ? 1 : 0
+          }}
+          transition={{ duration: 0.7, ease: "easeInOut", delay: 0.1 }}
+        />
+
+        <motion.div
+          className="absolute top-3 left-3 sm:top-4 sm:left-4 w-6 h-6 sm:w-8 sm:h-8 border-t-2 border-l-2 border-primary/20"
+          animate={{
+            width: isHovered ? 16 : 24,
+            height: isHovered ? 16 : 24,
+            borderColor: isHovered ? 'hsl(var(--primary)/0.6)' : 'hsl(var(--primary)/0.2)'
+          }}
+          transition={{ duration: 0.3 }}
+        />
+
+        <motion.div
+          className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 w-6 h-6 sm:w-8 sm:h-8 border-b-2 border-r-2 border-primary/20"
+          animate={{
+            width: isHovered ? 16 : 24,
+            height: isHovered ? 16 : 24,
+            borderColor: isHovered ? 'hsl(var(--primary)/0.6)' : 'hsl(var(--primary)/0.2)'
+          }}
+          transition={{ duration: 0.3 }}
+        />
+
+        {isHovered && (
+          <>
+            {[...Array(4)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-1 h-1 rounded-full bg-primary/40"
+                initial={{
+                  x: mousePosition.x,
+                  y: mousePosition.y,
+                  scale: 0,
+                  opacity: 0.5
+                }}
+                animate={{
+                  x: mousePosition.x + (Math.random() - 0.5) * 120,
+                  y: mousePosition.y + (Math.random() - 0.5) * 120,
+                  scale: [0, 1.2, 0],
+                  opacity: [0, 0.3, 0]
+                }}
+                transition={{
+                  duration: 1.2,
+                  delay: i * 0.12,
+                  ease: "easeOut"
+                }}
+              />
+            ))}
+          </>
+        )}
+
+        <div className="relative p-4 sm:p-8 lg:p-10 flex flex-col h-full z-10">
+          <div className="relative w-12 h-12 sm:w-16 sm:h-16 mb-6 sm:mb-8">
+            <motion.div
+              className="absolute inset-0 rounded-xl sm:rounded-2xl border border-primary/20"
+              animate={{
+                rotate: isHovered ? 180 : 0,
+                borderColor: isHovered ? 'hsl(var(--primary))' : 'hsl(var(--primary)/0.2)'
+              }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
+            />
+            <motion.div
+              className="absolute inset-1 sm:inset-1.5 rounded-lg sm:rounded-xl border border-primary/10"
+              animate={{
+                rotate: isHovered ? -90 : 0
+              }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <motion.div
+                animate={{
+                  scale: isHovered ? 1.15 : 1,
+                }}
+                transition={{ duration: 0.3 }}
+                className="text-primary"
+              >
+                <step.icon className="w-5 h-5 sm:w-7 sm:h-7" />
+              </motion.div>
+            </div>
+          </div>
+
+          <div className="mb-3 sm:mb-4">
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em] text-primary/50">
+              Phase {String(index + 1).padStart(2, '0')}
+            </span>
+          </div>
+
+          <h3 className="text-base xs:text-lg sm:text-xl md:text-2xl lg:text-3xl font-heading font-bold text-foreground mb-2 xs:mb-3 sm:mb-4 group-hover:text-primary transition-colors duration-300">
+            {step.title}
+          </h3>
+
+          <p className="text-muted-foreground text-xs sm:text-base leading-relaxed flex-1">
+            {step.description}
+          </p>
+
+          <div className="hidden md:block absolute bottom-3 right-4 sm:bottom-4 sm:right-6 text-6xl sm:text-8xl font-black text-muted-foreground/[0.03] select-none">
+            {String(index + 1).padStart(2, '0')}
+          </div>
+
+          <motion.div
+            className="mt-5 sm:mt-6 h-[2px] bg-gradient-to-r from-primary to-primary/40 rounded-full"
+            initial={{ width: 0 }}
+            animate={{ width: isHovered ? '40px' : 0 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+          />
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+// --- FAQ Item Component ---
+const FAQItem = ({ faq, index, isOpen, onToggle }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const buttonRef = useRef(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const springX = useSpring(mouseX, { stiffness: 40, damping: 12 });
+  const springY = useSpring(mouseY, { stiffness: 40, damping: 12 });
+
+  const handleMouseMove = (e) => {
+    if (!buttonRef.current) return;
+    const rect = buttonRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    mouseX.set(x);
+    mouseY.set(y);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-30px" }}
+      transition={{ duration: 0.4, delay: index * 0.05 }}
+      className="relative group"
+    >
+      {/* Dynamic Background Effect - Desktop Only */}
+      <div className="hidden sm:block absolute inset-0 pointer-events-none overflow-hidden rounded-xl sm:rounded-2xl">
+        <svg className="w-full h-full">
+          <motion.rect
+            x="0"
+            y="0"
+            width="100%"
+            height="100%"
+            fill="url(#liquidGradient)"
+            opacity={isHovered ? 0.08 : 0.02}
+            style={{
+              x: useTransform(springX, [0, 100], [-4, 4]),
+              y: useTransform(springY, [0, 100], [-4, 4]),
+            }}
+          />
+          <defs>
+            <radialGradient id="liquidGradient">
+              <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.05" />
+            </radialGradient>
+          </defs>
+        </svg>
+      </div>
+
+      <div
+        ref={buttonRef}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => {
+          setIsHovered(false);
+          mouseX.set(50);
+          mouseY.set(50);
+        }}
+        className={`relative bg-card/90 backdrop-blur-sm rounded-xl sm:rounded-2xl border transition-all duration-300 ${isOpen
+          ? 'border-primary/40 shadow-2xl shadow-primary/10'
+          : 'border-primary/10 hover:border-primary/25 shadow-lg'
+          }`}
+      >
+        <button
+          onClick={() => onToggle(index)}
+          aria-expanded={isOpen}
+          className="w-full text-left p-4 sm:p-6 md:p-8 focus:outline-none relative z-10"
+        >
+          <div className="flex items-center justify-between gap-4 sm:gap-6">
+            <h3 className={`text-sm sm:text-lg lg:text-xl font-semibold transition-all duration-300 leading-tight ${isOpen ? 'text-primary' : 'text-foreground group-hover:text-foreground/90'
+              }`}>
+              {faq.question}
+            </h3>
+
+            <div className="relative flex-shrink-0">
+              <motion.div
+                animate={isOpen ? { rotate: 180, scale: 1.05 } : { rotate: 0, scale: 1 }}
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                className={`w-7 h-7 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full border flex items-center justify-center transition-all duration-300 ${isOpen
+                  ? 'bg-primary border-primary text-white shadow-lg shadow-primary/30'
+                  : isHovered
+                    ? 'border-primary bg-primary/5 text-primary'
+                    : 'border-border bg-background text-muted-foreground'
+                  }`}
+              >
+                {isOpen ? (
+                  <Minus className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+                ) : (
+                  <Plus className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+                )}
+              </motion.div>
+            </div>
+          </div>
+        </button>
+
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="overflow-hidden"
+            >
+              <div className="px-4 sm:px-6 md:px-8 pb-5 sm:pb-8">
+                <div className="relative pl-4 sm:pl-6 border-l-2 border-primary/30">
+                  <p className="text-muted-foreground text-xs xs:text-sm sm:text-base leading-relaxed">
+                    {faq.answer}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Decorative Corners - Desktop Only */}
+        <div className="hidden sm:block">
+          <motion.div
+            className="absolute top-2 left-2 sm:top-4 sm:left-4 w-4 h-4 sm:w-6 sm:h-6 border-t-2 border-l-2"
+            animate={isHovered ? { width: 8, height: 8, borderColor: 'hsl(var(--primary)/0.4)' } : { width: 12, height: 12, borderColor: 'hsl(var(--primary)/0.15)' }}
+          />
+          <motion.div
+            className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 w-4 h-4 sm:w-6 sm:h-6 border-b-2 border-r-2"
+            animate={isHovered ? { width: 8, height: 8, borderColor: 'hsl(var(--primary)/0.4)' } : { width: 12, height: 12, borderColor: 'hsl(var(--primary)/0.15)' }}
+          />
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+// --- Award CTA Banner Component ---
+const AwardCTABanner = () => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8, delay: 0.3 }}
+      className="relative mt-4 overflow-hidden"
+    >
+      <div className="relative bg-card border border-border rounded-2xl">
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rotate-12"
+            animate={{ rotate: [12, 15, 12] }}
+            transition={{ duration: 8, repeat: Infinity }}
+          />
+          <motion.div
+            className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary/5 -rotate-12"
+            animate={{ rotate: [-12, -15, -12] }}
+            transition={{ duration: 8, repeat: Infinity }}
+          />
+        </div>
+
+        <motion.div
+          className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent"
+          animate={{ x: ["-100%", "100%"] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent"
+          animate={{ x: ["100%", "-100%"] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+        />
+
+        <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-primary/30" />
+        <div className="absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 border-primary/30" />
+        <div className="absolute bottom-0 left-0 w-16 h-16 border-b-2 border-l-2 border-primary/30" />
+        <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-primary/30" />
+
+        <div className="relative px-5 sm:px-8 py-10 sm:py-12 flex flex-col lg:flex-row items-center justify-between gap-8 sm:gap-10 z-30">
+          <div className="max-w-2xl text-center lg:text-left flex flex-col items-center lg:items-start">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              className="flex items-center gap-2 mb-4"
+            >
+              <span className="w-8 h-[2px] bg-primary" />
+              <span className="text-base sm:text-lg font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase text-primary">
+                Why Choose Us
+              </span>
+            </motion.div>
+
+            <h3 className="text-2xl xs:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3 sm:mb-4 leading-tight">
+              America's <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/80">#1 Rated</span><br />
+              Home Improvement Team
+            </h3>
+
+            <p className="text-muted-foreground text-sm sm:text-base md:text-lg leading-relaxed max-w-lg mb-6">
+              Join thousands of satisfied homeowners who trusted us with their most valuable investment.
+            </p>
+
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 sm:gap-6 mt-6">
+              {["A+ BBB Rating", "24/7 Support", "Free Estimates"].map((badge, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                  <span className="text-[10px] sm:text-xs text-muted-foreground font-medium uppercase tracking-wider">{badge}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4">
+            <motion.a
+              href="/contact"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              className="relative px-8 py-4 bg-primary text-white font-bold rounded-full shadow-sm hover:text-white overflow-hidden flex items-center justify-center gap-2"
+            >
+              <span className="relative z-10 flex items-center gap-2 text-sm md:text-base">
+                Get Free Quote
+                <ArrowRight className="w-4 h-4" />
+              </span>
+            </motion.a>
+
+            <motion.a
+              href="tel:636-449-9714"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              className="relative px-8 py-4 bg-white text-primary border-2 border-primary font-bold rounded-full shadow-sm hover:bg-primary hover:text-white hover:shadow-md transition-all duration-300 overflow-hidden flex items-center justify-center gap-2"
+            >
+              <span className="relative z-10 flex items-center gap-2 text-sm md:text-base">
+                Call Now: 636-449-9714
+                <Phone className="w-4 h-4" />
+              </span>
+            </motion.a>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+// --- Main Component ---
+export default function ServiceDetailPage({ params }) {
+  const { slug } = use(params);
+  const [openFaq, setOpenFaq] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const allServices = servicesData.services.map(service => ({
     ...service,
-    slug: service.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
     image: imageMap[service.title] || roofingImg
   }));
 
   const service = allServices.find(s => s.slug === slug);
 
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   if (!service) {
     notFound();
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="w-12 h-12 border-2 border-primary border-t-transparent rounded-full"
+        />
+      </div>
+    );
   }
 
   const IconComponent = iconMap[service.icon] || Home;
@@ -71,330 +612,451 @@ export default async function ServiceDetailPage({ params }) {
     },
     {
       question: `Are you licensed and insured for ${service.title.toLowerCase()}?`,
-      answer: `Yes, Eagle Revolution is fully licensed, bonded, and insured for all ${service.title.toLowerCase()} services. We carry comprehensive liability and workers' compensation insurance.`
+      answer: `Yes, Eagle Revolution is fully licensed, bonded, and insured for all ${service.title.toLowerCase()} services. We carry comprehensive coverage for your complete peace of mind.`
     },
     {
       question: `Do you offer financing options for ${service.title.toLowerCase()}?`,
-      answer: `Absolutely! We offer flexible financing options with approved credit. Ask your estimator for details or call our office to learn more about payment plans.`
+      answer: `Absolutely! We offer flexible financing options with approved credit, including 0% interest for qualified buyers. Ask your estimator for details during your consultation.`
     },
     {
       question: `What areas do you serve for ${service.title.toLowerCase()}?`,
-      answer: `We serve the greater St. Louis metropolitan area including St. Charles, St. Louis County, Jefferson County, and surrounding communities.`
-    },
-    {
-      question: `How do I schedule a free estimate?`,
-      answer: `Simply fill out the form on this page or call us at 636-449-9714 to schedule your free, no-obligation estimate. We typically respond within 24 hours.`
+      answer: `We serve the entire St. Louis metropolitan area and surrounding communities within a 50-mile radius. Contact us to confirm service availability in your specific location.`
     }
   ];
 
-  const benefits = [
-    { icon: Shield, title: "50-Year Warranty", description: "All our work comes with a comprehensive 50-year warranty for your peace of mind." },
-    { icon: Award, title: "Certified Professionals", description: "Factory-trained and certified installers who follow strict quality standards." },
-    { icon: ThumbsUp, title: "100% Satisfaction", description: "We don't stop until you're completely happy with the finished result." },
-    { icon: Clock, title: "On-Time Delivery", description: "We respect your schedule and complete projects within agreed timelines." }
-  ];
+  const benefits = servicesData.shared.benefits.map(b => ({
+    ...b,
+    icon: iconMap[b.icon] || Shield
+  }));
 
-  const processSteps = [
-    { icon: Phone, title: "Free Consultation", description: "Reach out to schedule your no-obligation estimate and project discussion." },
-    { icon: Clipboard, title: "Detailed Proposal", description: "We provide a clear, itemized quote with transparent pricing and options." },
-    { icon: Truck, title: "Material Delivery", description: "Quality materials delivered to your site, ready for professional installation." },
-    { icon: Wrench, title: "Expert Installation", description: "Our certified team installs with precision, care, and attention to detail." },
-    { icon: CheckCircle, title: "Final Inspection", description: "Thorough walkthrough to ensure every detail meets our high standards." }
-  ];
+  const processSteps = servicesData.shared.process.map(p => ({
+    ...p,
+    icon: iconMap[p.icon] || Shield
+  }));
+
+  const statsData = servicesData.shared.stats.map(s => ({
+    ...s,
+    icon: iconMap[s.icon] || Shield
+  }));
 
   return (
-    <main className="bg-white">
-      {/* Hero Section - Left aligned breadcrumbs and title */}
-      <section className="relative">
-        <div className="relative h-[350px] md:h-[400px] w-full overflow-hidden">
-          <Image src={breakcrumb} alt={service.title} fill className="object-cover" priority />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
-        </div>
-        
-        {/* Left-aligned content */}
+    <main className="bg-background text-foreground font-body overflow-x-hidden">
+
+      {/* Hero Section */}
+      <section className="relative h-[300px] xs:h-[350px] sm:h-[400px] md:h-[500px] w-full">
+        <Image
+          src={breakcrumb}
+          alt={service.title}
+          fill
+          className="object-cover"
+          priority
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
+
         <div className="absolute inset-0 flex items-center">
-          <div className="max-w-7xl mx-auto px-6 lg:px-12 w-full">
-            <div className="max-w-2xl">
-              {/* Breadcrumbs - Left aligned */}
-              <div className="flex items-center gap-2 text-sm mb-4">
-                <Link href="/" className="text-white/70 hover:text-white transition-colors duration-300">Home</Link>
-                <ChevronRight className="w-4 h-4 text-white/40" />
-                <Link href="/services" className="text-white/70 hover:text-white transition-colors duration-300">Services</Link>
-                <ChevronRight className="w-4 h-4 text-white/40" />
-                <span className="text-white font-medium">{service.title}</span>
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+            <div className="max-w-3xl">
+              <div className="flex items-center gap-1 sm:gap-2 text-[10px] xs:text-xs sm:text-sm mb-3 sm:mb-6">
+                <Link href="/" className="text-white/70 hover:text-white transition-colors">
+                  Home
+                </Link>
+                <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-white/40" />
+                <Link href="/services" className="text-white/70 hover:text-white transition-colors">
+                  Services
+                </Link>
+                <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-white/40" />
+                <span className="text-white truncate max-w-[120px] xs:max-w-[150px] sm:max-w-none">{service.title}</span>
               </div>
-              
-              {/* Title - Left aligned */}
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
+
+              <h1 className="text-2xl xs:text-3xl sm:text-5xl md:text-7xl font-heading font-bold text-white mb-3 sm:mb-6 leading-tight">
                 {service.title}
               </h1>
-              
-              {/* Accent line */}
-              <div className="w-20 h-1 bg-[#2430D2] mb-4" />
-              
-              <p className="text-white/80 text-lg max-w-xl">
-                Professional {service.title.toLowerCase()} services you can trust
+
+              <div className="w-16 sm:w-20 h-0.5 sm:h-1 bg-primary mb-4 sm:mb-6" />
+
+              <p className="text-white/80 text-sm xs:text-base sm:text-xl max-w-2xl">
+                Professional {service.title.toLowerCase()} services with military precision and architectural excellence.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Main Content */}
-      <section className="py-20 px-6 lg:px-12">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16">
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 bg-[#2430D2]/10 rounded-xl flex items-center justify-center">
-                  <IconComponent className="w-6 h-6 text-[#2430D2]" />
-                </div>
-                <span className="text-sm font-semibold text-[#2430D2] uppercase tracking-wider">{service.tag}</span>
-              </div>
-              
-              <p className="text-gray-700 text-lg leading-relaxed mb-8">{service.description}</p>
-              
-              <div className="mb-10">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">What's Included</h2>
-                <div className="grid gap-4">
-                  {service.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-start gap-3 group">
-                      <div className="w-5 h-5 rounded-full bg-[#2430D2]/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-[#2430D2] transition-colors duration-300">
-                        <CheckCircle className="w-3.5 h-3.5 text-[#2430D2] group-hover:text-white transition-colors duration-300" />
-                      </div>
-                      <span className="text-gray-700">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-              <div className="flex flex-wrap items-center gap-4">
-                <Link 
-                  href="/contact" 
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-[#2430D2] text-white rounded-full text-sm font-semibold hover:bg-[#1A24A8] transition-all duration-300 shadow-lg shadow-[#2430D2]/20 hover:shadow-xl hover:shadow-[#2430D2]/30 hover:-translate-y-0.5"
-                >
-                  Get Free Estimate <ArrowRight className="w-4 h-4" />
-                </Link>
-                <a 
-                  href="tel:636-449-9714" 
-                  className="flex items-center gap-2 px-8 py-4 border-2 border-gray-200 rounded-full text-gray-700 font-semibold hover:border-[#2430D2] hover:text-[#2430D2] transition-all duration-300"
-                >
-                  <Phone className="w-4 h-4" /> <span>636-449-9714</span>
-                </a>
-              </div>
-            </div>
-            
-            <div className="relative h-[450px] lg:h-[500px] rounded-2xl overflow-hidden shadow-2xl group">
-              <Image src={service.image} alt={service.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-              {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-              {/* Corner accents */}
-              <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-[#2430D2]/30 rounded-tl-2xl" />
-              <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-[#2430D2]/30 rounded-br-2xl" />
+      {/* Stats Section with Overlap and Luxury Design */}
+      <section className="relative py-6 sm:py-8 px-4 sm:px-8 w-full z-20">
+        <div className="w-full max-w-7xl mx-auto">
+          <div className="relative bg-background/80 backdrop-blur-2xl border border-border/50 rounded-3xl sm:rounded-[2.5rem] p-4 sm:p-12 lg:p-16 shadow-2xl overflow-hidden shadow-primary/5">
+            <div className="absolute top-0 right-0 w-1/3 h-1/2 bg-gradient-to-br from-primary/5 to-transparent blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-1/3 h-1/2 bg-gradient-to-tr from-primary/5 to-transparent blur-3xl pointer-events-none" />
+
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
+              backgroundImage: `radial-gradient(hsl(var(--primary)) 0.5px, transparent 0.5px)`,
+              backgroundSize: '24px 24px'
+            }} />
+
+            <div className="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
+              {statsData.map((stat, idx) => (
+                <StatCard key={idx} stat={stat} index={idx} />
+              ))}
             </div>
           </div>
         </div>
       </section>
-      
-      {/* Stats Banner - Blue theme */}
-      <section className="py-16 bg-gradient-to-r from-[#2430D2] to-[#1A24A8]">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { icon: Clock, label: 'Typical Timeline', value: '1-3 Days' },
-              { icon: Shield, label: 'Warranty', value: '50 Years' },
-              { icon: Award, label: 'Certification', value: 'Pro Installer' },
-              { icon: Star, label: 'Customer Rating', value: '5.0 ★' }
-            ].map((stat, idx) => (
-              <div key={idx} className="text-center group">
-                <div className="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:bg-white/20 transition-colors duration-300">
-                  <stat.icon className="w-6 h-6 text-white" />
-                </div>
-                <div className="text-3xl font-bold text-white mb-1">{stat.value}</div>
-                <div className="text-sm text-white/70">{stat.label}</div>
+
+      {/* Service Overview */}
+      <section className="py-6 xs:py-8 sm:py-10 md:py-12 lg:py-16">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+          <div className="grid lg:grid-cols-2 gap-6 sm:gap-12 lg:gap-16 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="order-2 lg:order-1 text-center lg:text-left flex flex-col items-center lg:items-start"
+            >
+              <div className="inline-flex items-center gap-2 bg-primary/5 text-primary px-3 py-1.5 sm:px-4 sm:py-2 rounded-full mb-6 sm:mb-8 border border-primary/10">
+                <IconComponent className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="text-[10px] xs:text-xs font-bold uppercase tracking-wider">{service.tag}</span>
               </div>
+
+              <h2 className="text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-heading font-bold text-foreground mb-3 sm:mb-6 leading-tight">
+                Craftsmanship <br />
+                Without <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/80">Compromise.</span>
+              </h2>
+
+              <p className="text-sm sm:text-base lg:text-lg text-muted-foreground mb-6 sm:mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0">
+                {service.overview} We bring military-grade discipline and architectural beauty to every project.
+                Our mission is your property's long-term protection and value enhancement.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-8 sm:mb-10 w-full lg:max-w-none mx-auto lg:mx-0">
+                {service.features.map((feature, idx) => (
+                  <div key={idx} className="flex items-center justify-center lg:justify-start gap-2 sm:gap-3">
+                    <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-md sm:rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <CheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-primary" />
+                    </div>
+                    <span className="text-foreground text-sm sm:text-base font-medium">{feature}</span>
+                  </div>
+                ))}
+              </div>
+
+              <motion.div
+                className="mb-10 w-full"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                <div className="flex flex-row flex-wrap sm:flex-nowrap items-center justify-center lg:justify-start gap-4 w-full">
+                  <motion.a
+                    href="/contact"
+                    className="group relative overflow-hidden flex-1 sm:flex-initial px-7 py-3.5 rounded-2xl inline-flex items-center justify-center gap-2 text-base font-semibold tracking-wide bg-primary text-white border border-primary/30 transition-all duration-300 active:scale-[0.98] hover:text-white"
+                    whileHover={{ scale: 1.03, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <span className="relative z-10">Start Your Project</span>
+                    <ArrowRight className="relative z-10 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                    <span className="absolute inset-0 bg-gradient-to-r from-white/20 via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+                  </motion.a>
+                </div>
+              </motion.div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="order-1 lg:order-2"
+            >
+              <div className="relative aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl">
+                <Image
+                  src={service.image}
+                  alt={service.title}
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+
+                <div className="absolute bottom-4 left-4 right-4 sm:bottom-8 sm:left-8 sm:right-8 bg-white/5 backdrop-blur-xl p-4 sm:p-6 rounded-2xl border border-white/20 shadow-2xl">
+                  <div className="flex gap-0.5 sm:gap-1 mb-2 sm:mb-3">
+                    {[1, 2, 3, 4, 5].map(i => (
+                      <Star key={i} className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400 fill-yellow-400" />
+                    ))}
+                  </div>
+                  <p className="text-white text-xs sm:text-base font-medium italic leading-relaxed">
+                    "Setting a new standard for home restoration. Truly exceptional work with attention to every detail."
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Benefits Section - The Eagle Edge */}
+      <section className="py-12 xs:py-16 sm:py-20 md:py-28 bg-muted/30 border-y border-border">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center max-w-3xl mx-auto mb-10 sm:mb-16"
+          >
+            <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+              <div className="w-8 sm:w-12 h-px bg-primary/30" />
+              <span className="text-[8px] xs:text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase text-primary">
+                The Eagle Edge
+              </span>
+              <div className="w-8 sm:w-12 h-px bg-primary/30" />
+            </div>
+
+            <h2 className="text-3xl xs:text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-foreground mb-3 sm:mb-4">
+              Engineered To <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/80">Outlast</span>
+            </h2>
+            <p className="text-muted-foreground text-sm sm:text-base lg:text-lg">
+              Experience the difference with our unwavering commitment to military-grade excellence
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {benefits.map((benefit, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                whileHover={{ y: -6 }}
+                className="group relative bg-card rounded-xl sm:rounded-2xl p-4 sm:p-8 border border-border hover:border-primary/30 shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 rounded-xl sm:rounded-2xl transition-opacity duration-500" />
+
+                <div className="relative z-10">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-primary/10 rounded-lg sm:rounded-xl flex items-center justify-center mb-4 sm:mb-6 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                    <benefit.icon className="w-6 h-6 sm:w-7 sm:h-7 text-primary group-hover:text-white transition-colors" />
+                  </div>
+
+                  <h3 className="text-base sm:text-xl font-heading font-bold text-foreground mb-2 sm:mb-3 group-hover:text-primary transition-colors">
+                    {benefit.title}
+                  </h3>
+
+                  <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
+                    {benefit.description}
+                  </p>
+
+                  <div className="mt-4 sm:mt-6 w-6 sm:w-8 h-px bg-primary/30 group-hover:w-12 sm:group-hover:w-16 group-hover:bg-primary transition-all duration-300" />
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
-      
-      {/* Benefits */}
-      <section className="py-24 px-6 lg:px-12 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 bg-[#2430D2]/5 px-4 py-2 rounded-full border border-[#2430D2]/10 mb-6">
-              <Sparkles className="w-4 h-4 text-[#2430D2]" />
-              <span className="text-[#2430D2] uppercase tracking-wider text-xs font-semibold">
-                Why Choose Us
+
+      {/* Process Section */}
+      <section className="relative py-16 xs:py-20 sm:py-24 md:py-32 bg-background overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <motion.div
+            className="absolute -top-40 -right-40 w-[300px] xs:w-[400px] sm:w-[600px] h-[300px] xs:h-[400px] sm:h-[600px] bg-primary/1 rounded-full blur-[80px] xs:blur-[100px] sm:blur-[120px]"
+            animate={{
+              x: [0, 50, -30, 0],
+              y: [0, -30, 50, 0],
+              scale: [1, 1.1, 0.9, 1],
+            }}
+            transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute -bottom-40 -left-40 w-[300px] xs:w-[400px] sm:w-[500px] h-[300px] xs:h-[400px] sm:h-[500px] bg-primary/1 rounded-full blur-[80px] xs:blur-[100px] sm:blur-[120px]"
+            animate={{
+              x: [0, -40, 30, 0],
+              y: [0, 40, -20, 0],
+              scale: [1, 0.9, 1.1, 1],
+            }}
+            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          />
+        </div>
+
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="text-center max-w-4xl mx-auto mb-10 xs:mb-16 sm:mb-20"
+          >
+            <div className="flex items-center justify-center gap-2 sm:gap-4 mb-3 sm:mb-6">
+              <div className="w-6 sm:w-12 h-[1px] sm:h-[1.5px] bg-gradient-to-r from-transparent to-primary/40" />
+              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] sm:tracking-[0.4em] text-primary">
+                Methodology
               </span>
+              <div className="w-6 sm:w-12 h-[1px] sm:h-[1.5px] bg-gradient-to-l from-transparent to-primary/40" />
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Why Choose Eagle Revolution
+
+            <h2 className="text-2xl xs:text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-heading font-bold text-foreground mb-3 sm:mb-6 leading-tight sm:leading-[1.05]">
+              Precision in <br className="hidden sm:block" />
+              <span className="text-primary">every detail</span>
             </h2>
-            <p className="text-gray-600 text-lg">
-              We deliver exceptional quality and value on every project
+
+            <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-2">
+              A battle-tested framework that ensures consistency, quality, and complete satisfaction—from initial consultation to final walkthrough.
             </p>
-            <div className="w-20 h-1 bg-[#2430D2] mx-auto mt-6" />
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-7 mb-4 sm:mb-6 lg:mb-7">
+            {processSteps.slice(0, 3).map((step, idx) => (
+              <ProcessCard key={idx} step={step} index={idx} />
+            ))}
           </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {benefits.map((benefit, idx) => {
-              const BenefitIcon = benefit.icon;
-              return (
-                <div 
-                  key={idx} 
-                  className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl hover:shadow-[#2430D2]/10 transition-all duration-300 border border-gray-100 hover:border-[#2430D2]/20 group"
-                >
-                  <div className="w-14 h-14 bg-[#2430D2]/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-[#2430D2] transition-colors duration-300">
-                    <BenefitIcon className="w-7 h-7 text-[#2430D2] group-hover:text-white transition-colors duration-300" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">{benefit.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{benefit.description}</p>
-                </div>
-              );
-            })}
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-7">
+            {processSteps.slice(3, 6).map((step, idx) => (
+              <ProcessCard key={idx + 3} step={step} index={idx + 3} />
+            ))}
           </div>
         </div>
       </section>
-      
-      {/* Process */}
-      <section className="py-24 px-6 lg:px-12 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 bg-[#2430D2]/5 px-4 py-2 rounded-full border border-[#2430D2]/10 mb-6">
-              <Wrench className="w-4 h-4 text-[#2430D2]" />
-              <span className="text-[#2430D2] uppercase tracking-wider text-xs font-semibold">
-                How It Works
-              </span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Our Simple Process
-            </h2>
-            <p className="text-gray-600 text-lg">
-              From consultation to completion, we make it easy
-            </p>
-            <div className="w-20 h-1 bg-[#2430D2] mx-auto mt-6" />
-          </div>
-          
-          <div className="grid md:grid-cols-5 gap-8">
-            {processSteps.map((step, idx) => {
-              const StepIcon = step.icon;
-              return (
-                <div key={idx} className="text-center relative group">
-                  {idx < processSteps.length - 1 && (
-                    <div className="hidden md:block absolute top-9 left-[60%] w-[80%] h-[2px] bg-gradient-to-r from-[#2430D2]/30 to-[#2430D2]/10" />
-                  )}
-                  <div className="relative z-10">
-                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg border-2 border-[#2430D2]/20 group-hover:border-[#2430D2] group-hover:shadow-[#2430D2]/20 transition-all duration-300">
-                      <StepIcon className="w-8 h-8 text-[#2430D2]" />
-                    </div>
-                    <h3 className="font-bold text-gray-900 mb-2">{step.title}</h3>
-                    <p className="text-gray-500 text-sm">{step.description}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-      
+
       {/* FAQ Section */}
-      <section className="py-24 px-6 lg:px-12 bg-gray-50">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-[#2430D2]/5 px-4 py-2 rounded-full border border-[#2430D2]/10 mb-6">
-              <HelpCircle className="w-4 h-4 text-[#2430D2]" />
-              <span className="text-[#2430D2] uppercase tracking-wider text-xs font-semibold">
-                Got Questions?
-              </span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Frequently Asked Questions
+      <section className="py-16 xs:py-20 sm:py-24 md:py-32 bg-muted/30 border-y border-border relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute inset-0 opacity-[0.02] bg-[radial-gradient(hsl(var(--primary))_0.5px,transparent_0.5px)] [background-size:24px_24px] sm:[background-size:32px_32px]" />
+        </div>
+
+        <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center max-w-3xl mx-auto mb-8 sm:mb-16"
+          >
+            <span className="inline-block text-primary text-[10px] sm:text-sm font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em] mb-2 sm:mb-4">
+              FAQ
+            </span>
+            <h2 className="text-2xl xs:text-4xl sm:text-6xl lg:text-7xl font-heading font-bold text-foreground mb-3 sm:mb-6 leading-tight">
+              Your Questions, <span className="text-primary">Answered</span>
             </h2>
-            <div className="w-20 h-1 bg-[#2430D2] mx-auto mt-6" />
-          </div>
-          
-          <div className="space-y-4">
+            <p className="text-xs sm:text-base lg:text-xl text-muted-foreground px-2">
+              Everything you need to know about our {service.title.toLowerCase()} services
+            </p>
+          </motion.div>
+
+          <div className="space-y-3 sm:space-y-4">
             {faqs.map((faq, idx) => (
-              <div key={idx} className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:border-[#2430D2]/20 hover:shadow-md transition-all duration-300">
-                <h4 className="text-lg font-bold text-gray-900 mb-2 flex items-start gap-3">
-                  <span className="text-[#2430D2] font-bold">Q:</span>
-                  {faq.question}
-                </h4>
-                <p className="text-gray-600 flex items-start gap-3">
-                  <span className="text-[#2430D2] font-bold">A:</span>
-                  {faq.answer}
-                </p>
-              </div>
+              <FAQItem
+                key={idx}
+                faq={faq}
+                index={idx}
+                isOpen={openFaq === idx}
+                onToggle={() => setOpenFaq(openFaq === idx ? null : idx)}
+              />
             ))}
           </div>
         </div>
       </section>
-      
-      {/* CTA */}
-      <section className="py-24 px-6 lg:px-12 bg-gradient-to-r from-[#2430D2] to-[#1A24A8]">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Ready to Start Your Project?
-          </h2>
-          <p className="text-white/80 text-lg mb-10">
-            Contact us today for a free, no-obligation estimate
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link 
-              href="/contact" 
-              className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#2430D2] rounded-full text-sm font-bold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-            >
-              Get Free Estimate <ArrowRight className="w-4 h-4" />
-            </Link>
-            <a 
-              href="tel:636-449-9714" 
-              className="inline-flex items-center gap-2 px-8 py-4 border-2 border-white/30 text-white rounded-full text-sm font-bold hover:bg-white/10 transition-all duration-300"
-            >
-              <Phone className="w-4 h-4" /> Call 636-449-9714
-            </a>
-          </div>
-          <p className="text-white/60 text-sm mt-8">Serving Greater St. Louis Area | Licensed & Insured</p>
-        </div>
-      </section>
-      
-      {/* Related Services */}
-      <section className="py-20 px-6 lg:px-12 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-12">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Explore Our Other Services</h2>
-              <div className="w-16 h-0.5 bg-[#2430D2]" />
+
+      {/* Award CTA Banner */}
+      <div className="w-full max-w-7xl mx-auto px-4 py-4">
+        <AwardCTABanner />
+      </div>
+
+      {/* Explore More Services */}
+      <section className="py-16 xs:py-20 sm:py-24 md:py-28 bg-background">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center max-w-3xl mx-auto mb-10 sm:mb-16"
+          >
+            <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+              <div className="w-8 sm:w-12 h-px bg-primary/30" />
+              <span className="text-[8px] xs:text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase text-primary">
+                Our Portfolio
+              </span>
+              <div className="w-8 sm:w-12 h-px bg-primary/30" />
             </div>
-            <Link 
-              href="/services" 
-              className="text-[#2430D2] font-semibold flex items-center gap-2 hover:gap-3 transition-all duration-300"
-            >
-              View All Services <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-6">
+
+            <h2 className="text-3xl xs:text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-foreground mb-3 sm:mb-4">
+              Explore More Services
+            </h2>
+            <p className="text-muted-foreground text-sm sm:text-base lg:text-lg px-2">
+              Discover our full range of premium home improvement solutions
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {allServices.filter(s => s.slug !== service.slug).slice(0, 3).map((s, idx) => {
-              const OtherIcon = iconMap[s.icon] || Home;
+              const SIcon = iconMap[s.icon] || Home;
               return (
-                <Link key={idx} href={`/services/${s.slug}`} className="group">
-                  <div className="flex items-center gap-5 p-6 bg-gray-50 rounded-xl hover:bg-white border border-gray-100 hover:border-[#2430D2]/20 hover:shadow-lg hover:shadow-[#2430D2]/10 transition-all duration-300">
-                    <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-sm group-hover:bg-[#2430D2] transition-colors duration-300">
-                      <OtherIcon className="w-6 h-6 text-[#2430D2] group-hover:text-white transition-colors duration-300" />
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.15 }}
+                  whileHover={{ y: -8 }}
+                >
+                  <Link
+                    href={`/services/${s.slug}`}
+                    className="group block relative overflow-hidden rounded-2xl sm:rounded-3xl bg-card border border-border shadow-lg hover:shadow-2xl transition-all duration-500 h-full"
+                  >
+                    <div className="relative h-48 xs:h-52 sm:h-56 overflow-hidden">
+                      <Image
+                        src={s.image}
+                        alt={s.title}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-700"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+
+                      <div className="absolute top-3 left-3 sm:top-4 sm:left-4 w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-primary/90 backdrop-blur-sm flex items-center justify-center shadow-lg">
+                        <SIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-gray-900 group-hover:text-[#2430D2] transition-colors duration-300">{s.title}</h3>
-                      <p className="text-sm text-gray-500">{s.tag}</p>
+
+                    <div className="p-4 sm:p-5 lg:p-7 flex flex-col h-full">
+                      <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                        <span className="text-[10px] xs:text-xs font-bold uppercase tracking-wider text-primary">
+                          {s.tag}
+                        </span>
+                      </div>
+
+                      <h3 className="text-base sm:text-xl font-heading font-bold text-foreground mb-2 sm:mb-3 group-hover:text-primary transition-colors">
+                        {s.title}
+                      </h3>
+
+                      <p className="text-muted-foreground text-xs xs:text-sm sm:text-base leading-relaxed mb-4 sm:mb-5 line-clamp-2">
+                        {s.description}
+                      </p>
+
+                      <div className="flex items-center gap-2 text-primary text-sm sm:text-base font-semibold group-hover:gap-3 transition-all">
+                        <span>Learn More</span>
+                        <ArrowUpRight className="w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                      </div>
                     </div>
-                    <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-[#2430D2] group-hover:translate-x-1 transition-all duration-300" />
-                  </div>
-                </Link>
+                  </Link>
+                </motion.div>
               );
             })}
           </div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center mt-8 sm:mt-12"
+          >
+            <Link
+              href="/services"
+              className="inline-flex items-center gap-2 px-6 py-3 sm:px-8 sm:py-4 border-2 border-primary text-primary text-sm sm:text-base font-semibold rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+            >
+              View All Services
+              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+            </Link>
+          </motion.div>
         </div>
       </section>
+
     </main>
   );
 }

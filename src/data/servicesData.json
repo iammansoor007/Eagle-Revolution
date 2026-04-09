@@ -1,0 +1,156 @@
+{
+  "shared": {
+    "stats": [
+      { "value": "50", "label": "Year Warranty", "icon": "Shield" },
+      { "value": "2,500", "label": "Projects Done", "icon": "Trophy" },
+      { "value": "45", "label": "Team Members", "icon": "Users" },
+      { "value": "100%", "label": "Satisfaction", "icon": "ThumbsUp" }
+    ],
+    "benefits": [
+      {
+        "icon": "Shield",
+        "title": "50-Year Warranty",
+        "description": "Industry-leading comprehensive warranty that protects your investment for decades to come."
+      },
+      {
+        "icon": "Award",
+        "title": "Certified Experts",
+        "description": "Every installer is factory-trained and certified, ensuring the highest quality workmanship."
+      },
+      {
+        "icon": "ThumbsUp",
+        "title": "100% Satisfaction",
+        "description": "We're not satisfied until you are. Your complete happiness is our only acceptable outcome."
+      },
+      {
+        "icon": "Clock",
+        "title": "On-Time Delivery",
+        "description": "We respect your time and schedule, completing every project on or ahead of schedule."
+      }
+    ],
+    "process": [
+      {
+        "icon": "FileText",
+        "title": "Discovery",
+        "description": "We start with a detailed consultation to understand your vision, requirements, and project scope."
+      },
+      {
+        "icon": "ClipboardCheck",
+        "title": "Planning",
+        "description": "Our team creates a comprehensive plan with material specs, timeline, and transparent pricing."
+      },
+      {
+        "icon": "Shield",
+        "title": "Permitting",
+        "description": "We handle all necessary permits and approvals, ensuring full compliance with local codes."
+      },
+      {
+        "icon": "Truck",
+        "title": "Material Prep",
+        "description": "Premium materials are sourced, quality-checked, and delivered to your property on schedule."
+      },
+      {
+        "icon": "Hammer",
+        "title": "Installation",
+        "description": "Our certified craftsmen execute with precision, maintaining a clean and organized worksite."
+      },
+      {
+        "icon": "CheckCircle",
+        "title": "Completion",
+        "description": "Final inspection, thorough cleanup, and walkthrough to ensure your complete satisfaction."
+      }
+    ]
+  },
+  "services": [
+    {
+      "slug": "residential-roofing",
+      "title": "Residential Roofing",
+      "tagline": "Military Grade Protection",
+      "tag": "Home Protection",
+      "icon": "Home",
+      "description": "Superior protection and aesthetic brilliance for your most valuable asset.",
+      "overview": "Professional residential roofing services that combine military precision with architectural excellence. We specialize in high-performance asphalt shingles, architectural roofing systems, and durable weather-proofing solutions tailored for Missouri's diverse climate.",
+      "features": [
+        "Architectural Asphalt Shingles",
+        "Complete Roof Replacements",
+        "Wind & Hail Resistance",
+        "Precision Leak Detection"
+      ]
+    },
+    {
+      "slug": "windows-doors",
+      "title": "Windows & Doors",
+      "tagline": "Crystal Clear Efficiency",
+      "tag": "Efficiency & Style",
+      "icon": "Layout",
+      "description": "Enhance your home's energy efficiency and curb appeal with premium installations.",
+      "overview": "Our window and door solutions offer the perfect blend of structural integrity and modern design. We install high-efficiency vinyl and wood windows along with secure, insulated entry doors that reduce energy costs and increase your property's value.",
+      "features": [
+        "Energy-Star Rated Vinyl",
+        "Custom Entry Systems",
+        "UV Protection Glass",
+        "Sound-Reducing Insulation"
+      ]
+    },
+    {
+      "slug": "custom-decks",
+      "title": "Custom Decks",
+      "tagline": "Architectural Outdoor Living",
+      "tag": "Outdoor Living",
+      "icon": "TreePine",
+      "description": "Master-crafted outdoor spaces designed for relaxation and entertainment.",
+      "overview": "Transform your backyard into a luxury retreat with our custom deck design and construction. From sustainable wood to low-maintenance composite materials, our craftsmen build durable, beautiful outdoor structures that integrate seamlessly with your architecture.",
+      "features": [
+        "Composite Decking Systems",
+        "Premium Cedar & hardwoods",
+        "Multi-Level Designs",
+        "Integrated LED Lighting"
+      ]
+    },
+    {
+      "slug": "commercial-roofing",
+      "title": "Commercial Roofing",
+      "tagline": "Industrial Strength Solutions",
+      "tag": "Business Solutions",
+      "icon": "Building2",
+      "description": "Heavy-duty roofing solutions for industrial and commercial properties.",
+      "overview": "Protect your business assets with our specialized commercial roofing services. We provide TPO flat roof systems, durable metal roofing, and comprehensive maintenance plans designed to minimize operational downtime and maximize long-term structural life.",
+      "features": [
+        "TPO & EPDM Flat Roofing",
+        "Metal Roof Installations",
+        "Drainage System Design",
+        "Cool Roof Technology"
+      ]
+    },
+    {
+      "slug": "siding-soffit-fascia",
+      "title": "Siding, Soffit & Fascia",
+      "tagline": "Complete Exterior Armor",
+      "tag": "Exterior Protection",
+      "icon": "Building",
+      "description": "Complete exterior armor that protects your home from the elements.",
+      "overview": "Our comprehensive siding solutions provide more than just beauty—they offer a durable shield against moisture and wind. We install James Hardie fiber cement and premium vinyl siding along with precise soffit and fascia transitions for a flawless finish.",
+      "features": [
+        "Fiber Cement Siding",
+        "Insulated Vinyl Solutions",
+        "Custom Trim Wrapping",
+        "Impact Resistant Materials"
+      ]
+    },
+    {
+      "slug": "gutters-protection",
+      "title": "Gutters & Protection",
+      "tagline": "Advanced Water Management",
+      "tag": "Water Management",
+      "icon": "Droplets",
+      "description": "Precision-engineered water management systems for structural integrity.",
+      "overview": "Effective water management is critical to your home's foundation. Our seamless gutter systems and advanced leaf protection solutions ensure water is moved safely away from your property, preventing erosion, basement flooding, and woodwork rot.",
+      "features": [
+        "Seamless Aluminum Gutters",
+        "Advanced Leaf Protection",
+        "Under-Gutter Drainage",
+        "Copper & Custom Options"
+      ]
+    }
+  ]
+}
