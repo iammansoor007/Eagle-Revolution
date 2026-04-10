@@ -575,11 +575,6 @@ export default function ServicesPage() {
     image: imageMap[service.title] || roofingImg
   }));
 
-  const statsData = (servicesData?.shared?.stats || []).map(s => ({
-    ...s,
-    icon: iconMap[s.icon] || Shield
-  }));
-
   return (
     <main className="bg-white relative overflow-hidden min-h-screen font-body scroll-smooth">
       <InteractiveBackground />

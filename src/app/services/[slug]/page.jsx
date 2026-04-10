@@ -606,36 +606,19 @@ export default function ServiceDetailPage({ params }) {
 
   const IconComponent = iconMap[service.icon] || Home;
 
-  const faqs = [
-    {
-      question: `How long does a typical ${service.title.toLowerCase()} project take?`,
-      answer: `Most ${service.title.toLowerCase()} projects are completed within 1-3 days depending on the scope and weather conditions. We'll provide a detailed timeline during your free consultation.`
-    },
-    {
-      question: `Are you licensed and insured for ${service.title.toLowerCase()}?`,
-      answer: `Yes, Eagle Revolution is fully licensed, bonded, and insured for all ${service.title.toLowerCase()} services. We carry comprehensive coverage for your complete peace of mind.`
-    },
-    {
-      question: `Do you offer financing options for ${service.title.toLowerCase()}?`,
-      answer: `Absolutely! We offer flexible financing options with approved credit, including 0% interest for qualified buyers. Ask your estimator for details during your consultation.`
-    },
-    {
-      question: `What areas do you serve for ${service.title.toLowerCase()}?`,
-      answer: `We serve the entire St. Louis metropolitan area and surrounding communities within a 50-mile radius. Contact us to confirm service availability in your specific location.`
-    }
-  ];
+  const faqs = service.faq || [];
 
-  const benefits = servicesData.shared.benefits.map(b => ({
+  const benefits = (service.benefits || []).map(b => ({
     ...b,
     icon: iconMap[b.icon] || Shield
   }));
 
-  const processSteps = servicesData.shared.process.map(p => ({
+  const processSteps = (service.process || []).map(p => ({
     ...p,
     icon: iconMap[p.icon] || Shield
   }));
 
-  const statsData = servicesData.shared.stats.map(s => ({
+  const statsData = (service.stats || []).map(s => ({
     ...s,
     icon: iconMap[s.icon] || Shield
   }));
