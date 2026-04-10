@@ -598,7 +598,15 @@ export default function FAQPage() {
     }, [items, isMounted]);
 
     if (!isMounted) {
-        return null;
+        return (
+            <section className="relative bg-background py-20 md:py-24 lg:py-28 overflow-hidden min-h-screen">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                    <div className="text-center py-20">
+                        <p className="text-muted-foreground">Loading...</p>
+                    </div>
+                </div>
+            </section>
+        );
     }
 
     return (

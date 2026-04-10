@@ -110,7 +110,7 @@ const StatCounter = ({ value, label, suffix = "", delay = 0, icon: Icon, descrip
 }) => {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-100px" });
+  const inView = useInView(ref, { once: true, margin: "-20px" });
 
   useEffect(() => {
     if (inView) {
@@ -305,7 +305,7 @@ const Hero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
           >
-            <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-7xl lg:text-[80px] xl:text-[100px] font-black leading-[1.05] sm:leading-[1.1] md:leading-[0.95] lg:leading-[0.85] tracking-tighter text-primary mb-4 sm:mb-6">
+            <h1 className="text-5xl xs:text-5xl sm:text-5xl md:text-7xl lg:text-[80px] xl:text-[100px] font-black leading-[1.05] sm:leading-[1.1] md:leading-[0.95] lg:leading-[0.85] tracking-tighter text-primary mb-4 sm:mb-6">
               SOARING <br />
               <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-foreground via-foreground/70 to-foreground/90">
                 BEYOND
@@ -314,7 +314,7 @@ const Hero = () => {
               EXPECTATIONS.
             </h1>
 
-            <p className="text-muted-foreground text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl max-w-xl mx-auto lg:mx-0 mb-6 sm:mb-8 font-medium leading-relaxed px-2 sm:px-0">
+            <p className="text-muted-foreground text-lg sm:text-lg md:text-lg lg:text-xl xl:text-2xl max-w-xl mx-auto lg:mx-0 mb-6 sm:mb-8 font-medium leading-relaxed px-2 sm:px-0">
               Born in O'Fallon, Missouri. Built on military precision. Driven by integrity.
             </p>
 
@@ -323,7 +323,7 @@ const Hero = () => {
                 href="/contact"
                 whileHover={{ y: -5, boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}
                 whileTap={{ scale: 0.98 }}
-                className="px-5 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 bg-primary text-primary-foreground font-bold text-xs sm:text-base md:text-lg rounded-xl flex items-center justify-center gap-2 sm:gap-3 group transition-all hover:text-white"
+                className="px-12 sm:px-14 md:px-16 py-3 sm:py-4 md:py-5 bg-primary text-primary-foreground font-bold text-lg sm:text-lg md:text-lg rounded-xl flex items-center justify-center gap-2 sm:gap-3 group transition-all hover:text-white"
               >
                 Contact Now
                 <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
@@ -336,29 +336,55 @@ const Hero = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.3 }}
-            className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:w-4/12"
+            className="w-full max-w-sm lg:w-5/12 mx-auto"
           >
             <div className="relative">
               <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full opacity-50" />
 
-              <div className="relative bg-card/60 backdrop-blur-xl border border-border/60 p-5 sm:p-6 md:p-8 lg:p-10 rounded-[30px] sm:rounded-[40px] shadow-2xl">
-                <div className="space-y-5 sm:space-y-6 md:space-y-8 lg:space-y-10">
+              <div className="relative bg-card/80 backdrop-blur-xl border border-border/60 p-6 sm:p-8 rounded-3xl shadow-2xl">
+
+                {/* Simple Header */}
+                <div className="text-center mb-6">
+                  <div className="flex items-center justify-center gap-1 mb-2">
+                    {[...Array(5)].map((_, i) => (
+                      <LucideStar key={i} className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground">Trusted by 500+ Homeowners</p>
+                </div>
+
+                {/* Stats - Clean & Simple */}
+                <div className="space-y-4">
                   {[
-                    { label: 'Veteran Owned', val: 'USA', icon: <ShieldCheck className="text-primary w-5 h-5 sm:w-6 sm:h-6" /> },
-                    { label: 'Quality Guarantee', val: '5 YR', icon: <Zap className="text-primary w-5 h-5 sm:w-6 sm:h-6" /> },
-                    { label: 'Support', val: '24/7', icon: <Globe className="text-primary w-5 h-5 sm:w-6 sm:h-6" /> },
+                    { label: 'Veteran Owned', val: 'USA', icon: <ShieldCheck className="text-primary w-5 h-5" /> },
+                    { label: 'Quality Guarantee', val: '5 YEAR', icon: <Zap className="text-primary w-5 h-5" /> },
+                    { label: 'Support', val: '24/7', icon: <Globe className="text-primary w-5 h-5" /> },
                   ].map((stat, i) => (
-                    <div key={i} className="flex items-center gap-3 sm:gap-4 md:gap-5 group">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-card rounded-xl sm:rounded-2xl shadow-sm border border-border flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <div key={i} className="flex items-center gap-4 p-3 rounded-xl bg-background/40 border border-border/40">
+                      <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
                         {stat.icon}
                       </div>
                       <div>
-                        <p className="text-muted-foreground text-[8px] sm:text-[10px] uppercase tracking-wider font-bold">{stat.label}</p>
-                        <p className="text-xl sm:text-2xl md:text-3xl font-black text-foreground tracking-tight">{stat.val}</p>
+                        <p className="text-muted-foreground text-[10px] uppercase tracking-wider font-bold">{stat.label}</p>
+                        <p className="text-xl font-black text-foreground">{stat.val}</p>
                       </div>
                     </div>
                   ))}
                 </div>
+
+                {/* Simple CTA */}
+                <div className="mt-6 pt-4 border-t border-border/60">
+                  <div className="text-center">
+                    <a
+                      href="tel:636-449-9714"
+                      className="text-lg font-bold text-foreground hover:text-primary transition-colors"
+                    >
+                      636-449-9714
+                    </a>
+                    <p className="text-xs text-muted-foreground mt-1">Call for Free Estimate</p>
+                  </div>
+                </div>
+
               </div>
             </div>
           </motion.div>
@@ -648,7 +674,7 @@ const MissionSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, {
     once: true,
-    margin: "-100px",
+    margin: "-20px",
     amount: 0.1,
   });
 
@@ -803,7 +829,7 @@ const RecognitionMarquee = () => {
             {[...certs, ...certs].map((text, i) => (
               <div key={i} className="flex items-center gap-2 sm:gap-4 md:gap-8 group">
                 <span
-                  className="text-2xl xs:text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-[8rem] font-black uppercase tracking-tighter transition-all duration-500"
+                  className="text-5xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-7xl xl:text-[8rem] font-black uppercase tracking-tighter transition-all duration-500"
                   style={{
                     color: 'transparent',
                     WebkitTextStroke: '1px hsl(var(--border))',
@@ -867,111 +893,169 @@ const RecognitionMarquee = () => {
   );
 };
 
-// ==================== SERVICE CARDS ====================
+// ==================== SERVICE CARD (Your Preferred Style) ====================
 const ServiceCard = ({ service, index, inView }: { service: any; index: number; inView: boolean }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-20px", amount: 0.05 }}
-      transition={{ duration: 0.6, delay: Math.min(index * 0.08, 0.3), ease: [0.23, 1, 0.32, 1] }}
+      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
       className="group"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative rounded-xl sm:rounded-2xl overflow-hidden bg-card border border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl">
-        <div className="relative aspect-[4/5] overflow-hidden">
-          <Image
-            src={service.image}
-            alt={service.title}
-            fill
-            className="object-cover transition-all duration-700 group-hover:scale-110"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
-        </div>
+      <Link href={`/services/${service.slug || '#'}`} className="block h-full">
+        <div className="flex flex-col h-full">
+          {/* Image Container */}
+          <div className="relative aspect-[4/5] rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 shadow-lg transition-all duration-700 group-hover:shadow-2xl">
+            <Image
+              src={service.image}
+              alt={service.title}
+              fill
+              className="object-cover transition-transform duration-1000 group-hover:scale-105"
+              priority={index < 3}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
 
-        <div className="absolute inset-0 p-3 sm:p-4 md:p-6 lg:p-8 flex flex-col justify-end">
-          <div className="transform translate-y-1 sm:translate-y-2 md:translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-            <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 mb-2 sm:mb-3 md:mb-4">
-              <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full bg-white/50 backdrop-blur-sm flex items-center justify-center group-hover:bg-primary/30 transition-all duration-300">
-                <div className="text-primary text-xs sm:text-base md:text-xl group-hover:scale-110 transition-transform duration-300">
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+            {/* Subtle Border Glow on Hover */}
+            <div className="absolute inset-0 rounded-[2rem] sm:rounded-[2.5rem] border-2 border-transparent group-hover:border-primary/20 transition-all duration-500 pointer-events-none" />
+
+            {/* Floating Badge */}
+            <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10">
+              <div className="px-3 sm:px-5 py-1.5 sm:py-2.5 bg-white/95 backdrop-blur-md rounded-xl border border-white/30 shadow-lg">
+                <span className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+                  {service.tag || 'PREMIUM'}
+                </span>
+              </div>
+            </div>
+
+            {/* Hover Arrow Button */}
+            <motion.div
+              className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-10"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={isHovered ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary text-white flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow">
+                <ArrowUpRight className="w-5 h-5 sm:w-6 sm:h-6" />
+              </div>
+            </motion.div>
+
+            {/* Service Icon on Image */}
+            <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 z-10">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/50 backdrop-blur-sm flex items-center justify-center">
+                <div className="text-primary text-base sm:text-lg">
                   {service.icon}
                 </div>
               </div>
-              <span className="text-[8px] sm:text-[10px] md:text-xs font-mono text-white/60 tracking-wider">
-                0{index + 1}
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 mt-4 sm:mt-6 px-3 sm:px-4 flex flex-col items-center text-center">
+            {/* Index Number */}
+            <div className="flex items-center gap-3 mb-3 sm:mb-4 opacity-40">
+              <span className="w-6 h-[1px] bg-foreground" />
+              <span className="text-[10px] font-bold uppercase tracking-widest leading-none">
+                {String(index + 1).padStart(2, '0')}
               </span>
+              <span className="w-6 h-[1px] bg-foreground" />
             </div>
 
-            <h3 className="text-sm sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-white mb-1 sm:mb-2 md:mb-3 tracking-tight">
+            {/* Title */}
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-heading font-black text-foreground mb-2 tracking-tighter leading-tight group-hover:text-primary transition-colors duration-300">
               {service.title}
             </h3>
 
-            <div className="w-6 sm:w-8 md:w-12 h-0.5 bg-primary/50 group-hover:w-8 sm:group-hover:w-12 md:group-hover:w-24 group-hover:bg-primary transition-all duration-500 mb-2 sm:mb-3 md:mb-4" />
-
-            <p className="text-white/70 text-[10px] sm:text-xs md:text-sm leading-relaxed opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100">
-              {service.desc}
+            {/* Description/Tagline */}
+            <p className="text-muted-foreground text-xs sm:text-sm font-medium uppercase tracking-[0.1em] opacity-60 group-hover:opacity-80 transition-opacity">
+              {service.tagline || service.desc?.slice(0, 40) + '...'}
             </p>
 
-            <div className="mt-2 sm:mt-3 md:mt-4 lg:mt-6 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-200">
-              <div className="inline-flex items-center gap-1 sm:gap-2 text-[8px] sm:text-[10px] md:text-xs font-medium tracking-wider text-white/80 group-hover:text-white">
-                <span>LEARN MORE</span>
-                <svg className="w-2 h-2 sm:w-3 sm:h-3 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
+            {/* Learn More Link */}
+            <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary">
+                Learn More
+                <ArrowRight className="w-3 h-3" />
+              </span>
             </div>
           </div>
         </div>
-      </div>
+      </Link>
     </motion.div>
   );
 };
 
-// ==================== SERVICES SECTION ====================
+// ==================== SERVICES SECTION (With Your Preferred Card Style) ====================
 const ServicesSection = () => {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-30px", amount: 0.05 });
+  const inView = useInView(ref, { once: true, margin: "-50px", amount: 0.1 });
 
   const services = [
     {
       title: "Residential Roofing",
       icon: <CustomIcons.Home />,
       desc: "Premium roofing solutions that combine durability with architectural elegance. Protecting your home with excellence.",
+      tagline: "Premium Protection",
+      tag: "POPULAR",
+      slug: "residential-roofing",
       image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=2069"
     },
     {
       title: "Commercial Roofing",
       icon: <CustomIcons.Building />,
       desc: "Engineered for performance and longevity. We deliver commercial roofing systems that stand the test of time.",
+      tagline: "Commercial Grade",
+      tag: "EXPERT",
+      slug: "commercial-roofing",
       image: "https://images.unsplash.com/photo-1541888946425-d81bb19480c5?q=80&w=2070"
     },
     {
       title: "Windows & Doors",
       icon: <CustomIcons.Window />,
       desc: "Transform your home with energy-efficient windows and doors that elevate aesthetics and functionality.",
+      tagline: "Energy Efficient",
+      tag: "BESTSELLER",
+      slug: "windows-doors",
       image: "https://images.unsplash.com/photo-1503387762-592dea58ef23?q=80&w=2000"
     },
     {
       title: "Decks & Outdoor Living",
       icon: <CustomIcons.Star />,
       desc: "Create stunning outdoor spaces that extend your living area. Perfect for entertaining and relaxation.",
+      tagline: "Custom Design",
+      tag: "FEATURED",
+      slug: "decks",
       image: "https://images.unsplash.com/photo-1590059132718-500fd97553ef?q=80&w=2000"
     },
     {
       title: "Siding, Soffit & Fascia",
       icon: <CustomIcons.Layers />,
       desc: "Enhance curb appeal with premium siding solutions that offer beauty, durability, and energy efficiency.",
+      tagline: "Curb Appeal",
+      tag: "TRENDING",
+      slug: "siding",
       image: "https://images.unsplash.com/photo-1621333649344-914954386222?q=80&w=2070"
     },
     {
       title: "Gutter Systems",
       icon: <CustomIcons.Droplet />,
       desc: "Protect your investment with seamless gutter systems designed for optimal water management and aesthetics.",
+      tagline: "Water Protection",
+      tag: "ESSENTIAL",
+      slug: "gutters",
       image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=2073"
     }
   ];
 
   return (
     <section ref={ref} className="relative py-12 sm:py-16 md:py-20 lg:py-24 bg-background">
+      {/* Background Grid */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-0 w-full h-full">
           <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
@@ -985,24 +1069,27 @@ const ServicesSection = () => {
         </div>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center mb-8 sm:mb-12 md:mb-16 lg:mb-20">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Header */}
+        <div className="max-w-4xl mx-auto text-center mb-12 sm:mb-16 lg:mb-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6"
+            className="inline-flex items-center gap-3 mb-6"
           >
-            <div className="w-4 sm:w-6 md:w-8 h-px bg-primary" />
-            <span className="text-[8px] sm:text-[10px] md:text-xs font-medium tracking-[0.2em] sm:tracking-[0.3em] text-primary uppercase">Our Services</span>
-            <div className="w-4 sm:w-6 md:w-8 h-px bg-primary" />
+            <div className="w-6 sm:w-8 h-px bg-primary" />
+            <span className="text-[10px] sm:text-xs font-medium tracking-[0.3em] text-primary uppercase">
+              Our Services
+            </span>
+            <div className="w-6 sm:w-8 h-px bg-primary" />
           </motion.div>
 
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground mb-3 sm:mb-4 md:mb-6 px-2"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6"
           >
             Comprehensive Exterior
             <br />
@@ -1013,33 +1100,35 @@ const ServicesSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-muted-foreground text-xs sm:text-sm md:text-base lg:text-lg max-w-2xl mx-auto px-3 sm:px-4"
+            className="text-muted-foreground text-sm sm:text-base lg:text-lg max-w-2xl mx-auto"
           >
             From roof to foundation, we deliver excellence across every aspect of your home's exterior
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-8">
-          {services.map((service, i) => (
-            <ServiceCard key={i} service={service} index={i} inView={inView} />
+        {/* Services Grid - Your Preferred Style */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 relative z-30">
+          {services.map((service, index) => (
+            <ServiceCard key={index} service={service} index={index} inView={inView} />
           ))}
         </div>
 
+        {/* View All Button */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="text-center mt-8 sm:mt-12 md:mt-16"
+          className="text-center mt-12 sm:mt-16"
         >
           <Link href="/services">
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="group relative px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 bg-primary text-primary-foreground font-semibold rounded-full overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
+              className="group relative px-6 sm:px-8 py-3 sm:py-4 bg-primary text-primary-foreground font-semibold rounded-full overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
             >
-              <span className="relative z-10 flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm md:text-base">
+              <span className="relative z-10 flex items-center gap-2 text-sm sm:text-base">
                 View All Services
-                <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
               </span>
               <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
             </motion.button>
@@ -1049,7 +1138,6 @@ const ServicesSection = () => {
     </section>
   );
 };
-
 // ==================== CTA BANNER ====================
 const AwardCTABanner = () => {
   return (
@@ -1435,7 +1523,7 @@ const ValuesGrid = () => {
 // ==================== MAIN PAGE COMPONENT ====================
 export default function AboutPage() {
   return (
-    <main className="bg-background overflow-x-hidden">
+    <main className="bg-background">
       <Hero />
       <RecognitionMarquee />
       <FounderStory />

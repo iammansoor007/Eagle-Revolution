@@ -29,7 +29,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${spaceGrotesk.variable} ${dmSans.variable} antialiased`}>
         <Providers>
-          <div className="relative min-h-screen overflow-x-hidden flex flex-col">
+          <div className="relative min-h-screen flex flex-col">
             {/* Common background grid for all pages */}
             <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.03]">
               <div 

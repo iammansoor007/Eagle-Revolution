@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { useGlobalLoading } from "./LoadingContext";
@@ -31,18 +31,16 @@ export default function PageTransition({ children }: { children: React.ReactNode
         </motion.div>
 
         {shouldPlayShutters && (
-          <motion.div key={`shutters-${pathname}`}>
-            {/* Top Shutter */}
+          <>
+            {/* Top Shutter - uses transform translate with fixed height */}
             <motion.div
-              className="fixed top-0 left-0 w-full bg-primary z-[999] pointer-events-none"
-              initial={{ y: "0%" }}
-              animate={{ y: "-100%" }}
-              exit={{ y: "0%" }}
+              className="fixed top-0 left-0 w-full h-full bg-primary z-[999] pointer-events-none"
+              initial={{ translateY: "0%" }}
+              animate={{ translateY: "-100%" }}
               transition={{
                 duration: 0.5,
                 ease: [0.76, 0, 0.24, 1],
               }}
-              style={{ height: "100vh" }}
             >
               <div className="absolute inset-0 flex items-center justify-center">
                 <span className="text-white text-xl sm:text-2xl md:text-3xl font-black tracking-widest uppercase text-center px-4">
@@ -53,18 +51,16 @@ export default function PageTransition({ children }: { children: React.ReactNode
             
             {/* Bottom Shutter */}
             <motion.div
-              className="fixed bottom-0 left-0 w-full bg-secondary z-[998] pointer-events-none"
-              initial={{ y: "0%" }}
-              animate={{ y: "100%" }}
-              exit={{ y: "0%" }}
+              className="fixed bottom-0 left-0 w-full h-full bg-secondary z-[998] pointer-events-none"
+              initial={{ translateY: "0%" }}
+              animate={{ translateY: "100%" }}
               transition={{
                 duration: 0.5,
                 ease: [0.76, 0, 0.24, 1],
                 delay: 0.1
               }}
-              style={{ height: "100vh" }}
             />
-          </motion.div>
+          </>
         )}
       </motion.div>
     </AnimatePresence>

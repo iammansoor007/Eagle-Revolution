@@ -45,13 +45,11 @@ const imageMap = {
 };
 
 // --- Counter Component ---
-const Counter = ({ value, suffix = "", duration = 2 }) => {
+const Counter = ({ value, suffix = "", duration = 2, start = false }) => {
   const [count, setCount] = useState(0);
-  const countRef = useRef(null);
-  const inView = useInView(countRef, { once: true, margin: "-100px" });
 
   useEffect(() => {
-    if (inView) {
+    if (start) {
       let startTime;
       const animate = (timestamp) => {
         if (!startTime) startTime = timestamp;
@@ -65,10 +63,10 @@ const Counter = ({ value, suffix = "", duration = 2 }) => {
       };
       requestAnimationFrame(animate);
     }
-  }, [inView, value, duration]);
+  }, [start, value, duration]);
 
   return (
-    <span ref={countRef} className="tabular-nums">
+    <span className="tabular-nums">
       {count.toLocaleString()}
       {suffix}
     </span>
@@ -78,11 +76,14 @@ const Counter = ({ value, suffix = "", duration = 2 }) => {
 // --- StatCard Component ---
 const StatCard = ({ stat, index }) => {
   const IconComponent = stat.icon;
+  const cardRef = useRef(null);
+  const inView = useInView(cardRef, { once: true, margin: "50px" });
+
   return (
     <motion.div
+      ref={cardRef}
       initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
       className="group relative"
     >
@@ -95,6 +96,7 @@ const StatCard = ({ stat, index }) => {
             <Counter
               value={parseInt(stat.value.replace(/[^0-9]/g, ''))}
               suffix={stat.value.includes('%') ? '%' : (stat.value.includes('+') ? '+' : '')}
+              start={inView}
             />
           </h3>
           <p className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground group-hover:text-primary transition-colors">
@@ -110,7 +112,7 @@ const StatCard = ({ stat, index }) => {
 const StatCounter = ({ value, label, suffix, delay, icon: Icon, description }) => {
   const [count, setCount] = useState(0);
   const countRef = useRef(null);
-  const inView = useInView(countRef, { once: true, margin: "-100px" });
+  const inView = useInView(countRef, { once: true, margin: "50px" });
 
   useEffect(() => {
     if (inView) {
@@ -133,8 +135,7 @@ const StatCounter = ({ value, label, suffix, delay, icon: Icon, description }) =
     <motion.div
       ref={countRef}
       initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
       transition={{ duration: 0.6, delay }}
       className="relative group"
     >
@@ -531,7 +532,7 @@ const StatsSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
           {stats.map((stat, index) => (
             <StatCounter
               key={index}
