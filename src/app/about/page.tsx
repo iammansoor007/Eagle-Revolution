@@ -323,7 +323,7 @@ const Hero = () => {
                 href="/contact"
                 whileHover={{ y: -5, boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full sm:w-auto px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 bg-primary text-primary-foreground font-bold text-sm sm:text-base md:text-lg rounded-xl flex items-center justify-center gap-2 sm:gap-3 group transition-all"
+                className="w-full sm:w-auto px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 bg-primary text-primary-foreground font-bold text-sm sm:text-base md:text-lg rounded-xl flex items-center justify-center gap-2 sm:gap-3 group transition-all hover:text-white"
               >
                 Contact Now
                 <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />

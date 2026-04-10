@@ -16,7 +16,8 @@ import {
   Home, Layout, TreePine, Building2, Building, Droplets,
   ArrowRight, Star, Shield, Clock, Award, Users, CheckCircle,
   Phone, Calendar, ArrowUpRight, Play, ChevronRight, Trophy,
-  ThumbsUp, FileText, ClipboardCheck, Truck, Hammer, Minus, Plus
+  ThumbsUp, FileText, ClipboardCheck, Truck, Hammer, Minus, Plus,
+  TrendingUp, BadgeCheck
 } from 'lucide-react';
 import servicesData from '../../data/servicesData.json';
 
@@ -99,6 +100,60 @@ const StatCard = ({ stat, index }) => {
           <p className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground group-hover:text-primary transition-colors">
             {stat.label}
           </p>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+// --- StatCounter Component for Stats Section ---
+const StatCounter = ({ value, label, suffix, delay, icon: Icon, description }) => {
+  const [count, setCount] = useState(0);
+  const countRef = useRef(null);
+  const inView = useInView(countRef, { once: true, margin: "-100px" });
+
+  useEffect(() => {
+    if (inView) {
+      let startTime;
+      const animate = (timestamp) => {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / 2000, 1);
+        const easedProgress = 1 - Math.pow(1 - progress, 4);
+        setCount(Math.floor(easedProgress * value));
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      };
+      requestAnimationFrame(animate);
+    }
+  }, [inView, value]);
+
+  return (
+    <motion.div
+      ref={countRef}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay }}
+      className="relative group"
+    >
+      <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-border/40 hover:border-primary/20 h-full">
+        <div className="flex flex-col items-center text-center">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-4 sm:mb-6 group-hover:bg-primary group-hover:text-white transition-all duration-500">
+            <Icon className="w-7 h-7 sm:w-8 sm:h-8" />
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-3xl sm:text-4xl md:text-5xl font-black text-foreground tracking-tighter">
+              {count.toLocaleString()}{suffix}
+            </h3>
+            <p className="text-xs sm:text-sm font-bold uppercase tracking-wider text-muted-foreground">
+              {label}
+            </p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground/60 mt-2">
+              {description}
+            </p>
+          </div>
         </div>
       </div>
     </motion.div>
@@ -417,6 +472,101 @@ const AwardCTABanner = () => {
   );
 };
 
+// --- Stats Section Component ---
+const StatsSection = () => {
+  const stats = [
+    {
+      value: 50,
+      label: "Years Combined Experience",
+      suffix: "+",
+      delay: 0.1,
+      icon: Clock,
+      description: "Industry expertise across our team"
+    },
+    {
+      value: 1000,
+      label: "Homes Transformed",
+      suffix: "+",
+      delay: 0.2,
+      icon: Home,
+      description: "Satisfied homeowners"
+    },
+    {
+      value: 100,
+      label: "Veteran Owned",
+      suffix: "%",
+      delay: 0.3,
+      icon: BadgeCheck,
+      description: "Proudly serving our community"
+    },
+    {
+      value: 5,
+      label: "Year Workmanship Guarantee",
+      suffix: "YR",
+      delay: 0.4,
+      icon: Shield,
+      description: "Peace of mind guaranteed"
+    }
+  ];
+
+  const LucideStar = Star;
+
+  return (
+    <section className="py-6 sm:py-8 md:py-10 lg:py-12 bg-gradient-to-b from-muted/30 to-background">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+        <div className="text-center mb-8 sm:mb-12 md:mb-16">
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-primary/10 rounded-full mb-4 sm:mb-6">
+            <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
+            <span className="text-[10px] sm:text-xs md:text-sm font-medium text-primary uppercase tracking-wider">
+              Our Impact
+            </span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-2 sm:mb-4 px-2">
+            Trusted by Homeowners
+            <br className="hidden sm:block" />
+            <span className="text-primary"> Across the Region</span>
+          </h2>
+          <p className="text-xs sm:text-sm md:text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto px-3 sm:px-4">
+            Numbers speak louder than words. Here's what we've achieved together with our valued customers.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
+          {stats.map((stat, index) => (
+            <StatCounter
+              key={index}
+              value={stat.value}
+              label={stat.label}
+              suffix={stat.suffix}
+              delay={stat.delay}
+              icon={stat.icon}
+              description={stat.description}
+            />
+          ))}
+        </div>
+
+        <div className="mt-8 sm:mt-12 md:mt-16 text-center">
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-8 items-center opacity-60">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <Users className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-primary" />
+              <span className="text-[10px] sm:text-xs md:text-sm text-muted-foreground">500+ 5-Star Reviews</span>
+            </div>
+            <div className="w-px h-2 sm:h-3 bg-border rounded-full hidden sm:block" />
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <Award className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-primary" />
+              <span className="text-[10px] sm:text-xs md:text-sm text-muted-foreground">A+ BBB Rating</span>
+            </div>
+            <div className="w-px h-2 sm:h-3 bg-border rounded-full hidden sm:block" />
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <LucideStar className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-primary" />
+              <span className="text-[10px] sm:text-xs md:text-sm text-muted-foreground">Top Rated Contractor</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 export default function ServicesPage() {
   const services = (servicesData?.services || []).map(service => ({
@@ -486,20 +636,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Stats Section */}
-      <section className="relative py-6 sm:py-8 px-4 sm:px-8 w-full z-20">
-        <div className="w-full max-w-7xl mx-auto">
-          <div className="relative bg-white/90 backdrop-blur-2xl border border-border/40 rounded-3xl sm:rounded-[2.5rem] p-4 sm:p-12 lg:p-16 shadow-2xl overflow-hidden">
-            <div className="absolute top-0 right-0 w-1/3 h-1/2 bg-gradient-to-br from-primary/5 to-transparent blur-3xl pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-1/3 h-1/2 bg-gradient-to-tr from-primary/5 to-transparent blur-3xl pointer-events-none" />
-
-            <div className="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
-              {statsData.map((stat, idx) => (
-                <StatCard key={idx} stat={stat} index={idx} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+      <StatsSection />
 
       {/* Main Services Grid */}
       <section className="py-16 md:py-24 px-6 lg:px-12 bg-transparent relative">

@@ -317,7 +317,7 @@ const ProcessCard = ({ step, index }) => {
             {step.description}
           </p>
 
-          <div className="hidden md:block absolute bottom-3 right-4 sm:bottom-4 sm:right-6 text-6xl sm:text-8xl font-black text-muted-foreground/[0.03] select-none">
+          <div className="hidden md:block absolute bottom-3 right-4 sm:bottom-4 sm:right-6 text-6xl sm:text-8xl font-black text-primary/40 select-none">
             {String(index + 1).padStart(2, '0')}
           </div>
 
@@ -507,17 +507,19 @@ const AwardCTABanner = () => {
 
         <div className="relative px-5 sm:px-8 py-10 sm:py-12 flex flex-col lg:flex-row items-center justify-between gap-8 sm:gap-10 z-30">
           <div className="max-w-2xl text-center lg:text-left flex flex-col items-center lg:items-start">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 }}
-              className="flex items-center gap-2 mb-4"
-            >
-              <span className="w-8 h-[2px] bg-primary" />
-              <span className="text-base sm:text-lg font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase text-primary">
-                Why Choose Us
-              </span>
-            </motion.div>
+            <div className="flex justify-center lg:justify-start w-full">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 }}
+                className="flex items-center gap-2 mb-4 mt-4"
+              >
+                <span className="w-8 h-[2px] bg-primary" />
+                <span className="text-base sm:text-lg font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase text-primary">
+                  Why Choose Us
+                </span>
+              </motion.div>
+            </div>
 
             <h3 className="text-2xl xs:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3 sm:mb-4 leading-tight">
               America's <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/80">#1 Rated</span><br />
@@ -528,7 +530,7 @@ const AwardCTABanner = () => {
               Join thousands of satisfied homeowners who trusted us with their most valuable investment.
             </p>
 
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 sm:gap-6 mt-6">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 sm:gap-6 mt-4">
               {["A+ BBB Rating", "24/7 Support", "Free Estimates"].map((badge, i) => (
                 <div key={i} className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 bg-primary rounded-full" />
@@ -555,7 +557,7 @@ const AwardCTABanner = () => {
               href="tel:636-449-9714"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
-              className="relative px-8 py-4 bg-white text-primary border-2 border-primary font-bold rounded-full shadow-sm hover:bg-primary hover:text-white hover:shadow-md transition-all duration-300 overflow-hidden flex items-center justify-center gap-2"
+              className="relative px-8 py-4 bg-white text-primary border-2 border-primary font-bold rounded-full shadow-sm hover:bg-primary hover:text-white hover:shadow-md transition-all duration-300 overflow-hidden flex items-center justify-center gap-2 mb-4"
             >
               <span className="relative z-10 flex items-center gap-2 text-sm md:text-base">
                 Call Now: 636-449-9714
@@ -715,9 +717,12 @@ export default function ServiceDetailPage({ params }) {
               transition={{ duration: 0.6 }}
               className="order-2 lg:order-1 text-center lg:text-left flex flex-col items-center lg:items-start"
             >
-              <div className="inline-flex items-center gap-2 bg-primary/5 text-primary px-3 py-1.5 sm:px-4 sm:py-2 rounded-full mb-6 sm:mb-8 border border-primary/10">
-                <IconComponent className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="text-[10px] xs:text-xs font-bold uppercase tracking-wider">{service.tag}</span>
+              {/* Badge Container - This controls the alignment */}
+              <div className="flex justify-center lg:justify-start w-full mb-6 sm:mb-8">
+                <div className="inline-flex items-center gap-2 bg-primary/5 text-primary px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-primary/10">
+                  <IconComponent className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="text-[10px] xs:text-xs font-bold uppercase tracking-wider">{service.tag}</span>
+                </div>
               </div>
 
               <h2 className="text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-heading font-bold text-foreground mb-3 sm:mb-6 leading-tight">
