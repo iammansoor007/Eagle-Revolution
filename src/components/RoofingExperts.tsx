@@ -116,15 +116,22 @@ const ParticlesBackground = memo(() => {
         });
     }, []);
 
+    const containerRef = useRef(null);
+    const isInView = useInView(containerRef, { margin: "200px" });
+
     if (!ParticlesComponent) return null;
 
     return (
-        <ParticlesComponent
-            id="roofing-particles"
-            init={particlesInit}
-            options={options}
-            className="absolute inset-0 pointer-events-none"
-        />
+        <div ref={containerRef} className="absolute inset-0 pointer-events-none">
+            {isInView && (
+                <ParticlesComponent
+                    id="roofing-particles"
+                    init={particlesInit}
+                    options={options}
+                    className="w-full h-full"
+                />
+            )}
+        </div>
     );
 });
 

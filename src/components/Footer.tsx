@@ -6,7 +6,8 @@ import {
   useScroll,
   useTransform,
   useSpring,
-  AnimatePresence
+  AnimatePresence,
+  useInView
 } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -39,6 +40,9 @@ const ParallaxLayer = ({ children, speed = 0.05, className = "" }: { children: R
 
 const QuantumParticles = () => {
   const [isClient, setIsClient] = useState(false);
+  const containerRef = useRef(null);
+  const isInView = useInView(containerRef, { margin: "100px" });
+  
   useEffect(() => setIsClient(true), []);
 
   const particles = [...Array(20)].map((_, i) => ({
@@ -54,8 +58,8 @@ const QuantumParticles = () => {
   if (!isClient) return null;
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      {particles.map((particle) => (
+    <div ref={containerRef} className="absolute inset-0 pointer-events-none overflow-hidden">
+      {isInView && particles.map((particle) => (
         <motion.div
           key={particle.id}
           className="absolute rounded-full bg-primary/20"

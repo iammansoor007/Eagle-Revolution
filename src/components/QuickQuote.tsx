@@ -243,7 +243,7 @@ ${formData.message}
                     delay: 1
                 }}
             >
-                {[...Array(3)].map((_, i) => (
+                {!isOpen && [...Array(3)].map((_, i) => (
                     <motion.div
                         key={i}
                         className="absolute inset-0 rounded-full"

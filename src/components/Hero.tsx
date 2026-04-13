@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -13,7 +13,19 @@ gsap.registerPlugin(ScrollTrigger);
 const Hero = () => {
   const { hero } = useContent();
   const sectionRef = useRef<HTMLElement>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  
+  // Use MotionValues to avoid React re-renders on every mouse move
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  // Smooth out the movement
+  const springConfig = { damping: 25, stiffness: 150 };
+  const smoothX = useSpring(mouseX, springConfig);
+  const smoothY = useSpring(mouseY, springConfig);
+
+  // Map values to slightly smaller ranges for subtle parallax
+  const parallaxX = useTransform(smoothX, (val) => val * 0.8);
+  const parallaxY = useTransform(smoothY, (val) => val * 0.8);
 
   const { badge, headlines, description, buttons, stats, images } = hero;
 
@@ -21,15 +33,13 @@ const Hero = () => {
     const handleMouseMove = (e: MouseEvent) => {
       const { clientX, clientY } = e;
       const { innerWidth, innerHeight } = window;
-      setMousePosition({
-        x: (clientX - innerWidth / 2) * 0.005,
-        y: (clientY - innerHeight / 2) * 0.005,
-      });
+      mouseX.set((clientX - innerWidth / 2) * 0.005);
+      mouseY.set((clientY - innerHeight / 2) * 0.005);
     };
 
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+  }, [mouseX, mouseY]);
 
   return (
     <section
@@ -58,14 +68,18 @@ const Hero = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-slate-900/20 via-transparent to-transparent" />
 
         <motion.div
-          className="absolute top-[10%] right-[10%] w-[50rem] h-[50rem] bg-primary/10 rounded-full blur-[120px]"
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.1, 0.2, 0.1],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          style={{ x: mousePosition.x * 0.8, y: mousePosition.y * 0.8 }}
-        />
+           className="absolute top-[10%] right-[10%] w-[50rem] h-[50rem] bg-primary/10 rounded-full blur-[90px]"
+           animate={{
+             scale: [1, 1.05, 1],
+             opacity: [0.1, 0.15, 0.1],
+           }}
+           transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+           style={{ 
+             x: parallaxX, 
+             y: parallaxY,
+             willChange: "transform, opacity" 
+           }}
+         />
       </div>
 
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0">

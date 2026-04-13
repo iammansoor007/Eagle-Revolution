@@ -40,30 +40,35 @@ const SubtleBackground = () => (
   </div>
 );
 
-const FloatingParticles = () => (
-  <div className="absolute inset-0 pointer-events-none overflow-hidden">
-    {[...Array(8)].map((_, i) => (
-      <motion.div
-        key={i}
-        className="absolute w-0.5 h-0.5 bg-primary/20 rounded-full"
-        style={{
-          left: `${Math.random() * 100}%`,
-          top: `${Math.random() * 100}%`,
-        }}
-        animate={{
-          y: [0, -30, 0],
-          opacity: [0, 0.2, 0],
-        }}
-        transition={{
-          duration: 6 + Math.random() * 4,
-          repeat: Infinity,
-          delay: Math.random() * 3,
-          ease: "easeInOut"
-        }}
-      />
-    ))}
-  </div>
-);
+const FloatingParticles = () => {
+  const containerRef = useRef(null);
+  const isInView = useInView(containerRef, { margin: "100px" });
+
+  return (
+    <div ref={containerRef} className="absolute inset-0 pointer-events-none overflow-hidden">
+      {isInView && [...Array(8)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-0.5 h-0.5 bg-primary/20 rounded-full"
+          style={{
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+          }}
+          animate={{
+            y: [0, -30, 0],
+            opacity: [0, 0.2, 0],
+          }}
+          transition={{
+            duration: 6 + Math.random() * 4,
+            repeat: Infinity,
+            delay: Math.random() * 3,
+            ease: "easeInOut"
+          }}
+        />
+      ))}
+    </div>
+  );
+};
 
 const AccordionItem = ({ item, index, isOpen, onToggle }: { item: any; index: number; isOpen: boolean; onToggle: (index: number) => void }) => {
   const [isHovered, setIsHovered] = useState(false);
