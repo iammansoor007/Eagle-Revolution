@@ -497,13 +497,7 @@ const Footer = () => {
               <NewsletterForm />
             </div>
 
-            <div className="flex flex-wrap gap-3 pt-2">
-              {quickLinks.map((link: any) => (
-                <Link key={link.label} href={link.href} className="text-[10px] text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
-                  <Icon name={link.icon} className="w-3 h-3" /> {link.label}
-                </Link>
-              ))}
-            </div>
+
           </div>
 
           <div className="lg:col-span-5">
