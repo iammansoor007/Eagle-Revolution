@@ -1,6 +1,129 @@
 {
   "services": [
     {
+      "slug": "custom-decks",
+      "title": "Custom Decks",
+      "tagline": "Architectural Outdoor Living",
+      "tag": "Outdoor Living",
+      "icon": "TreePine",
+      "description": "Precision-crafted outdoor living spaces in premium composite and high-performance PVC decking.",
+      "overview": "Transform your backyard into a luxury retreat. We offer two premium decking paths: **Low-Maintenance Composite** for wood-like aesthetics with zero upkeep, and **Structural PVC Decking** for ultimate durability, moisture resistance, and lighter color retention. Both systems are designed to withstand the elements while providing elegance for your family.",
+      "features": [
+        "Composite & PVC Options",
+        "Custom Pergolas",
+        "Built-in Lighting",
+        "Structural Mastery"
+      ],
+      "stats": [
+        { "value": "25", "label": "Year Fade Warranty", "icon": "Shield" },
+        { "value": "100%", "label": "Splinter Free", "icon": "ThumbsUp" },
+        { "value": "300+", "label": "Decks Constructed", "icon": "TreePine" },
+        { "value": "5X", "label": "Stronger Framing", "icon": "Hammer" }
+      ],
+      "benefits": [
+        { "icon": "TreePine", "title": "Material Choice", "description": "Choose between capped composite (wood/plastic blend) or cellular PVC (100% polymer) depending on your shade preference and moisture exposure." },
+        { "icon": "Shield", "title": "Load-Bearing Integrity", "description": "We over-engineer our footings and joists, exceeding local codes to ensure absolute structural safety." },
+        { "icon": "Layout", "title": "Custom Enhancements", "description": "Integrate low-voltage LED stair lighting, outdoor kitchens, or customized railing architectures." },
+        { "icon": "CheckCircle", "title": "Cool-Touch Tech", "description": "Select decking lines feature advanced heat-mitigating technology to keep barefoot paths comfortable in July." }
+      ],
+      "process": [
+        { "icon": "FileText", "title": "3D CAD Rendering", "description": "We design your deck in a 3D environment so you visualize the footprint and railing styles before we build." },
+        { "icon": "ClipboardCheck", "title": "Code Permitting", "description": "We secure all required municipal permits and handle neighborhood HOA approvals on your behalf." },
+        { "icon": "Hammer", "title": "Foundation Pour", "description": "Deep concrete footers are poured below the frost line to prevent any winter heaving." },
+        { "icon": "Building", "title": "Robust Framing", "description": "Treated lumber framing is erected using heavy-duty galvanized structural brackets." },
+        { "icon": "CheckCircle", "title": "Hidden Fasteners", "description": "Deck boards are installed using seamless hidden clip systems for a flawless, nail-free walking surface." },
+        { "icon": "Award", "title": "Safety Audit", "description": "Final inspection of all stair risers, railing tensions, and gate latches to ensure code compliance." }
+      ],
+      "faq": [
+        { "question": "Wood vs Composite vs PVC?", "answer": "Wood requires bi-annual maintenance. Composite offers a wood-like look with no upkeep. PVC decking is lighter in weight, resists moisture more effectively, and is the best choice for pool decks or deep shade." },
+        { "question": "Do you handle the city permits?", "answer": "Yes, we handle the entire bureaucratic process. From rendering blueprints to meeting city inspectors on site." },
+        { "question": "Can you build over my old foundation?", "answer": "It depends on age and code compliance. We perform a structural audit on your existing joists before making a recommendation." },
+        { "question": "How long does a deck build take?", "answer": "Most custom decks take 1-2 weeks from the day we break ground, dependent on size and municipal inspection delays." }
+      ]
+    },
+    {
+      "slug": "pvc-decking",
+      "title": "PVC Decking",
+      "tagline": "Pure Polymer Performance",
+      "tag": "Premium Decking",
+      "icon": "Droplets",
+      "description": "100% synthetic decking engineered for superior moisture resistance and lighter, cooler surfaces.",
+      "overview": "Our PVC decking solutions represent the pinnacle of synthetic deck technology. Unlike composite which contains wood flour, cellular PVC is 100% polymer. This provides unparalleled resistance to moisture, rot, and insects. It is the ideal solution for pool surrounds, heavily shaded lots, or homeowners who prefer lighter, cooler deck colors that never absorb water.",
+      "features": [
+        "100% Waterproof Core",
+        "Lighter Color Options",
+        "Mold & Mildew Proof",
+        "Lighter Weight Material"
+      ],
+      "stats": [
+        { "value": "Lifetime", "label": "Rot Warranty", "icon": "Shield" },
+        { "value": "30%", "label": "Lighter than Composite", "icon": "Feather" },
+        { "value": "0", "label": "Water Absorption", "icon": "Droplets" },
+        { "value": "50+", "label": "Years of Life", "icon": "Clock" }
+      ],
+      "benefits": [
+        { "icon": "Droplets", "title": "Pool-Ready Design", "description": "Since PVC contains zero organic material, it will never swell, cup, or rot from standing water or pool splashing." },
+        { "icon": "Layout", "title": "Brighter Aesthetics", "description": "PVC can achieve true, crisp whites and light coastal grays that are difficult to produce with darker composite materials." },
+        { "icon": "Minus", "title": "Superior Mold Resistance", "description": "The dense, non-porous surface prevents mold spores and mildew from ever taking root, ideal for damp, shaded backyards." },
+        { "icon": "Shield", "title": "Stable Dimensions", "description": "PVC experiences less thermal expansion and contraction than composite, allowing for tighter miters and cleaner lines." }
+      ],
+      "process": [
+        { "icon": "FileText", "title": "Color Matching", "description": "We help you select from a curated palette of PVC-specific colors and grain patterns to match your home's siding." },
+        { "icon": "ClipboardCheck", "title": "Framing Prep", "description": "Joist spacing is verified to exceed PVC manufacturer specs, ensuring a rock-solid, bounceless feel underfoot." },
+        { "icon": "Hammer", "title": "Foundation Pour", "description": "Deep concrete footers are poured below the frost line to prevent any winter heaving." },
+        { "icon": "Building", "title": "Robust Framing", "description": "Pressure-treated framing is installed with premium tape on all joist tops to create a barrier between wood and PVC." },
+        { "icon": "CheckCircle", "title": "PVC Fastening", "description": "Specialized pneumatic fasteners or Cortex hidden screws are used to secure the 100% synthetic boards flawlessly." },
+        { "icon": "Award", "title": "Final Trim", "description": "PVC fascia and riser boards are applied for a cohesive, fully synthetic envelope that requires zero paint." }
+      ],
+      "faq": [
+        { "question": "What is the difference between PVC and Composite decking?", "answer": "Composite is a blend of wood fibers and plastic; it's heavy and can absorb trace moisture. PVC is pure plastic (polymer). It's lighter, fully waterproof, and stays cooler in the sun than traditional dark composites." },
+        { "question": "Is PVC decking slippery when wet?", "answer": "Premium PVC brands feature an embossed wood-grain texture that provides excellent traction, even around pools. We recommend specific lines for wet applications." },
+        { "question": "Will PVC decking fade?", "answer": "PVC is highly color stable. Unlike early generation composites, modern PVC features UV-stabilized capstock that resists fading significantly better, especially in lighter color tones." },
+        { "question": "Does PVC decking require special framing?", "answer": "Because it is lighter and slightly more flexible, we adhere to stricter joist spacing (typically 12\" on center) to ensure the deck feels as solid as a hardwood floor." }
+      ]
+    },
+    {
+      "slug": "windows-doors",
+      "title": "Windows & Doors",
+      "tagline": "Crystal Clear Efficiency",
+      "tag": "Efficiency",
+      "icon": "Layout",
+      "description": "Enhance your home's energy efficiency and curb appeal with premium installations.",
+      "overview": "Our window and door solutions offer the perfect blend of structural integrity and modern design. We install high-efficiency vinyl and wood windows along with secure, insulated entry doors that reduce energy costs and increase your property's value.",
+      "features": [
+        "Energy-Star Rated Vinyl",
+        "Custom Entry Systems",
+        "UV Protection Glass",
+        "Sound-Reducing Insulation"
+      ],
+      "stats": [
+        { "value": "35", "label": "% Energy Savings", "icon": "TrendingUp" },
+        { "value": "99", "label": "Year Glass Warranty", "icon": "Shield" },
+        { "value": "800", "label": "Homes Upgraded", "icon": "Home" },
+        { "value": "0", "label": "Draft Guarantees", "icon": "CheckCircle" }
+      ],
+      "benefits": [
+        { "icon": "TrendingUp", "title": "Drastic Energy Savings", "description": "Low-E glass and argon gas fills create a thermal barrier that massively lowers utility bills." },
+        { "icon": "Shield", "title": "Maximum Security", "description": "Multi-point locking systems on our doors ensure your family remains safe against forced entry." },
+        { "icon": "Minus", "title": "Noise Reduction", "description": "Acoustic-grade insulated glass significantly mutes outside noise from traffic and neighbors." },
+        { "icon": "Layout", "title": "Curb Appeal Boost", "description": "Custom color matching and intricate trim designs transform the front facade of your property." }
+      ],
+      "process": [
+        { "icon": "FileText", "title": "Design Consult", "description": "We analyze your home's architecture to recommend the perfect grid patterns and window styles." },
+        { "icon": "Minus", "title": "Laser Measurement", "description": "Every opening is measured down to the millimeter for a perfect, draft-free custom fit." },
+        { "icon": "Truck", "title": "Custom Fabrication", "description": "Your windows are custom-built in state-of-the-art facilities using premium materials." },
+        { "icon": "Hammer", "title": "Careful Extraction", "description": "We strategically remove the old frames without damaging your existing interior drywall or trim." },
+        { "icon": "CheckCircle", "title": "Level Installation", "description": "Windows are shimmed, leveled, and sealed with high-performance exterior grade caulking." },
+        { "icon": "Award", "title": "Function Test", "description": "We verify all locks, sashes, and seals operate effortlessly before walking you through the final reveal." }
+      ],
+      "faq": [
+        { "question": "Why should I upgrade my windows?", "answer": "New windows eliminate drafts, lower heating/cooling bills by up to 35%, and vastly improve the ambient sound dampening of your home." },
+        { "question": "Are your windows energy star rated?", "answer": "Yes, we exclusively install Energy Star rated products utilizing Low-E coatings and argon gas technology." },
+        { "question": "Can I finance my window replacement?", "answer": "Absolutely. We offer tailored financing packages ensuring you can upgrade your home's efficiency without a huge upfront burden." },
+        { "question": "Does installation make a mess?", "answer": "We deploy drop cloths internally and clean the exterior flawlessly. We leave your home cleaner than we found it." }
+      ]
+    },
+    {
       "slug": "residential-roofing",
       "title": "Residential Roofing",
       "tagline": "Military Grade Protection",
@@ -39,88 +162,6 @@
         { "question": "Can you help with insurance claims?", "answer": "Yes. We work closely with insurance adjusters following severe storm damage to ensure you get fully covered for full replacements." },
         { "question": "Do you install over old shingles?", "answer": "Never. We believe in doing the job right the first time. We always tear off old material to inspect the underlying wood decking." },
         { "question": "How do I know if I need a replacement vs. repair?", "answer": "We provide honest assessments. If your roof is less than 15 years old and the damage is localized, repairs are often the strategic choice." }
-      ]
-    },
-    {
-      "slug": "windows-doors",
-      "title": "Windows & Doors",
-      "tagline": "Crystal Clear Efficiency",
-      "tag": "Efficiency",
-      "icon": "Layout",
-      "description": "Enhance your home's energy efficiency and curb appeal with premium installations.",
-      "overview": "Our window and door solutions offer the perfect blend of structural integrity and modern design. We install high-efficiency vinyl and wood windows along with secure, insulated entry doors that reduce energy costs and increase your property's value.",
-      "features": [
-        "Energy-Star Rated Vinyl",
-        "Custom Entry Systems",
-        "UV Protection Glass",
-        "Sound-Reducing Insulation"
-      ],
-      "stats": [
-        { "value": "35%", "label": "Energy Savings", "icon": "TrendingUp" },
-        { "value": "Lifetime", "label": "Glass Breakage", "icon": "Shield" },
-        { "value": "800+", "label": "Homes Upgraded", "icon": "Home" },
-        { "value": "0", "label": "Draft Guarantees", "icon": "CheckCircle" }
-      ],
-      "benefits": [
-        { "icon": "TrendingUp", "title": "Drastic Energy Savings", "description": "Low-E glass and argon gas fills create a thermal barrier that massively lowers utility bills." },
-        { "icon": "Shield", "title": "Maximum Security", "description": "Multi-point locking systems on our doors ensure your family remains safe against forced entry." },
-        { "icon": "Minus", "title": "Noise Reduction", "description": "Acoustic-grade insulated glass significantly mutes outside noise from traffic and neighbors." },
-        { "icon": "Layout", "title": "Curb Appeal Boost", "description": "Custom color matching and intricate trim designs transform the front facade of your property." }
-      ],
-      "process": [
-        { "icon": "FileText", "title": "Design Consult", "description": "We analyze your home's architecture to recommend the perfect grid patterns and window styles." },
-        { "icon": "Minus", "title": "Laser Measurement", "description": "Every opening is measured down to the millimeter for a perfect, draft-free custom fit." },
-        { "icon": "Truck", "title": "Custom Fabrication", "description": "Your windows are custom-built in state-of-the-art facilities using premium materials." },
-        { "icon": "Hammer", "title": "Careful Extraction", "description": "We strategically remove the old frames without damaging your existing interior drywall or trim." },
-        { "icon": "CheckCircle", "title": "Level Installation", "description": "Windows are shimmed, leveled, and sealed with high-performance exterior grade caulking." },
-        { "icon": "Award", "title": "Function Test", "description": "We verify all locks, sashes, and seals operate effortlessly before walking you through the final reveal." }
-      ],
-      "faq": [
-        { "question": "Why should I upgrade my windows?", "answer": "New windows eliminate drafts, lower heating/cooling bills by up to 35%, and vastly improve the ambient sound dampening of your home." },
-        { "question": "Are your windows energy star rated?", "answer": "Yes, we exclusively install Energy Star rated products utilizing Low-E coatings and argon gas technology." },
-        { "question": "Can I finance my window replacement?", "answer": "Absolutely. We offer tailored financing packages ensuring you can upgrade your home's efficiency without a huge upfront burden." },
-        { "question": "Does installation make a mess?", "answer": "We deploy drop cloths internally and clean the exterior flawlessly. We leave your home cleaner than we found it." }
-      ]
-    },
-    {
-      "slug": "custom-decks",
-      "title": "Custom Decks",
-      "tagline": "Architectural Outdoor Living",
-      "tag": "Outdoor Living",
-      "icon": "TreePine",
-      "description": "Precision-crafted outdoor living spaces built for lasting beauty and structural superiority.",
-      "overview": "Transform your backyard into a luxury retreat. From premium composite decking to robust pergolas, we design and construct outdoor spaces that withstand the elements while providing elegance for your family.",
-      "features": [
-        "Premium Composite",
-        "Custom Pergolas",
-        "Built-in Lighting",
-        "Structural Mastery"
-      ],
-      "stats": [
-        { "value": "25", "label": "Year Fade Warranty", "icon": "Shield" },
-        { "value": "100%", "label": "Splinter Free", "icon": "ThumbsUp" },
-        { "value": "300+", "label": "Decks Constructed", "icon": "TreePine" },
-        { "value": "5X", "label": "Stronger Framing", "icon": "Hammer" }
-      ],
-      "benefits": [
-        { "icon": "TreePine", "title": "Zero Maintenance", "description": "No more staining, sanding, or rotting. Our composite products wipe clean and stay brilliant year-round." },
-        { "icon": "Shield", "title": "Load-Bearing Integrity", "description": "We over-engineer our footings and joists, exceeding local codes to ensure absolute structural safety." },
-        { "icon": "Layout", "title": "Custom Enhancements", "description": "Integrate low-voltage LED stair lighting, outdoor kitchens, or customized railing architectures." },
-        { "icon": "CheckCircle", "title": "Cool-Touch Tech", "description": "Select decking lines feature advanced heat-mitigating technology to keep barefoot paths comfortable in July." }
-      ],
-      "process": [
-        { "icon": "FileText", "title": "3D CAD Rendering", "description": "We design your deck in a 3D environment so you visualize the footprint and railing styles before we build." },
-        { "icon": "ClipboardCheck", "title": "Code Permitting", "description": "We secure all required municipal permits and handle neighborhood HOA approvals on your behalf." },
-        { "icon": "Hammer", "title": "Foundation Pour", "description": "Deep concrete footers are poured below the frost line to prevent any winter heaving." },
-        { "icon": "Building", "title": "Robust Framing", "description": "Treated lumber framing is erected using heavy-duty galvanized structural brackets." },
-        { "icon": "CheckCircle", "title": "Hidden Fasteners", "description": "Deck boards are installed using seamless hidden clip systems for a flawless, nail-free walking surface." },
-        { "icon": "Award", "title": "Safety Audit", "description": "Final inspection of all stair risers, railing tensions, and gate latches to ensure code compliance." }
-      ],
-      "faq": [
-        { "question": "Wood vs Composite?", "answer": "While wood is cheaper initially, it requires bi-annual maintenance. Composite offers a higher ROI by eliminating maintenance entirely for 25+ years." },
-        { "question": "Do you handle the city permits?", "answer": "Yes, we handle the entire bureaucratic process. From rendering blueprints to meeting city inspectors on site." },
-        { "question": "Can you build over my old foundation?", "answer": "It depends on age and code compliance. We perform a structural audit on your existing joists before making a recommendation." },
-        { "question": "How long does a deck build take?", "answer": "Most custom decks take 1-2 weeks from the day we break ground, dependent on size and municipal inspection delays." }
       ]
     },
     {

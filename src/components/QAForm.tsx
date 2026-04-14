@@ -530,7 +530,6 @@ const GetQuote = () => {
     name: '',
     email: '',
     phone: '',
-    company: '',
     projectType: '',
     timeline: '',
     message: ''
@@ -578,7 +577,6 @@ const GetQuote = () => {
 Name: ${formData.name}
 Email: ${formData.email}
 Phone: ${formData.phone}
-Company: ${formData.company}
 Project Type: ${projectTypes.find((t: any) => t.value === formData.projectType)?.label || 'Not specified'}
 Timeline: ${timelines.find((t: any) => t.value === formData.timeline)?.label || 'Not specified'}
 Selected Services: ${serviceNames || 'None selected'}
@@ -607,7 +605,6 @@ ${formData.message}
             name: formData.name,
             email: formData.email,
             phone: formData.phone,
-            company: formData.company,
             project_type: projectTypes.find((t: any) => t.value === formData.projectType)?.label,
             timeline: timelines.find((t: any) => t.value === formData.timeline)?.label,
             services: serviceNames,
@@ -627,7 +624,6 @@ ${formData.message}
             name: '',
             email: '',
             phone: '',
-            company: '',
             projectType: '',
             timeline: '',
             message: ''
@@ -648,7 +644,6 @@ ${formData.message}
         name: '',
         email: '',
         phone: '',
-        company: '',
         projectType: '',
         timeline: '',
         message: ''
@@ -849,13 +844,7 @@ ${formData.message}
                           onChange={handleInputChange}
                           required
                         />
-                        <HolographicInput
-                          icon="Building2"
-                          label="Company / Organization"
-                          name="company"
-                          value={formData.company}
-                          onChange={handleInputChange}
-                        />
+                        
                       </div>
 
                       {/* SMS Consent Checkbox */}

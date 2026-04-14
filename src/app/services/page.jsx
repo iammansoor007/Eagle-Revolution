@@ -548,7 +548,7 @@ const StatsSection = () => {
       description: "Proudly serving our community"
     },
     {
-      value: 5,
+      value: 10,
       label: "Year Workmanship Guarantee",
       suffix: "YR",
       delay: 0.4,

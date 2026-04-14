@@ -37,7 +37,7 @@
       },
       {
         "title": "RESIDENTIAL ROOFING",
-        "description": "Expert roofing services with premium materials and 5-year workmanship guarantee",
+        "description": "Expert roofing services with premium materials and 10-year workmanship guarantee",
         "icon": "Home",
         "items": [
           "Asphalt Shingles",
@@ -519,7 +519,7 @@
       {
         "icon": "Warranty",
         "title": "Lifetime & Transferable Warranties",
-        "description": "Premium products backed by 50-year transferable warranties and a Five-Year Workmanship Guarantee on every project."
+        "description": "Premium products backed by 50-year transferable warranties and a Ten-Year Workmanship Guarantee on every project."
       },
       {
         "icon": "Financing",
@@ -701,7 +701,7 @@
         "id": 6,
         "category": "roofing",
         "question": "What warranties do you offer on roofing?",
-        "answer": "We install premium materials backed by 50-year transferable manufacturer warranties. Additionally, every project includes our Five-Year Workmanship Guarantee, giving you peace of mind long after installation.",
+        "answer": "We install premium materials backed by 50-year transferable manufacturer warranties. Additionally, every project includes our Ten-Year Workmanship Guarantee, giving you peace of mind long after installation.",
         "metadata": [
           {
             "label": "Warranty",
