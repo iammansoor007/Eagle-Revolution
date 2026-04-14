@@ -179,11 +179,11 @@ const Navbar = () => {
 
             <motion.div className="hidden lg:flex items-center" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <a
-                href="https://portal.foundationfinance.com/links/?i=w7bzUVnHPqz9EeyK5DqICNwzpOmDZvQbKp5k8Wj5b3w="
+                href="/contact"
                 className="flex items-center space-x-2 px-7 py-3.5 rounded-xl font-bold transition-all duration-300 bg-primary text-white shadow-lg shadow-primary/20 hover:text-white"
               >
                 <Icon name="Calendar" className="h-4 w-4" />
-                <span>Get Preapproved Now</span>
+                <span>Book Now</span>
               </a>
             </motion.div>
 

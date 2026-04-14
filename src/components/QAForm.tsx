@@ -3,8 +3,6 @@ import {
   motion,
   useScroll,
   useTransform,
-  useSpring,
-  useInView,
   AnimatePresence
 } from "framer-motion";
 import gsap from "gsap";
@@ -85,9 +83,10 @@ const HolographicInput = ({ icon: IconName, label, type = "text", options = [], 
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             className="w-full pl-12 pr-10 py-4 bg-transparent rounded-xl text-foreground text-sm focus:outline-none appearance-none cursor-pointer"
+            value={props.value || ""}
             {...props}
           >
-            <option value="" disabled selected>{label}</option>
+            <option value="" disabled>{label}</option>
             {options.map((opt) => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
@@ -441,7 +440,7 @@ const SuccessModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
 };
 
 // SMS Consent Checkbox Component
-const SMSConsentCheckbox = ({ checked, onChange }: { checked: boolean; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) => {
+const SMSConsentCheckbox = ({ checked, onChange, showError }: { checked: boolean; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; showError?: boolean }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
@@ -456,7 +455,9 @@ const SMSConsentCheckbox = ({ checked, onChange }: { checked: boolean; onChange:
     >
       <div className={`
         relative flex items-start gap-3 p-4 rounded-xl transition-all duration-500
-        ${isFocused ? 'bg-primary/5 border border-primary/30' : 'bg-muted/30 border border-border/50 hover:border-primary/20'}
+        ${showError ? 'bg-red-500/5 border border-red-500/50' : 
+          isFocused ? 'bg-primary/5 border border-primary/30' : 
+          'bg-muted/30 border border-border/50 hover:border-primary/20'}
       `}>
         <div className="relative">
           <input
@@ -474,7 +475,7 @@ const SMSConsentCheckbox = ({ checked, onChange }: { checked: boolean; onChange:
               borderColor: "hsl(var(--primary))"
             } : {
               backgroundColor: "transparent",
-              borderColor: "hsl(var(--border))"
+              borderColor: showError ? "hsl(0, 84%, 60%)" : "hsl(var(--border))"
             }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -497,7 +498,7 @@ const SMSConsentCheckbox = ({ checked, onChange }: { checked: boolean; onChange:
 
         <label
           htmlFor="smsConsent"
-          className="flex-1 text-[11px] sm:text-xs text-muted-foreground leading-relaxed cursor-pointer"
+          className={`flex-1 text-[11px] sm:text-xs leading-relaxed cursor-pointer ${showError ? 'text-red-400' : 'text-muted-foreground'}`}
         >
           I agree to receive informational SMS text messages from Eagle Revolution related to my request, including appointment scheduling and service updates, at the number I provided. Message frequency varies. Msg & data rates may apply. Reply STOP to opt out, HELP for help. Consent is not a condition of purchase. Please see{' '}
           <a href="/privacy" className="text-primary hover:underline transition-colors">Privacy Policy</a>
@@ -506,12 +507,14 @@ const SMSConsentCheckbox = ({ checked, onChange }: { checked: boolean; onChange:
         </label>
       </div>
 
-      {isFocused && (
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          className="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-primary rounded-full"
-        />
+      {showError && (
+        <motion.p
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-red-400 text-[10px] sm:text-xs mt-1.5 ml-2"
+        >
+          Please agree to receive SMS communications to continue.
+        </motion.p>
       )}
     </motion.div>
   );
@@ -526,10 +529,12 @@ const GetQuote = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [selectedServices, setSelectedServices] = useState<number[]>([]);
   const [smsConsent, setSmsConsent] = useState(false);
+  const [showSmsError, setShowSmsError] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
+    zipCode: '',
     projectType: '',
     timeline: '',
     message: ''
@@ -552,12 +557,28 @@ const GetQuote = () => {
     });
   };
 
+  // Validate step 1 before proceeding to step 2
+  const handleStep1Continue = () => {
+    if (!smsConsent) {
+      setShowSmsError(true);
+      return;
+    }
+    setShowSmsError(false);
+    setFormStep(2);
+  };
+
+  // Proceed from step 2 to step 3 (no validation needed)
+  const handleStep2Continue = () => {
+    setFormStep(3);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate SMS consent
     if (!smsConsent) {
-      alert("Please agree to receive SMS communications to continue.");
+      setShowSmsError(true);
+      setFormStep(1);
       return;
     }
     
@@ -577,7 +598,7 @@ const GetQuote = () => {
 Name: ${formData.name}
 Email: ${formData.email}
 Phone: ${formData.phone}
-Project Type: ${projectTypes.find((t: any) => t.value === formData.projectType)?.label || 'Not specified'}
+ZIP Code: ${formData.zipCode}
 Timeline: ${timelines.find((t: any) => t.value === formData.timeline)?.label || 'Not specified'}
 Selected Services: ${serviceNames || 'None selected'}
 SMS Consent: Yes
@@ -605,7 +626,7 @@ ${formData.message}
             name: formData.name,
             email: formData.email,
             phone: formData.phone,
-            project_type: projectTypes.find((t: any) => t.value === formData.projectType)?.label,
+            zip_code: formData.zipCode,
             timeline: timelines.find((t: any) => t.value === formData.timeline)?.label,
             services: serviceNames,
             message: formData.message,
@@ -620,10 +641,12 @@ ${formData.message}
           setFormStep(1);
           setSelectedServices([]);
           setSmsConsent(false);
+          setShowSmsError(false);
           setFormData({
             name: '',
             email: '',
             phone: '',
+            zipCode: '',
             projectType: '',
             timeline: '',
             message: ''
@@ -640,10 +663,12 @@ ${formData.message}
       setFormStep(1);
       setSelectedServices([]);
       setSmsConsent(false);
+      setShowSmsError(false);
       setFormData({
         name: '',
         email: '',
         phone: '',
+        zipCode: '',
         projectType: '',
         timeline: '',
         message: ''
@@ -685,6 +710,15 @@ ${formData.message}
 
     return () => ctx.revert();
   }, [isClient]);
+
+  // Determine which continue handler to use based on current step
+  const handleContinueClick = () => {
+    if (formStep === 1) {
+      handleStep1Continue();
+    } else if (formStep === 2) {
+      handleStep2Continue();
+    }
+  };
 
   return (
     <section
@@ -844,13 +878,27 @@ ${formData.message}
                           onChange={handleInputChange}
                           required
                         />
-                        
+                        <HolographicInput
+                          icon="MapPin"
+                          type="text"
+                          label="ZIP Code"
+                          name="zipCode"
+                          value={formData.zipCode}
+                          onChange={handleInputChange}
+                          required
+                          pattern="[0-9]{5}"
+                          title="Please enter a valid 5-digit ZIP code"
+                        />
                       </div>
 
                       {/* SMS Consent Checkbox */}
                       <SMSConsentCheckbox 
                         checked={smsConsent} 
-                        onChange={(e) => setSmsConsent(e.target.checked)}
+                        onChange={(e) => {
+                          setSmsConsent(e.target.checked);
+                          if (e.target.checked) setShowSmsError(false);
+                        }}
+                        showError={showSmsError}
                       />
                     </motion.div>
                   )}
@@ -882,16 +930,7 @@ ${formData.message}
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                        <HolographicInput
-                          icon="Building2"
-                          type="select"
-                          label="Project classification"
-                          name="projectType"
-                          options={projectTypes}
-                          value={formData.projectType}
-                          onChange={handleInputChange}
-                        />
+                      <div>
                         <HolographicInput
                           icon="Calendar"
                           type="select"
@@ -915,7 +954,7 @@ ${formData.message}
                       className="space-y-6 sm:space-y-8"
                     >
                       <QuantumTextarea
-                        icon="Mail"
+                        icon="MessageSquare"
                         label="Describe your project vision, requirements, and challenges"
                         name="message"
                         value={formData.message}
@@ -936,15 +975,21 @@ ${formData.message}
                           </h4>
                           <div className="grid grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
                             <div>
-                              <p className="text-[8px] sm:text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Services</p>
-                              <p className="font-medium text-foreground text-xs sm:text-sm">
-                                {selectedServices.length} of {services.length}
+                              <p className="text-[8px] sm:text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Name</p>
+                              <p className="font-medium text-foreground text-xs sm:text-sm truncate">
+                                {formData.name || '—'}
                               </p>
                             </div>
                             <div>
-                              <p className="text-[8px] sm:text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Classification</p>
+                              <p className="text-[8px] sm:text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Location</p>
                               <p className="font-medium text-foreground text-xs sm:text-sm truncate">
-                                {formData.projectType ? projectTypes.find((t: any) => t.value === formData.projectType)?.label : '—'}
+                                {formData.zipCode || '—'}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-[8px] sm:text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Services</p>
+                              <p className="font-medium text-foreground text-xs sm:text-sm">
+                                {selectedServices.length} of {services.length}
                               </p>
                             </div>
                             <div>
@@ -952,10 +997,6 @@ ${formData.message}
                               <p className="font-medium text-foreground text-xs sm:text-sm truncate">
                                 {formData.timeline ? timelines.find((t: any) => t.value === formData.timeline)?.label : '—'}
                               </p>
-                            </div>
-                            <div>
-                              <p className="text-[8px] sm:text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Response</p>
-                              <p className="font-medium text-primary text-xs sm:text-sm">4-8 hours</p>
                             </div>
                           </div>
                         </div>
@@ -987,7 +1028,7 @@ ${formData.message}
                   {formStep < 3 ? (
                     <motion.button
                       type="button"
-                      onClick={() => setFormStep(formStep + 1)}
+                      onClick={handleContinueClick}
                       className="relative px-5 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground text-xs sm:text-sm font-medium rounded-full shadow-lg overflow-hidden group"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
