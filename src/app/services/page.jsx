@@ -22,13 +22,13 @@ import {
 import servicesData from '../../data/servicesData.json';
 
 import breakcrumb from '@/assets/Breadcrumb-Image.jpeg';
-import roofingImg from '../../assets/RESIDENTIAL ROOFS-20260414T184752Z-3-001/RESIDENTIAL ROOFS/roof1.jpg';
-import windowsImg from '../../assets/WINDOWS-20260414T184759Z-3-001/WINDOWS/window5.jpg';
-import decksImg from '../../assets/DECKS-20260414T184734Z-3-001/DECKS/deck3.jpg';
-import commercialImg from '../../assets/COMMERCIAL ROOFS-20260414T184732Z-3-001/COMMERCIAL ROOFS/croof2.jpg';
-import sidingImg from '../../assets/SIDING-20260415T110420Z-3-001/SIDING/siding5.jpg';
-import gutter from '../../assets/gutterinstallation.jpg';
-import pvcdecks from '../../assets/pvcdecks.jpg';
+import roofingImg from '../../assets/roof1.jpg.jpeg';
+import windowsImg from '../../assets/window5.jpeg';
+import decksImg from '../../assets/outdoor-sitting-desk.png';
+import commercialImg from '../../assets/commercial-tpo.png';
+import sidingImg from '../../assets/siding5.jpg.jpeg';
+import gutter from '../../assets/gutterinstallation.jpg.jpeg';
+import pvcdecks from '../../assets/pvcdecks.jpg.jpeg';
 
 const iconMap = {
   Home, Layout, TreePine, Building2, Building, Droplets,
