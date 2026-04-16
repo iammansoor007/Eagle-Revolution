@@ -18,6 +18,10 @@ const BASE_URL = "https://www.eaglerevolution.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
+  icons: {
+    icon: "/eagle-logo.png",
+    apple: "/eagle-logo.png",
+  },
 
   // ── Core Meta Tags ──
   title: {
@@ -74,11 +78,11 @@ export const metadata: Metadata = {
       "Veteran-owned roofing & exterior remodeling experts serving the greater St. Louis area. Professional residential & commercial roofing, siding, windows, decks, and gutters. Free estimates available.",
     images: [
       {
-        url: `${BASE_URL}/og-image.jpg`,
+        url: "/eagle-logo.png",
         width: 1200,
         height: 630,
         alt: "Eagle Revolution – Veteran Owned Roofing & Home Improvement",
-        type: "image/jpeg",
+        type: "image/png",
       },
     ],
   },
@@ -89,7 +93,7 @@ export const metadata: Metadata = {
     title: "Eagle Revolution | #1 Roofing & Home Improvement in St. Louis, MO",
     description:
       "Veteran-owned roofing & home improvement company. Expert residential & commercial roofing, siding, windows, decks & gutters in St. Louis, MO.",
-    images: [`${BASE_URL}/og-image.jpg`],
+    images: ["/eagle-logo.png"],
     creator: "@EagleRevolution",
   },
 
@@ -119,8 +123,8 @@ const jsonLd = {
       name: "Eagle Revolution",
       alternateName: "Eagle Revolution LLC",
       url: BASE_URL,
-      logo: `${BASE_URL}/logo.png`,
-      image: `${BASE_URL}/og-image.jpg`,
+      logo: `${BASE_URL}/eagle-logo.png`,
+      image: `${BASE_URL}/eagle-logo.png`,
       description:
         "Veteran-owned roofing and home improvement company providing expert residential and commercial roofing, siding, windows, decks, and gutter services in the greater St. Louis, Missouri area.",
       telephone: "+1-636-449-9714",
