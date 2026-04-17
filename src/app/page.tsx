@@ -21,7 +21,7 @@ export default function Index() {
   return (
     <div className="relative">
       <Hero />
-      
+
       <section id="roofingexperts">
         <AggressiveRoofingSection />
       </section>

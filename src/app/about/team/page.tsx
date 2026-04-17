@@ -9,6 +9,11 @@ import {
 } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import brandon from '../../../assets/ownerteam.jpeg'
+import chrissy from '../../../assets/Chrissyteam.jpeg'
+import austin from '../../../assets/Austinteam.jpeg'
+import brandonsutton from '../../../assets/suttonteam.jpeg'
+import allan from '../../../assets/allenteam.jpeg'
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -18,10 +23,12 @@ if (typeof window !== "undefined") {
 // PREMIUM UNSPLASH IMAGES - CURATED
 // ======================
 const Images = {
-  // Dummy Team Images
-  CEO: "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80",
-  CFO: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80",
-  COO: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80",
+  // Team Images (Fixed with .src)
+  BrandonAnderson: brandon.src,
+  ChrissyLong: chrissy.src,
+  Austin: austin.src,
+  BrandonSales: brandonsutton.src,
+  Allan: allan.src,
 
   // Heritage
   Pattern: "https://images.unsplash.com/photo-1502691876148-a84978e59af8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
@@ -86,7 +93,7 @@ const ParallaxLayer = ({ children, speed = 0.1, className = "" }: any) => {
 // ======================
 // TEAM PORTRAIT (Generic)
 // ======================
-const TeamPortrait = ({ image, title, badge1, badge2 }: any) => {
+const TeamPortrait = ({ image, title, badge1, badge2, alignRight = false }: any) => {
   const [isHovered, setIsHovered] = useState(false);
   const ref = useRef<any>(null);
   const inView = useInView(ref, { once: true, margin: "-50px" });
@@ -97,43 +104,46 @@ const TeamPortrait = ({ image, title, badge1, badge2 }: any) => {
       initial={{ opacity: 0, y: 40 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="relative group"
+      className={`relative group w-full ${alignRight ? 'lg:ml-auto' : ''}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative">
-        {/* Gradient Border */}
-        <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 via-blue-600/20 to-blue-700/20 rounded-3xl blur-lg group-hover:blur-xl transition-all duration-700" />
+      <div className="relative z-10 w-full max-w-[500px] mx-auto lg:mx-0">
+        {/* Glow */}
+        <div className="absolute -inset-2 sm:-inset-3 bg-gradient-to-br from-blue-500/10 via-slate-500/10 to-blue-700/10 rounded-[2rem] sm:rounded-[2.5rem] blur-xl sm:blur-2xl group-hover:from-blue-500/20 group-hover:via-slate-500/20 group-hover:to-blue-700/20 transition-all duration-700" />
 
         {/* Image Container */}
-        <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-          <img
+        <div className="relative rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden shadow-[0_10px_40px_rgb(0,0,0,0.08)] group-hover:shadow-[0_20px_50px_rgb(0,0,0,0.15)] transition-shadow duration-700">
+          <motion.img
             src={image}
             alt={title}
-            className="w-full h-[320px] xs:h-[400px] md:h-[600px] object-cover"
+            animate={isHovered ? { scale: 1.05 } : { scale: 1 }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+            className="w-full h-[280px] min-[350px]:h-[380px] sm:h-[450px] lg:h-[550px] object-cover"
           />
 
           {/* Overlay Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/10 to-transparent opacity-80" />
 
           {/* Animated Border */}
           <svg className="absolute inset-0 w-full h-full pointer-events-none">
             <motion.rect
-              x="2"
-              y="2"
-              width="calc(100% - 4px)"
-              height="calc(100% - 4px)"
+              x="1.5"
+              y="1.5"
+              width="calc(100% - 3px)"
+              height="calc(100% - 3px)"
+              rx="24"
               fill="none"
               stroke="url(#portraitGradient)"
-              strokeWidth="1.2"
+              strokeWidth="1.5"
               initial={{ pathLength: 0, opacity: 0 }}
-              animate={isHovered ? { pathLength: 1, opacity: 0.8 } : { pathLength: 0, opacity: 0 }}
-              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+              animate={isHovered ? { pathLength: 1, opacity: 1 } : { pathLength: 0, opacity: 0 }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
             />
             <defs>
               <linearGradient id="portraitGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#60a5fa" />
-                <stop offset="100%" stopColor="#2563eb" />
+                <stop offset="0%" stopColor="#93c5fd" />
+                <stop offset="100%" stopColor="#3b82f6" />
               </linearGradient>
             </defs>
           </svg>
@@ -141,13 +151,13 @@ const TeamPortrait = ({ image, title, badge1, badge2 }: any) => {
 
         {/* Floating Badges */}
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
+          initial={{ opacity: 0, x: -10 }}
           animate={inView ? { opacity: 1, x: 0 } : {}}
           transition={{ delay: 0.3 }}
-          className="absolute top-4 left-4 xs:top-6 xs:left-6"
+          className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20"
         >
-          <div className="bg-white/95 backdrop-blur-sm px-3 py-1.5 xs:px-5 xs:py-2.5 rounded-full shadow-xl border border-blue-200">
-            <span className="flex items-center gap-1.5 xs:gap-2 text-[10px] xs:text-xs font-bold text-blue-800">
+          <div className="bg-white/95 backdrop-blur-md px-3 py-2 sm:px-5 sm:py-3 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white group-hover:-translate-y-1 transition-transform duration-500">
+            <span className="flex items-center gap-1.5 sm:gap-2 text-[9px] min-[350px]:text-[10px] sm:text-xs font-bold text-slate-800 tracking-[0.1em]">
               <Icons.Sparkle />
               {badge1}
             </span>
@@ -155,13 +165,13 @@ const TeamPortrait = ({ image, title, badge1, badge2 }: any) => {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, x: 20 }}
+          initial={{ opacity: 0, x: 10 }}
           animate={inView ? { opacity: 1, x: 0 } : {}}
           transition={{ delay: 0.4 }}
-          className="absolute bottom-4 right-4 xs:bottom-6 xs:right-6"
+          className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-20"
         >
-          <div className="bg-white/95 backdrop-blur-sm px-3 py-1.5 xs:px-5 xs:py-2.5 rounded-full shadow-xl border border-blue-200">
-            <span className="flex items-center gap-1.5 xs:gap-2 text-[10px] xs:text-xs font-bold text-blue-800">
+          <div className="bg-slate-900/95 backdrop-blur-md px-3 py-2 sm:px-5 sm:py-3 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-700/50 group-hover:-translate-y-1 transition-transform duration-500">
+            <span className="flex items-center gap-1.5 sm:gap-2 text-[9px] min-[350px]:text-[10px] sm:text-xs font-bold text-blue-400 tracking-[0.1em]">
               <Icons.Award />
               {badge2}
             </span>
@@ -216,40 +226,41 @@ export default function MeetTheTeamPage() {
         className="relative py-14 md:py-18 lg:py-20 overflow-hidden"
       >
         {/* ====================== */}
-        {/* PREMIUM BACKGROUND */}
+        {/* PREMIUM RESPONSIVE BACKGROUND */}
         {/* ====================== */}
-
-        <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 pointer-events-none bg-[#f8fafc]">
           <div
-            className="absolute inset-0 opacity-[0.02]"
+            className="absolute inset-0 opacity-[0.03]"
             style={{
               backgroundImage: `
-                linear-gradient(to right, #2563eb 1px, transparent 1px),
-                linear-gradient(to bottom, #2563eb 1px, transparent 1px)
+                linear-gradient(to right, #0f172a 1px, transparent 1px),
+                linear-gradient(to bottom, #0f172a 1px, transparent 1px)
               `,
-              backgroundSize: '80px 80px',
+              backgroundSize: '100px 100px',
             }}
           />
         </div>
 
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-blue-50 to-transparent opacity-60 blur-3xl" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[90vw] sm:w-[800px] h-[300px] sm:h-[400px] bg-gradient-to-b from-blue-100/50 to-transparent opacity-80 blur-[80px] pointer-events-none" />
+        <div className="absolute bottom-1/4 -right-1/4 w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] bg-blue-50/50 blur-[100px] rounded-full pointer-events-none" />
+        <div className="absolute top-1/3 -left-1/4 w-[40vw] h-[40vw] max-w-[500px] max-h-[500px] bg-slate-100/50 blur-[100px] rounded-full pointer-events-none" />
 
         <ParallaxLayer speed={0.05} className="z-0">
-          <div className="absolute bottom-0 right-0 w-1/3 h-1/2">
+          <div className="absolute bottom-0 right-0 w-full sm:w-1/3 h-1/2">
             <img
               src={Images.Pattern}
               alt="Heritage pattern"
-              className="w-full h-full object-cover opacity-[0.02]"
+              className="w-full h-full object-cover opacity-[0.02] mix-blend-multiply"
             />
           </div>
         </ParallaxLayer>
 
         <ParallaxLayer speed={0.08} className="z-0">
-          <div className="absolute top-20 left-0 w-1/4 h-1/3">
+          <div className="absolute top-20 left-0 w-full sm:w-1/4 h-1/3">
             <img
               src={Images.Studio}
               alt="Studio"
-              className="w-full h-full object-cover opacity-[0.02]"
+              className="w-full h-full object-cover opacity-[0.02] mix-blend-multiply"
             />
           </div>
         </ParallaxLayer>
@@ -257,153 +268,231 @@ export default function MeetTheTeamPage() {
         {/* ====================== */}
         {/* MAIN CONTENT */}
         {/* ====================== */}
-        <div className="max-w-7xl mx-auto px-4 xs:px-6 md:px-8 relative z-30">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 md:px-8 relative z-30">
 
-          <div className="max-w-3xl mx-auto text-center mb-12 xs:mb-16 md:mb-20 leadership-reveal">
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="w-8 h-[2px] bg-gradient-to-r from-blue-300 to-blue-500" />
-              <span className="text-xs font-medium tracking-[0.2em] uppercase text-blue-600">
+          <div className="max-w-3xl mx-auto text-center mb-16 sm:mb-24 md:mb-32 leadership-reveal relative z-20">
+            <div className="flex items-center justify-center gap-2 sm:gap-3 mb-6">
+              <div className="w-6 sm:w-8 h-[2px] bg-gradient-to-r from-blue-300 to-blue-500" />
+              <span className="text-[10px] sm:text-xs font-semibold tracking-[0.2em] uppercase text-blue-600">
                 Our Leadership
               </span>
-              <div className="w-8 h-[2px] bg-gradient-to-r from-blue-500 to-blue-300" />
+              <div className="w-6 sm:w-8 h-[2px] bg-gradient-to-r from-blue-500 to-blue-300" />
             </div>
 
-            <h1 className="text-3xl xs:text-4xl md:text-5xl lg:text-6xl font-light text-slate-900 mb-4 xs:mb-6 leading-tight px-2">
+            <h1 className="text-3xl min-[350px]:text-4xl sm:text-5xl lg:text-6xl font-light text-slate-900 mb-4 sm:mb-6 leading-tight px-1 sm:px-2">
               Guiding with<br />
-              <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-blue-900">
+              <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-950">
                 vision & integrity
               </span>
             </h1>
 
-            <p className="text-slate-600 text-base xs:text-lg md:text-xl font-light max-w-2xl mx-auto px-2 xs:px-4">
+            <p className="text-slate-500 text-[13px] min-[350px]:text-sm sm:text-lg font-light max-w-2xl mx-auto px-4 leading-relaxed">
               Experienced leadership committed to excellence in every project, partnership, and promise.
             </p>
           </div>
 
           {/* ====================== */}
-          {/* TEAM MEMBER 1 (CEO) - IMAGE LEFT */}
+          {/* TEAM MEMBER 1 (Brandon Anderson) - IMAGE LEFT */}
           {/* ====================== */}
-          <div className="grid lg:grid-cols-2 gap-10 xs:gap-12 md:gap-16 items-center mb-20 xs:mb-24 md:mb-32">
-            <div className="leadership-reveal">
+          <div className="grid lg:grid-cols-12 gap-8 min-[350px]:gap-12 sm:gap-16 md:gap-20 items-center lg:items-start mb-24 sm:mb-32 md:mb-40 relative">
+            <div className="lg:col-span-5 leadership-reveal lg:sticky lg:top-32 relative z-10 w-full max-w-[400px] lg:max-w-none mx-auto lg:mx-0">
               <TeamPortrait
-                image={Images.CEO}
-                title="John Doe - Founder & CEO"
+                image={Images.BrandonAnderson}
+                title="Brandon Anderson - Founder & CEO"
                 badge1="FOUNDER & CEO"
-                badge2="CRAFT • INTEGRITY"
+                badge2="VISION • INTEGRITY"
               />
             </div>
 
-            <div className="space-y-8 leadership-reveal">
-              <div>
-                <h3 className="text-2xl xs:text-3xl md:text-4xl font-light text-slate-900 mb-2 xs:mb-3">
-                  John Doe
-                  <span className="block text-[10px] xs:text-xs md:text-sm font-mono text-blue-600 mt-1.5 xs:mt-2 tracking-[0.2em] uppercase">
+            <div className="lg:col-span-7 space-y-8 leadership-reveal relative z-10 lg:pl-6 w-full">
+              <div className="bg-white/70 backdrop-blur-xl rounded-[2rem] sm:rounded-[2.5rem] p-6 min-[350px]:p-8 sm:p-10 border border-white shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)]">
+                <h3 className="text-2xl min-[350px]:text-3xl sm:text-4xl md:text-5xl font-light text-slate-900 mb-2 sm:mb-3">
+                  Brandon Anderson
+                  <span className="block text-[10px] sm:text-xs font-mono font-bold text-blue-600 mt-2 sm:mt-3 tracking-[0.2em] uppercase">
                     Founder & CEO
                   </span>
                 </h3>
 
-                <div className="mt-6 relative">
-                  <div className="absolute -left-2 xs:-left-4 top-0 text-blue-400/30 scale-75 xs:scale-100">
+                <div className="mt-8 sm:mt-10 relative">
+                  <div className="absolute -left-3 sm:-left-6 -top-4 sm:-top-6 text-blue-100/60 scale-[1.2] sm:scale-[1.8] pointer-events-none">
                     <Icons.Quote />
                   </div>
-                  <p className="text-slate-600 text-sm xs:text-base md:text-lg leading-relaxed pl-4 xs:pl-6">
-                    John founded the company with a clear vision: to create an organization built on precision craftsmanship, honest communication, and long-term relationships. With years of hands-on industry experience and leadership across residential and commercial projects, he understands that every structure is more than construction—it is protection for families, businesses, and investments.
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-3 xs:gap-4 mt-6 xs:mt-8">
-                  <motion.a href="#" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }} className="p-2 xs:p-3 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors">
-                    <Icons.Linkedin />
-                  </motion.a>
-                  <motion.a href="#" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }} className="p-2 xs:p-3 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors">
-                    <Icons.Mail />
-                  </motion.a>
+                  <div className="space-y-4 sm:space-y-6 text-slate-600 text-[13px] min-[350px]:text-sm sm:text-base md:text-lg leading-relaxed relative z-10">
+                    <p>
+                      Originally from Nashville, Tennessee, Brandon was raised in Southern Illinois. Growing up in a difficult home environment, he faced challenges that forced him to mature quickly. Later, his grandparents stepped in to raise him and his two brothers, teaching him what it truly means to show up for family and build something stronger than what you were given.
+                    </p>
+                    <p>
+                      Brandon carried those lessons into his service in the United States Army, where he developed discipline, resilience, and the ability to perform under pressure. The military reinforced a mindset that still defines him today. No excuses. No shortcuts. Just execution.
+                    </p>
+                    <p>
+                      After his service, he pursued a career in high-performance environments, earning multiple promotions and working with top-tier organizations. At the center of Brandon's life is his family—his devoted wife Cassandra and their children. Everything he builds is rooted in creating stability, opportunity, and a legacy reflecting strength, integrity, and purpose.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
           {/* ====================== */}
-          {/* TEAM MEMBER 2 (CFO) - IMAGE RIGHT */}
+          {/* TEAM MEMBER 2 (Allan) - IMAGE RIGHT */}
           {/* ====================== */}
-          <div className="grid lg:grid-cols-2 gap-10 xs:gap-12 md:gap-16 items-center mb-20 xs:mb-24 md:mb-32">
-            <div className="space-y-8 order-2 lg:order-1 leadership-reveal">
-              <div>
-                <h3 className="text-2xl xs:text-3xl md:text-4xl font-light text-slate-900 mb-2 xs:mb-3">
-                  Jane Smith
-                  <span className="block text-[10px] xs:text-xs md:text-sm font-mono text-blue-600 mt-1.5 xs:mt-2 tracking-[0.2em] uppercase">
-                    Chief Financial Officer
+          <div className="grid lg:grid-cols-12 gap-8 min-[350px]:gap-12 sm:gap-16 md:gap-20 items-center lg:items-start mb-24 sm:mb-32 md:mb-40 relative">
+            <div className="lg:col-span-7 space-y-8 order-2 lg:order-1 leadership-reveal relative z-10 lg:pr-6 w-full">
+              <div className="bg-white/70 backdrop-blur-xl rounded-[2rem] sm:rounded-[2.5rem] p-6 min-[350px]:p-8 sm:p-10 border border-white shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)]">
+                <h3 className="text-2xl min-[350px]:text-3xl sm:text-4xl md:text-5xl font-light text-slate-900 mb-2 sm:mb-3">
+                  Allan
+                  <span className="block text-[10px] sm:text-xs font-mono font-bold text-blue-600 mt-2 sm:mt-3 tracking-[0.2em] uppercase">
+                    Value Member & Construction Expert
                   </span>
                 </h3>
 
-                <div className="mt-6 relative">
-                  <div className="absolute -left-2 xs:-left-4 top-0 text-blue-400/30 scale-75 xs:scale-100">
+                <div className="mt-8 sm:mt-10 relative">
+                  <div className="absolute -left-3 sm:-left-6 -top-4 sm:-top-6 text-blue-100/60 scale-[1.2] sm:scale-[1.8] pointer-events-none">
                     <Icons.Quote />
                   </div>
-                  <p className="text-slate-600 text-sm xs:text-base md:text-lg leading-relaxed pl-4 xs:pl-6">
-                    Jane brings strategic financial leadership with over 15 years of experience in corporate finance and operational scaling. As CFO, she ensures sustainable growth, financial transparency, and long-term stability. Her expertise in resource allocation and financial planning enables the company to invest in quality materials, advanced training, and exceptional talent—all while maintaining competitive pricing for clients.
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-3 xs:gap-4 mt-6 xs:mt-8">
-                  <motion.a href="#" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }} className="p-2 xs:p-3 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors">
-                    <Icons.Linkedin />
-                  </motion.a>
-                  <motion.a href="#" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }} className="p-2 xs:p-3 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors">
-                    <Icons.Mail />
-                  </motion.a>
+                  <div className="space-y-4 sm:space-y-6 text-slate-600 text-[13px] min-[350px]:text-sm sm:text-base md:text-lg leading-relaxed relative z-10">
+                    <p>
+                      We're excited to spotlight a valued member of the Eagle Revolution team, Allan! 🦅
+                    </p>
+                    <p>
+                      A Navy veteran with 15 years in diverse construction trades, Allan brings top-notch expertise in windows, doors, and beyond.. and when he's off the clock, he's our very own Happy Gilmore—golfing his way to the green! ⛳️
+                    </p>
+                    <p>
+                      We're so grateful for his dedication and all the energy he brings every day!
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="order-1 lg:order-2 leadership-reveal">
+            <div className="lg:col-span-5 order-1 lg:order-2 leadership-reveal lg:sticky lg:top-32 relative z-10 w-full max-w-[400px] lg:max-w-none mx-auto lg:mx-0">
               <TeamPortrait
-                image={Images.CFO}
-                title="Jane Smith - Chief Financial Officer"
-                badge1="CHIEF FINANCIAL OFFICER"
-                badge2="STRATEGY • GROWTH"
+                image={Images.Allan}
+                title="Allan - Team Member"
+                badge1="NAVY VETERAN"
+                badge2="EXPERTISE • ENERGY"
+                alignRight
               />
             </div>
           </div>
 
           {/* ====================== */}
-          {/* TEAM MEMBER 3 (COO) - IMAGE LEFT */}
+          {/* TEAM MEMBER 3 (Chrissy Long) - IMAGE LEFT */}
           {/* ====================== */}
-          <div className="grid lg:grid-cols-2 gap-10 xs:gap-12 md:gap-16 items-center">
-            <div className="leadership-reveal">
+          <div className="grid lg:grid-cols-12 gap-8 min-[350px]:gap-12 sm:gap-16 md:gap-20 items-center lg:items-start mb-24 sm:mb-32 md:mb-40 relative">
+            <div className="lg:col-span-5 leadership-reveal lg:sticky lg:top-32 relative z-10 w-full max-w-[400px] lg:max-w-none mx-auto lg:mx-0">
               <TeamPortrait
-                image={Images.COO}
-                title="Michael Johnson - Operations Director"
-                badge1="OPERATIONS DIRECTOR"
-                badge2="EFFICIENCY • SCALE"
+                image={Images.ChrissyLong}
+                title="Chrissy Long - Executive Assistant"
+                badge1="EXECUTIVE ASSISTANT"
+                badge2="RELIABLE • PURPOSEFUL"
               />
             </div>
 
-            <div className="space-y-8 leadership-reveal">
-              <div>
-                <h3 className="text-2xl xs:text-3xl md:text-4xl font-light text-slate-900 mb-2 xs:mb-3">
-                  Michael Johnson
-                  <span className="block text-[10px] xs:text-xs md:text-sm font-mono text-blue-600 mt-1.5 xs:mt-2 tracking-[0.2em] uppercase">
-                    Operations Director
+            <div className="lg:col-span-7 space-y-8 leadership-reveal relative z-10 lg:pl-6 w-full">
+              <div className="bg-white/70 backdrop-blur-xl rounded-[2rem] sm:rounded-[2.5rem] p-6 min-[350px]:p-8 sm:p-10 border border-white shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)]">
+                <h3 className="text-2xl min-[350px]:text-3xl sm:text-4xl md:text-5xl font-light text-slate-900 mb-2 sm:mb-3">
+                  Chrissy Long
+                  <span className="block text-[10px] sm:text-xs font-mono font-bold text-blue-600 mt-2 sm:mt-3 tracking-[0.2em] uppercase">
+                    Executive Assistant
                   </span>
                 </h3>
 
-                <div className="mt-6 relative">
-                  <div className="absolute -left-2 xs:-left-4 top-0 text-blue-400/30 scale-75 xs:scale-100">
+                <div className="mt-8 sm:mt-10 relative">
+                  <div className="absolute -left-3 sm:-left-6 -top-4 sm:-top-6 text-blue-100/60 scale-[1.2] sm:scale-[1.8] pointer-events-none">
                     <Icons.Quote />
                   </div>
-                  <p className="text-slate-600 text-sm xs:text-base md:text-lg leading-relaxed pl-4 xs:pl-6">
-                    Michael oversees all day-to-day on-site executions and project management workflows. With a deep background in construction and team coordination, he acts as the bridge separating strategy from flawless execution. His meticulous attention to safety, timeline adherence, and supply chain logistics ensures that every team member operates optimally to deliver your projects well above standard expectations.
-                  </p>
+                  <div className="space-y-4 sm:space-y-6 text-slate-600 text-[13px] min-[350px]:text-sm sm:text-base md:text-lg leading-relaxed relative z-10">
+                    <p>
+                      Say hello to the newest powerhouse at Eagle Revolution- our amazing new executive assistant, Chrissy Long! She is the backbone that ensures nothing falls through the cracks - because every great company needs a reliable teammate, and every great customer deserves amazing work!
+                    </p>
+                    <p>
+                      Here is a little bit about Chrissy and what she has to say about working at Eagle Revolution:
+                    </p>
+                    <p className="italic font-medium text-slate-700">
+                      " I have found my home, a place with genuine people who really care about their customers and employees, which today is sometimes rare. I truly believe my calling in life is to help others, and this job is exactly that, purposeful and fulfilling. It also gives me the opportunity to live a better-tuned life, take care of my daughters, and still have time for the hobbies I enjoy. When I'm not at work; I am either napping, training for a kickboxing match, serving at my local church, or enjoying time with my family. I really love a simplistic, peaceful lifestyle and I hope to bring those attributes into my work life. "
+                    </p>
+                  </div>
                 </div>
+              </div>
+            </div>
+          </div>
 
-                <div className="flex items-center gap-3 xs:gap-4 mt-6 xs:mt-8">
-                  <motion.a href="#" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }} className="p-2 xs:p-3 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors">
-                    <Icons.Linkedin />
-                  </motion.a>
-                  <motion.a href="#" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }} className="p-2 xs:p-3 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors">
-                    <Icons.Mail />
-                  </motion.a>
+          {/* ====================== */}
+          {/* TEAM MEMBER 4 (Austin) - IMAGE RIGHT */}
+          {/* ====================== */}
+          <div className="grid lg:grid-cols-12 gap-8 min-[350px]:gap-12 sm:gap-16 md:gap-20 items-center lg:items-start mb-24 sm:mb-32 md:mb-40 relative">
+            <div className="lg:col-span-7 space-y-8 order-2 lg:order-1 leadership-reveal relative z-10 lg:pr-6 w-full">
+              <div className="bg-white/70 backdrop-blur-xl rounded-[2rem] sm:rounded-[2.5rem] p-6 min-[350px]:p-8 sm:p-10 border border-white shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)]">
+                <h3 className="text-2xl min-[350px]:text-3xl sm:text-4xl md:text-5xl font-light text-slate-900 mb-2 sm:mb-3">
+                  Austin
+                  <span className="block text-[10px] sm:text-xs font-mono font-bold text-blue-600 mt-2 sm:mt-3 tracking-[0.2em] uppercase">
+                    Canvas Manager
+                  </span>
+                </h3>
+
+                <div className="mt-8 sm:mt-10 relative">
+                  <div className="absolute -left-3 sm:-left-6 -top-4 sm:-top-6 text-blue-100/60 scale-[1.2] sm:scale-[1.8] pointer-events-none">
+                    <Icons.Quote />
+                  </div>
+                  <div className="space-y-4 sm:space-y-6 text-slate-600 text-[13px] min-[350px]:text-sm sm:text-base md:text-lg leading-relaxed relative z-10">
+                    <p>Drumroll, please! 🥁 It's time for you to meet the dream team behind Eagle Revolution!🦅</p>
+                    <p>First up is our amazing canvas manager, Austin! We are so grateful to have a leader who brings creativity, care, and amazing organization to every project.</p>
+                    <p>Here's what Austin has to say about working for the company:</p>
+                    <p className="italic font-medium text-slate-700">
+                      "As a Canvas Manager at Eagle Revolution, going on 5 months I'm proud and grateful to be part of a team where growth isn't just encouraged-it's built into everything we do. That mindset doesn't stop at work; it flows into how I live. I thrive outdoors; whether I'm at the park with my kids, exploring nature, or enjoying a sporting event. I truly believe connection, movement, and joy go hand in hand. Yoga and mindfulness practices keep me grounded, but I'm always reaching forward, learning, and evolving. At work and in life, I believe growth isn't a destination-it's a daily practice, shaped by purpose, presence and the courage to keep showing up, fully."
+                    </p>
+                    <p>Thank you Austin for all you do for the team!</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:col-span-5 order-1 lg:order-2 leadership-reveal lg:sticky lg:top-32 relative z-10 w-full max-w-[400px] lg:max-w-none mx-auto lg:mx-0">
+              <TeamPortrait
+                image={Images.Austin}
+                title="Austin - Canvas Manager"
+                badge1="CANVAS MANAGER"
+                badge2="GROWTH • MINDFULNESS"
+                alignRight
+              />
+            </div>
+          </div>
+
+          {/* ====================== */}
+          {/* TEAM MEMBER 5 (Brandon) - IMAGE LEFT */}
+          {/* ====================== */}
+          <div className="grid lg:grid-cols-12 gap-8 min-[350px]:gap-12 sm:gap-16 md:gap-20 items-center lg:items-start mb-24 sm:mb-32 md:mb-40 relative">
+            <div className="lg:col-span-5 leadership-reveal lg:sticky lg:top-32 relative z-10 w-full max-w-[400px] lg:max-w-none mx-auto lg:mx-0">
+              <TeamPortrait
+                image={Images.BrandonSales}
+                title="Brandon - Construction Sales Professional"
+                badge1="SALES PROFESSIONAL"
+                badge2="KNOWLEDGE • HONESTY"
+              />
+            </div>
+
+            <div className="lg:col-span-7 space-y-8 leadership-reveal relative z-10 lg:pl-6 w-full">
+              <div className="bg-white/70 backdrop-blur-xl rounded-[2rem] sm:rounded-[2.5rem] p-6 min-[350px]:p-8 sm:p-10 border border-white shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)]">
+                <h3 className="text-2xl min-[350px]:text-3xl sm:text-4xl md:text-5xl font-light text-slate-900 mb-2 sm:mb-3">
+                  Brandon
+                  <span className="block text-[10px] sm:text-xs font-mono font-bold text-blue-600 mt-2 sm:mt-3 tracking-[0.2em] uppercase">
+                    Construction Sales Professional
+                  </span>
+                </h3>
+
+                <div className="mt-8 sm:mt-10 relative">
+                  <div className="absolute -left-3 sm:-left-6 -top-4 sm:-top-6 text-blue-100/60 scale-[1.2] sm:scale-[1.8] pointer-events-none">
+                    <Icons.Quote />
+                  </div>
+                  <div className="space-y-4 sm:space-y-6 text-slate-600 text-[13px] min-[350px]:text-sm sm:text-base md:text-lg leading-relaxed relative z-10">
+                    <p>
+                      Brandon is a construction sales professional with over 12 years of experience specializing in windows, doors, and roofing. He's known for his straightforward approach, strong product knowledge, and commitment to helping customers find the right solutions for their homes.
+                    </p>
+                    <p>
+                      As an Illinois resident, Brandon takes pride in serving his local community with honesty and dependable service. Outside of work, Brandon is a dedicated softball dad and enjoys spending his free time on the golf course.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -412,8 +501,8 @@ export default function MeetTheTeamPage() {
           {/* ====================== */}
           {/* FOOTER NOTE */}
           {/* ====================== */}
-          <div className="text-center mt-32">
-            <p className="text-xs text-slate-400 font-mono tracking-widest uppercase">
+          <div className="text-center mt-20 sm:mt-32 mb-10">
+            <p className="text-[10px] sm:text-xs text-slate-400 font-mono tracking-widest uppercase">
               Quality over shortcuts <span className="mx-2 text-slate-300">•</span> Service over sales pressure
             </p>
           </div>
