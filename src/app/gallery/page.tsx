@@ -7,16 +7,16 @@ import { useRouter } from "next/navigation";
 // Import images directly - NOT wrapped in objects
 import commercialroof from '../../assets/commercial-tpo.png';
 import decks from '../../assets/outdoor-sitting-desk.png';
-import deck3 from '../../assets/outdoor-sitting-desk.png';
-import deck2 from '../../assets/outdoor-sitting-desk.png';
+import deck3 from '../../assets/decks2 (1).jpg';
+import deck2 from '../../assets/decks2 (2).jpg';
 import door from "../../assets/DOORS-20260414T184740Z-3-001/DOORS/DOOR1.jpg";
 import residental1 from '../../assets/roof1.jpg.jpeg';
-import residental2 from '../../assets/roof1.jpg.jpeg';
+import residental2 from '../../assets/residentalroofing2ndimage.jpg';
 import siding from '../../assets/siding5.jpg.jpeg';
 import windowImg from '../../assets/window5.jpeg';
 import gutter from '../../assets/gutterinstallation.jpg.jpeg';
 import pvc from '../../assets/pvcdecks.jpg.jpeg';
-import window2 from '../../assets/window5.jpeg';
+import window2 from '../../assets/windowimage.jpg';
 
 
 
